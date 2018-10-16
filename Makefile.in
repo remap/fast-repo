@@ -106,7 +106,10 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
-am_fast_repo_OBJECTS = src/main.$(OBJEXT)
+am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
+	third_party/docopt/docopt.$(OBJEXT) \
+	src/repo/fast-repo.$(OBJEXT) \
+	src/storage/storage-engine.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 am__DEPENDENCIES_1 =
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -127,7 +130,10 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = src/$(DEPDIR)/main.Po
+am__depfiles_remade = src/$(DEPDIR)/main.Po \
+	src/repo/$(DEPDIR)/fast-repo.Po \
+	src/storage/$(DEPDIR)/storage-engine.Po \
+	third_party/docopt/$(DEPDIR)/docopt.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -299,7 +305,11 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-fast_repo_SOURCES = src/main.cpp
+fast_repo_SOURCES = src/main.cpp \
+    third_party/docopt/docopt.cpp \
+    src/repo/fast-repo.cpp \
+    src/storage/storage-engine.cpp
+
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} ${BOOST_TIMER_LIB}
 
@@ -404,6 +414,31 @@ src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/$(DEPDIR)
 	@: > src/$(DEPDIR)/$(am__dirstamp)
 src/main.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+third_party/docopt/$(am__dirstamp):
+	@$(MKDIR_P) third_party/docopt
+	@: > third_party/docopt/$(am__dirstamp)
+third_party/docopt/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) third_party/docopt/$(DEPDIR)
+	@: > third_party/docopt/$(DEPDIR)/$(am__dirstamp)
+third_party/docopt/docopt.$(OBJEXT):  \
+	third_party/docopt/$(am__dirstamp) \
+	third_party/docopt/$(DEPDIR)/$(am__dirstamp)
+src/repo/$(am__dirstamp):
+	@$(MKDIR_P) src/repo
+	@: > src/repo/$(am__dirstamp)
+src/repo/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/repo/$(DEPDIR)
+	@: > src/repo/$(DEPDIR)/$(am__dirstamp)
+src/repo/fast-repo.$(OBJEXT): src/repo/$(am__dirstamp) \
+	src/repo/$(DEPDIR)/$(am__dirstamp)
+src/storage/$(am__dirstamp):
+	@$(MKDIR_P) src/storage
+	@: > src/storage/$(am__dirstamp)
+src/storage/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/storage/$(DEPDIR)
+	@: > src/storage/$(DEPDIR)/$(am__dirstamp)
+src/storage/storage-engine.$(OBJEXT): src/storage/$(am__dirstamp) \
+	src/storage/$(DEPDIR)/$(am__dirstamp)
 
 fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_repo_DEPENDENCIES) 
 	@rm -f fast-repo$(EXEEXT)
@@ -412,11 +447,17 @@ fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f src/*.$(OBJEXT)
+	-rm -f src/repo/*.$(OBJEXT)
+	-rm -f src/storage/*.$(OBJEXT)
+	-rm -f third_party/docopt/*.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast-repo.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/storage-engine.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@third_party/docopt/$(DEPDIR)/docopt.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -700,6 +741,12 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/$(am__dirstamp)
+	-rm -f src/repo/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/repo/$(am__dirstamp)
+	-rm -f src/storage/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/storage/$(am__dirstamp)
+	-rm -f third_party/docopt/$(DEPDIR)/$(am__dirstamp)
+	-rm -f third_party/docopt/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -711,6 +758,9 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 		-rm -f src/$(DEPDIR)/main.Po
+	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
+	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
+	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -759,6 +809,9 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
 		-rm -f src/$(DEPDIR)/main.Po
+	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
+	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
+	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
