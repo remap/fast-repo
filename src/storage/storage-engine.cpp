@@ -13,7 +13,9 @@
 #include <ndn-cpp/util/blob.hpp>
 #include <boost/algorithm/string.hpp>
 
-#if HAVE_PERSISTENT_STORAGE
+#include "../config.hpp"
+
+#if HAVE_LIBROCKSDB
 
 #ifndef __ANDROID__ // use RocksDB on linux and macOS
     
@@ -43,7 +45,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
             size_t valueSizeBytes_;
         } Stats;
 
-    #if HAVE_PERSISTENT_STORAGE
+    #if HAVE_LIBROCKSDB
         StorageEngineImpl(std::string dbPath): dbPath_(dbPath), db_(nullptr), keysTrieBuilt_(false)
         {
         }
@@ -60,7 +62,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 
         bool open(bool readOnly)
         {
-#if HAVE_PERSISTENT_STORAGE
+#if HAVE_LIBROCKSDB
             db_namespace::Options options;
             options.create_if_missing = true;
             db_namespace::Status status;
@@ -68,6 +70,10 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                 status = db_namespace::DB::OpenForReadOnly(options, dbPath_, &db_);
             else
                 status = db_namespace::DB::Open(options, dbPath_, &db_);
+            
+            if (!status.ok())
+                throw std::runtime_error(status.getState());
+
             return status.ok();
 #else
             return false;
@@ -76,7 +82,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 
         void close()
         {
-#if HAVE_PERSISTENT_STORAGE
+#if HAVE_LIBROCKSDB
             if (db_)
                 delete db_;
 #endif
@@ -84,7 +90,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 
         bool put(const shared_ptr<const Data>& data)
         {
-#if HAVE_PERSISTENT_STORAGE
+#if HAVE_LIBROCKSDB
             if (!db_)
                 throw std::runtime_error("DB is not open");
 
@@ -101,7 +107,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 
         shared_ptr<Data> get(const Name& dataName)
         {
-#if HAVE_PERSISTENT_STORAGE
+#if HAVE_LIBROCKSDB
             if (!db_)
                 throw std::runtime_error("DB is not open");
 
@@ -148,11 +154,9 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                 TrieNode():isLeaf(false){}
             };
 
-            NameTrie():head_(nullptr){}
+            NameTrie():head_(make_shared<TrieNode>()){}
 
             void insert(const std::string& n) {
-                if (!head_)
-                    head_ = make_shared<TrieNode>();
 
                 shared_ptr<TrieNode> curr = head_;
                 std::vector<std::string> components;
@@ -177,7 +181,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                     Name n(cIt.first);
                     shared_ptr<TrieNode> curr = cIt.second;
 
-                    while (curr && !curr->isLeaf && curr->components.size() == 1){
+                    while (curr.get() && !curr->isLeaf && curr->components.size() == 1){
                         auto it = curr->components.begin();
                         n.append(Name::fromEscapedString(it->first));
                         curr = it->second;
@@ -195,7 +199,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
         bool keysTrieBuilt_;
         NameTrie keysTrie_;
         Stats stats_;
-#if HAVE_PERSISTENT_STORAGE
+#if HAVE_LIBROCKSDB
         db_namespace::DB* db_;
 #endif
 
@@ -203,7 +207,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
         {
             stats_.nKeys_ = 0;
             stats_.valueSizeBytes_ = 0;
-#if HAVE_PERSISTENT_STORAGE
+#if HAVE_LIBROCKSDB
 
             db_namespace::Iterator* it = db_->NewIterator(rocksdb::ReadOptions());
 
@@ -225,8 +229,13 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 StorageEngine::StorageEngine(std::string dbPath, bool readOnly):
     pimpl_(boost::make_shared<StorageEngineImpl>(dbPath))
 {
-    if (!pimpl_->open(readOnly))
-        throw std::runtime_error("Failed to open storage at "+dbPath);
+    try {
+        pimpl_->open(readOnly);
+    }
+    catch (std::exception& e)
+    {
+        throw std::runtime_error("Failed to open storage at "+dbPath+": "+e.what());
+    }
 }
 
 StorageEngine::~StorageEngine()

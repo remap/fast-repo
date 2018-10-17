@@ -27,6 +27,12 @@
 /* Define to 1 if you have the `ndn-cpp' library (-lndn-cpp). */
 #undef HAVE_LIBNDN_CPP
 
+/* Define to 1 if you have the `protobuf' library (-lprotobuf). */
+#undef HAVE_LIBPROTOBUF
+
+/* Define to 1 if you have the `pthread' library (-lpthread). */
+#undef HAVE_LIBPTHREAD
+
 /* Define to 1 if you have the `rocksdb' library (-lrocksdb). */
 #undef HAVE_LIBROCKSDB
 
@@ -35,6 +41,9 @@
 
 /* Define to 1 if you have the <ndn-cpp/interest.hpp> header file. */
 #undef HAVE_NDN_CPP_INTEREST_HPP
+
+/* 1 if have Google Protobuf. */
+#undef HAVE_PROTOBUF
 
 /* Define to 1 if you have the <rocksdb/db.h> header file. */
 #undef HAVE_ROCKSDB_DB_H

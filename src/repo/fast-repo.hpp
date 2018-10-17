@@ -14,6 +14,12 @@
 #include <boost/asio.hpp>
 #include <ndn-cpp/name.hpp>
 
+#include "../handles/read-handle.hpp"
+#include "../handles/write-handle.hpp"
+#include "../handles/watch-handle.hpp"
+#include "../handles/delete-handle.hpp"
+
+
 namespace ndn
 {
 class Face;
@@ -29,17 +35,19 @@ struct Config
 {
     static const size_t DISABLED_SUBSET_LENGTH = -1;
 
+    bool readOnly;
     std::string repoConfigPath;
     std::string dbPath;
     std::vector<ndn::Name> dataPrefixes;
     size_t registrationSubset = DISABLED_SUBSET_LENGTH;
     std::vector<ndn::Name> repoPrefixes;
-    uint64_t nMaxPackets;
     boost::property_tree::ptree validatorNode;
 };
 
 Config
 parseConfig(const std::string&);
+
+static Config DefaultConfig;
 
 class FastRepo
 {
@@ -58,6 +66,15 @@ class FastRepo
     boost::shared_ptr<ndn::Face> face_;
     boost::shared_ptr<ndn::KeyChain> keyChain_;
     boost::shared_ptr<StorageEngine> storageEngine_;
+
+#if 0
+    repo::ReadHandle readHandle_;
+    repo::WriteHandle writeHandle_;
+    repo::WatchHandle watchHandle_;
+    repo::DeleteHandle deleteHandle_;
+#endif
+
+    void initializeStorage();
 };
 
 } // namespace fast_repo

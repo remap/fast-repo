@@ -1,5 +1,5 @@
 AC_INIT([fast-repo], [0.0.1], [peter@remap.ucla.edu], [fast-repo], [http://github.com/remap/fast-repo])
-AM_INIT_AUTOMAKE([1.10 -Wall -Werror no-define foreign subdir-objects])
+AM_INIT_AUTOMAKE([1.10 -Wall no-define foreign subdir-objects])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PREREQ([2.69])
 
@@ -45,6 +45,39 @@ AC_CHECK_LIB([ndn-cpp], [ndn_getErrorString], [],
 # Check for CNL
 AC_CHECK_HEADERS([cnl-cpp/namespace.hpp],,[AC_MSG_FAILURE([can't find namespace.hpp])])
 AC_MSG_CHECKING([for CNL-CPP library...])
+
+###############################
+# Check for protobuf
+AC_MSG_CHECKING([for Protobuf])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+    [[#include <google/protobuf/message.h>]]
+    [[google::protobuf::Message *message;]])
+], [
+    AC_MSG_RESULT([yes])
+    HAVE_PROTOBUF=1
+], [
+    AC_MSG_RESULT([no])
+    HAVE_PROTOBUF=0
+])
+AC_DEFINE_UNQUOTED([HAVE_PROTOBUF], $HAVE_PROTOBUF, [1 if have Google Protobuf.])
+if test "$HAVE_PROTOBUF" == "1" ; then
+  AC_CHECK_LIB([protobuf], [main], [],
+               [AC_MSG_FAILURE([have protobuf headers but no libprotobuf])])
+  # libprotobuf needs libpthread.
+  AC_CHECK_LIB([pthread], [main], [],
+               [AC_MSG_FAILURE([have libprotobuf but no libpthread])])
+
+  # See https://stackoverflow.com/questions/13939904/how-to-use-protocol-buffers-with-autoconf-automake
+  AC_ARG_WITH([protoc],
+      [AS_HELP_STRING([--with-protoc=/path/of/protoc],
+          [Location of the protocol buffers compiler protoc. Defaults to looking on path.])],
+      [PROTOC="$withval"],
+      [ AS_IF([test "x${PROTOC}" == "x"],
+          [AC_PATH_PROG([PROTOC], [protoc], [no])])
+      ]
+  )
+  AS_IF([test "${PROTOC}" == "no"], [AC_MSG_ERROR([ProtoBuf compiler "protoc" not found.])])
+fi
 
 SAVED_LIBS=$LIBS
 LIBS="$LIBS -lcnl-cpp"

@@ -55,3 +55,6 @@ tags
 *.sublime-project
 *.sublime-workspace
 *~
+.vscode
+*.pb.cc
+*.pb.h

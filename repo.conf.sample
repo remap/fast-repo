@@ -1,0 +1,93 @@
+repo
+{
+  ; Section defining list of Data prefixes to register
+  ; Additionally define how many components off the end of data prefixes to insert into NFD
+  ; 'prefix' option can be repeated multiple times
+  ; 'registration-subset' defines how many components to exclude. This includes the implicit digest
+  ; at the end of the data name.
+  data
+  {
+    registration-subset 2
+    prefix "ndn:/example/data/1"
+    prefix "ndn:/example/data/2"
+  }
+
+  ; Section defining list of command prefixes (to insert or delete Data) to register.
+  ; Only 'prefix' option is allowed here, which can be repeated multiple times
+  command
+  {
+    prefix "ndn:/example/repo/1"
+    prefix "ndn:/example/repo/2"
+  }
+
+  ; Section to specify where data should be stored
+  ; Right now only a single 'sqlite' option is allowed:
+  storage
+  {
+    mode "read_write"             ; "read_write" and "read_only" supported currently
+    method "rocksdb"              ; Currently, only rocksdb storage engine is supported
+    path "/var/db/ndn-fast-repo"  ; path to fast-repo storage folder
+  }
+
+  validator
+  {
+    ; The following rule disables all security in the repo
+    trust-anchor {
+        type any
+    }
+
+    ; ; These rule are examples of validation of signed interests for commands and data.
+    ; ; User could define its own rule for signed interest or data to be inserted
+    ; ; according to Validator Configuration File Format.
+    ; ; (http://redmine.named-data.net/projects/ndn-cxx/wiki/CommandValidatorConf)
+    ; rule
+    ; {
+    ;   id "Simple Rule For Interest"
+    ;   for interest
+    ;   filter
+    ;   {
+    ;     type name
+    ;     name /example/repo/1
+    ;     relation is-prefix-of
+    ;   }
+    ;   checker
+    ;   {
+    ;     type fixed-signer
+    ;     sig-type rsa-sha256
+    ;     signer
+    ;     {
+    ;       type file
+    ;       ; fast-repo.cert.sample is just a non-existent certificate.
+    ;       ; User should create its own certification using Security Tool.
+    ;       ; (http://redmine.named-data.net/projects/ndn-cxx/wiki/SecurityTools)
+    ;       file-name "fast-repo.cert.sample"
+    ;     }
+    ;   }
+    ; }
+    ;
+    ; rule
+    ; {
+    ;   id "Simple Rule For Data"
+    ;   for data
+    ;   filter
+    ;   {
+    ;     type name
+    ;     name /example/data/1
+    ;     relation is-prefix-of
+    ;   }
+    ;   checker
+    ;   {
+    ;     type fixed-signer
+    ;     sig-type rsa-sha256
+    ;     signer
+    ;     {
+    ;       type file
+    ;       ; fast-repo.cert.sample is just a non-existent certificate.
+    ;       ; User should create its own certification using Security Tool.
+    ;       ; (http://redmine.named-data.net/projects/ndn-cxx/wiki/SecurityTools)
+    ;       file-name "fast-repo.cert.sample"
+    ;     }
+    ;   }
+    ; }
+  }
+}

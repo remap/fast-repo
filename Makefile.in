@@ -109,7 +109,9 @@ am__dirstamp = $(am__leading_dot)dirstamp
 am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
 	third_party/docopt/docopt.$(OBJEXT) \
 	src/repo/fast-repo.$(OBJEXT) \
-	src/storage/storage-engine.$(OBJEXT)
+	src/storage/storage-engine.$(OBJEXT) \
+	src/repo-command-response.pb.$(OBJEXT) \
+	src/repo-command-parameter.pb.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 am__DEPENDENCIES_1 =
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -131,6 +133,8 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = src/$(DEPDIR)/main.Po \
+	src/$(DEPDIR)/repo-command-parameter.pb.Po \
+	src/$(DEPDIR)/repo-command-response.pb.Po \
 	src/repo/$(DEPDIR)/fast-repo.Po \
 	src/storage/$(DEPDIR)/storage-engine.Po \
 	third_party/docopt/$(DEPDIR)/docopt.Po
@@ -148,6 +152,18 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_@AM_V@)
+am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+am__v_CC_0 = @echo "  CC      " $@;
+am__v_CC_1 = 
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+am__v_CCLD_0 = @echo "  CCLD    " $@;
+am__v_CCLD_1 = 
 SOURCES = $(fast_repo_SOURCES)
 DIST_SOURCES = $(fast_repo_SOURCES)
 am__can_run_installinfo = \
@@ -249,6 +265,7 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PROTOC = @PROTOC@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -305,18 +322,24 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+BUILT_SOURCES = src/repo-command-response.pb.cc src/repo-command-response.pb.h \
+    src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h
+
 fast_repo_SOURCES = src/main.cpp \
     third_party/docopt/docopt.cpp \
     src/repo/fast-repo.cpp \
-    src/storage/storage-engine.cpp
+    src/storage/storage-engine.cpp \
+    src/repo-command-response.pb.cc src/repo-command-response.pb.h \
+    src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} ${BOOST_TIMER_LIB}
 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
-.SUFFIXES: .cpp .o .obj
+.SUFFIXES: .cc .cpp .o .obj
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -439,6 +462,10 @@ src/storage/$(DEPDIR)/$(am__dirstamp):
 	@: > src/storage/$(DEPDIR)/$(am__dirstamp)
 src/storage/storage-engine.$(OBJEXT): src/storage/$(am__dirstamp) \
 	src/storage/$(DEPDIR)/$(am__dirstamp)
+src/repo-command-response.pb.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+src/repo-command-parameter.pb.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
 
 fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_repo_DEPENDENCIES) 
 	@rm -f fast-repo$(EXEEXT)
@@ -455,6 +482,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-parameter.pb.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-response.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast-repo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/storage-engine.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@third_party/docopt/$(DEPDIR)/docopt.Po@am__quote@ # am--include-marker
@@ -464,6 +493,22 @@ $(am__depfiles_remade):
 	@echo '# dummy' >$@-t && $(am__mv) $@-t $@
 
 am--depfiles: $(am__depfiles_remade)
+
+.cc.o:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
+
+.cc.obj:
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -707,13 +752,15 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(PROGRAMS)
 installdirs:
 	for dir in "$(DESTDIR)$(bindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -751,6 +798,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
@@ -758,6 +806,8 @@ clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 		-rm -f src/$(DEPDIR)/main.Po
+	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
+	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
 	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
 	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
 	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
@@ -809,6 +859,8 @@ maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
 		-rm -f src/$(DEPDIR)/main.Po
+	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
+	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
 	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
 	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
 	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
@@ -829,7 +881,7 @@ ps-am:
 
 uninstall-am: uninstall-binPROGRAMS
 
-.MAKE: install-am install-strip
+.MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--depfiles am--refresh check \
 	check-am clean clean-binPROGRAMS clean-cscope clean-generic \
@@ -850,6 +902,13 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PRECIOUS: Makefile
 
+
+src/%.pb.cc: src/%.proto
+	if test "no${PROTOC}" == "no"; then \
+	  cat protobuf-stub.txt > $@ ; \
+	else \
+	  $(PROTOC) --proto_path=$(dir $<) --cpp_out=$(dir $<) $< ; \
+	fi
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -44,12 +44,21 @@ static const char USAGE[] =
     R"(Fast Repo.
 
     Usage:
-      fast-repo  --config=<config_file> [ --db-path=<path_to_db> | --verbose ]
+      fast-repo  ( --config=<config_file> | ( <command_prefix> [ --db-path=<path_to_db> ] )) [ --validate | --no-listen | --verbose ]
+
+    Arguments:
+      <command_prefix>              Prefix repo must register for incoming commands
 
     Options:
       -c --config=<config_file>     Config file
-      -d --db-path=<path_to_db>     Path to KV storage folder [ default: /tmp/fast-repo ]
+      -d --db-path=<path_to_db>     Path to KV storage folder [default: /var/db/fast-repo]
+      --validate                    Make repo validate every fetched packet
+      --no-listen                   Starts repo in read-only mode
       -v --verbose                  Verbose output
+
+    Examples:
+      fast-repo --config=repo.conf
+      fast-repo /ndn/fast-repo --db-path=$HOME/fast-repo
 )";
 
 void terminate(boost::asio::io_service &ioService,
@@ -96,16 +105,31 @@ int main(int argc, char **argv)
                                                                true,
                                                                (string("Fast Repo ") + string(PACKAGE_VERSION)).c_str());
 
-    // for(auto const& arg : args) {
-    //     std::cout << arg.first << " " <<  arg.second << std::endl;
-    // }
+    for(auto const& arg : args) {
+        std::cout << arg.first << " " <<  arg.second << std::endl;
+    }
 
     boost::shared_ptr<Face> face = boost::make_shared<ThreadsafeFace>(ioService);
     boost::shared_ptr<KeyChain> keyChain = boost::make_shared<KeyChain>();
 
+    fast_repo::Config repoConfig = (args["--config"].isString() ? 
+                                fast_repo::parseConfig(args["--config"].asString()) :
+                                fast_repo::DefaultConfig);
+    
+    // override db path, if needed
+    if (args["<command_prefix>"].isString())
+        repoConfig.dbPath = args["--db-path"].asString();
+    // override read only mode if needed
+    if (args["--no-listen"].asBool())
+        repoConfig.readOnly = true;
+
     fast_repo::FastRepo repoInstance(ioService, 
-                                     fast_repo::parseConfig(args["--config"].asString()), 
+                                     repoConfig, 
                                      face, keyChain);
+    repoInstance.enableListening();
+
+    if (args["--validate"].asBool())
+        repoInstance.enableValidation();
 
     ioService.run();
 
