@@ -9,7 +9,9 @@
 
 #include <fstream>
 #include <boost/property_tree/info_parser.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <ndn-cpp/name.hpp>
+#include <ndn-cpp/face.hpp>
 
 #include "../storage/storage-engine.hpp"
 
@@ -17,6 +19,40 @@ using namespace fast_repo;
 using namespace ndn;
 
 static Config DefaultConfig = Config();
+
+namespace fast_repo
+{
+class FastRepoImpl : public boost::enable_shared_from_this<FastRepoImpl>
+{
+  public:
+    FastRepoImpl(boost::asio::io_service &io,
+                 const Config &config,
+                 const boost::shared_ptr<ndn::Face> &face,
+                 const boost::shared_ptr<ndn::KeyChain> &keyChain);
+    ~FastRepoImpl();
+
+    void enableListening();
+    void enableValidation();
+    void initializeStorage();
+
+  private:
+    boost::asio::io_service &io_;
+    Config config_;
+    boost::shared_ptr<ndn::Face> face_;
+    boost::shared_ptr<ndn::KeyChain> keyChain_;
+    boost::shared_ptr<StorageEngine> storageEngine_;
+
+    repo_ng::ReadHandle readHandle_;
+#if 0
+    repo::WriteHandle writeHandle_;
+    repo::WatchHandle watchHandle_;
+    repo::DeleteHandle deleteHandle_;
+#endif
+    // TODO: implement pattern handler 
+    // PatternHandle patternHandle_;
+
+};
+} // namespace fast_repo
 
 Config
 fast_repo::parseConfig(const std::string &configPath)
@@ -82,36 +118,79 @@ fast_repo::parseConfig(const std::string &configPath)
     return repoConfig;
 }
 
+//***
 FastRepo::FastRepo(boost::asio::io_service &io,
                    const Config &config,
                    const boost::shared_ptr<ndn::Face> &face,
                    const boost::shared_ptr<ndn::KeyChain> &keyChain)
-    : io_(io), config_(config), face_(face), keyChain_(keyChain)
+    : pimpl_(boost::make_shared<FastRepoImpl>(io, config, face, keyChain))
 {
-    initializeStorage();
+    pimpl_->initializeStorage();
 }
 
 void FastRepo::enableListening()
 {
+    pimpl_->enableListening();
 }
 
 void FastRepo::enableValidation()
 {
+    pimpl_->enableValidation();
 }
 
-void FastRepo::initializeStorage()
-{
-    storageEngine_ = boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly);
+//***
+FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
+                           const Config &config,
+                           const boost::shared_ptr<ndn::Face> &face,
+                           const boost::shared_ptr<ndn::KeyChain> &keyChain)
+    : io_(io)
+    , config_(config)
+    , face_(face)
+    , keyChain_(keyChain)
+    , storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly))
+    , readHandle_(*face_, *storageEngine_, *keyChain_)
 
+{
+}
+
+FastRepoImpl::~FastRepoImpl()
+{
+    // TODO: unregister prefixes
+}
+
+void FastRepoImpl::enableListening()
+{
+    for (const ndn::Name &cmdPrefix : config_.repoPrefixes)
+    {
+        // face_->registerPrefix(cmdPrefix, nullptr,
+        //                       [](const Name &cmdPrefix, const std::string &reason) {
+        //                           std::cerr << "Command prefix " << cmdPrefix << " registration error: " << reason << std::endl;
+        //                           BOOST_THROW_EXCEPTION(std::runtime_error("Command prefix registration failed"));
+        //                       });
+
+        // m_writeHandle.listen(cmdPrefix);
+        // m_watchHandle.listen(cmdPrefix);
+        // m_deleteHandle.listen(cmdPrefix);
+    }
+}
+
+void FastRepoImpl::enableValidation()
+{
+}
+
+void FastRepoImpl::initializeStorage()
+{
     std::cout << "opened storage in " << (config_.readOnly ? "readonly" : "read-write")
               << " mode at " << config_.dbPath << std::endl;
 
-    storageEngine_->scanForLongestPrefixes(io_, [](const std::vector<ndn::Name> &prefixes) {
-        if (prefixes.size())
+    boost::shared_ptr<FastRepoImpl> me = shared_from_this();
+    storageEngine_->scanForLongestPrefixes(io_, [me, this](const std::vector<ndn::Name> &prefixes) {
+        for (auto p : prefixes)
+            config_.dataPrefixes.push_back(Name(p));
+        for (auto p : config_.dataPrefixes)
         {
-            std::cout << "the following data prefixes will be registered:" << std::endl;
-            for (auto p : prefixes)
-                std::cout << "\t" << p << std::endl;
+            readHandle_.listen(p);
+            std::cout << "registered data prefix: " << p << std::endl;
         }
     });
 }

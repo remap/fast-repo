@@ -18,6 +18,7 @@
 #include "../handles/write-handle.hpp"
 #include "../handles/watch-handle.hpp"
 #include "../handles/delete-handle.hpp"
+#include "../handles/pattern-handle.hpp"
 
 
 namespace ndn
@@ -49,6 +50,7 @@ parseConfig(const std::string&);
 
 static Config DefaultConfig;
 
+class FastRepoImpl;
 class FastRepo
 {
   public:
@@ -61,20 +63,7 @@ class FastRepo
     void enableValidation();
 
   private:
-    boost::asio::io_service &io_;
-    Config config_;
-    boost::shared_ptr<ndn::Face> face_;
-    boost::shared_ptr<ndn::KeyChain> keyChain_;
-    boost::shared_ptr<StorageEngine> storageEngine_;
-
-#if 0
-    repo::ReadHandle readHandle_;
-    repo::WriteHandle writeHandle_;
-    repo::WatchHandle watchHandle_;
-    repo::DeleteHandle deleteHandle_;
-#endif
-
-    void initializeStorage();
+    boost::shared_ptr<FastRepoImpl> pimpl_;
 };
 
 } // namespace fast_repo

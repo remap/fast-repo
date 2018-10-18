@@ -18,18 +18,21 @@
  */
 
 #include "read-handle.hpp"
-#include "repo.hpp"
 
-namespace repo {
+#include <ndn-cpp/face.hpp>
 
-ReadHandle::ReadHandle(Face& face, RepoStorage& storageHandle, KeyChain& keyChain,
-                       Scheduler& scheduler, size_t prefixSubsetLength)
-  : BaseHandle(face, storageHandle, keyChain, scheduler)
-  , m_prefixSubsetLength(prefixSubsetLength)
+using namespace ndn;
+
+namespace repo_ng
 {
-  connectAutoListen();
+
+ReadHandle::ReadHandle(Face &face, RepoStorage &storageHandle, KeyChain &keyChain)
+    : BaseHandle(face, storageHandle, keyChain)
+{
+    //   connectAutoListen();
 }
 
+#if 0
 void
 ReadHandle::connectAutoListen()
 {
@@ -45,32 +48,34 @@ ReadHandle::connectAutoListen()
       });
   }
 }
+#endif
 
-void
-ReadHandle::onInterest(const Name& prefix, const Interest& interest)
+void ReadHandle::onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
+                            const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+                            uint64_t interestFilterId,
+                            const boost::shared_ptr<const ndn::InterestFilter> &filter)
 {
-  shared_ptr<ndn::Data> data = getStorageHandle().readData(interest);
-  if (data != nullptr) {
-      getFace().put(*data);
-  }
+    boost::shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
+    if (data != nullptr)
+    {
+        getFace().putData(*data);
+    }
+    // TODO: else - sendNetworkNack
 }
 
-void
-ReadHandle::onRegisterFailed(const Name& prefix, const std::string& reason)
+void ReadHandle::onRegisterFailed(const boost::shared_ptr<const ndn::Name> &prefix)
 {
-  std::cerr << "ERROR: Failed to register prefix in local hub's daemon" << std::endl;
-  getFace().shutdown();
+    std::cerr << "ERROR: Failed to register prefix in local hub's daemon" << std::endl;
+    getFace().shutdown();
 }
 
-void
-ReadHandle::listen(const Name& prefix)
+void ReadHandle::listen(const Name &prefix)
 {
-  ndn::InterestFilter filter(prefix);
-  getFace().setInterestFilter(filter,
-                              bind(&ReadHandle::onInterest, this, _1, _2),
-                              bind(&ReadHandle::onRegisterFailed, this, _1, _2));
+    getFace().registerPrefix(prefix,
+                             bind(&ReadHandle::onInterest, this, _1, _2, _3, _4, _5),
+                             bind(&ReadHandle::onRegisterFailed, this, _1));
 }
-
+#if 0
 void
 ReadHandle::onDataDeleted(const Name& name)
 {
@@ -118,5 +123,6 @@ ReadHandle::onDataInserted(const Name& name)
     check->second.useCount++;
   }
 }
+#endif
 
-} // namespace repo
+} // namespace repo_ng

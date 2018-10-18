@@ -8,8 +8,9 @@
 #include "storage-engine.hpp"
 
 #include <unordered_map>
-#include <ndn-cpp/name.hpp>
 #include <ndn-cpp/data.hpp>
+#include <ndn-cpp/interest.hpp>
+#include <ndn-cpp/name.hpp>
 #include <ndn-cpp/util/blob.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -124,6 +125,12 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
             }
 #endif
             return shared_ptr<Data>(nullptr);
+        }
+
+        shared_ptr<Data> read(const Interest& interest)
+        {
+            // TODO: implement prefix match data retrieval 
+            return get(interest.getName());
         }
 
         void getLongestPrefixes(asio::io_service& io, 
@@ -252,6 +259,12 @@ shared_ptr<Data>
 StorageEngine::get(const Name& dataName)
 {
     return pimpl_->get(dataName);
+}
+
+shared_ptr<Data>
+StorageEngine::read(const Interest& interest)
+{
+    return pimpl_->read(interest);
 }
 
 void 

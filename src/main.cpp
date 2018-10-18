@@ -44,7 +44,7 @@ static const char USAGE[] =
     R"(Fast Repo.
 
     Usage:
-      fast-repo  ( --config=<config_file> | ( <command_prefix> [ --db-path=<path_to_db> ] )) [ --validate | --no-listen | --verbose ]
+      fast-repo  ( --config=<config_file> | ( <command_prefix> [ --db-path=<path_to_db> ] )) [ --validate | --readonly | --verbose ]
 
     Arguments:
       <command_prefix>              Prefix repo must register for incoming commands
@@ -53,7 +53,9 @@ static const char USAGE[] =
       -c --config=<config_file>     Config file
       -d --db-path=<path_to_db>     Path to KV storage folder [default: /var/db/fast-repo]
       --validate                    Make repo validate every fetched packet
-      --no-listen                   Starts repo in read-only mode
+      --readonly                    Starts repo in read-only mode: repo won't listen for commands, only serve data.
+                                    DB will open in read-only mode, thus allowing multiple processes to open at the 
+                                    same time.
       -v --verbose                  Verbose output
 
     Examples:
@@ -69,12 +71,11 @@ void terminate(boost::asio::io_service &ioService,
     if (error)
         return;
 
+    std::cout << "Caught signal '" << strsignal(signalNo) << "', exiting..." << std::endl;
     ioService.stop();
 
     if (signalNo == SIGABRT || signalNo == SIGSEGV)
     {
-        std::cout << "Caught signal '" << strsignal(signalNo) << "', exiting..." << std::endl;
-
         void *array[10];
         size_t size;
         size = backtrace(array, 10);
@@ -112,6 +113,9 @@ int main(int argc, char **argv)
     boost::shared_ptr<Face> face = boost::make_shared<ThreadsafeFace>(ioService);
     boost::shared_ptr<KeyChain> keyChain = boost::make_shared<KeyChain>();
 
+    // TODO: make sure this is setup correctly
+    face->setCommandSigningInfo(*keyChain, keyChain->getDefaultCertificateName());
+
     fast_repo::Config repoConfig = (args["--config"].isString() ? 
                                 fast_repo::parseConfig(args["--config"].asString()) :
                                 fast_repo::DefaultConfig);
@@ -120,13 +124,17 @@ int main(int argc, char **argv)
     if (args["<command_prefix>"].isString())
         repoConfig.dbPath = args["--db-path"].asString();
     // override read only mode if needed
-    if (args["--no-listen"].asBool())
+    if (args["--readonly"].asBool())
         repoConfig.readOnly = true;
 
     fast_repo::FastRepo repoInstance(ioService, 
                                      repoConfig, 
                                      face, keyChain);
-    repoInstance.enableListening();
+    
+    // repo automatically will register prefixes for data
+    // listening for commands must be enabled explicitly
+    if (!repoConfig.readOnly)
+        repoInstance.enableListening();
 
     if (args["--validate"].asBool())
         repoInstance.enableValidation();

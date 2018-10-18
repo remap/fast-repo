@@ -23,12 +23,21 @@
 #include "../config.hpp"
 
 #include "../storage/storage-engine.hpp"
-// #include "repo-command-response.pb.h"
-// #include "repo-command-parameter.pb.h"
-#if 0
-namespace repo {
+#include "repo-command-response.pb.h"
+#include "repo-command-parameter.pb.h"
 
-class BaseHandle : noncopyable
+namespace ndn {
+    class Face;
+    class KeyChain;
+    class Name;
+}
+
+namespace repo_ng {
+
+// for compatibility with the repo-ng code
+typedef fast_repo::StorageEngine RepoStorage;
+
+class BaseHandle : boost::noncopyable
 {
 public:
   class Error : public std::runtime_error
@@ -42,12 +51,11 @@ public:
   };
 
 public:
-  BaseHandle(Face& face, RepoStorage& storageHandle, KeyChain& keyChain,
-             Scheduler& scheduler)
+  BaseHandle(ndn::Face& face, RepoStorage& storageHandle, ndn::KeyChain& keyChain)
     : m_storageHandle(storageHandle)
     , m_face(face)
     , m_keyChain(keyChain)
-    , m_scheduler(scheduler)
+    // , m_scheduler(scheduler)
    // , m_storeindex(storeindex)
   {
   }
@@ -56,11 +64,11 @@ public:
   ~BaseHandle() = default;
 
   virtual void
-  listen(const Name& prefix) = 0;
+  listen(const ndn::Name& prefix) = 0;
 
 protected:
 
-  inline Face&
+  inline ndn::Face&
   getFace()
   {
     return m_face;
@@ -72,11 +80,11 @@ protected:
     return m_storageHandle;
   }
 
-  inline Scheduler&
-  getScheduler()
-  {
-    return m_scheduler;
-  }
+//   inline Scheduler&
+//   getScheduler()
+//   {
+//     return m_scheduler;
+//   }
 
   // inline RepoStorage&
   // getStoreIndex()
@@ -87,6 +95,8 @@ protected:
   uint64_t
   generateProcessId();
 
+  // TODO: refactor for ndn-cpp
+#if 0
   void
   reply(const Interest& commandInterest, const RepoCommandResponse& response);
 
@@ -100,17 +110,20 @@ protected:
    */
   void
   extractParameter(const Interest& interest, const Name& prefix, RepoCommandParameter& parameter);
+#endif
 
 protected:
   RepoStorage& m_storageHandle;
 
 private:
-  Face& m_face;
-  KeyChain& m_keyChain;
-  Scheduler& m_scheduler;
+  ndn::Face& m_face;
+  ndn::KeyChain& m_keyChain;
+//   Scheduler& m_scheduler;
  // RepoStorage& m_storeindex;
 };
 
+// TODO: refactor for ndn-cpp
+#if 0
 inline void
 BaseHandle::reply(const Interest& commandInterest, const RepoCommandResponse& response)
 {
@@ -126,8 +139,9 @@ BaseHandle::extractParameter(const Interest& interest, const Name& prefix,
 {
   parameter.wireDecode(interest.getName().get(prefix.size()).blockFromValue());
 }
-
-} // namespace repo
 #endif
+
+} // namespace repo_ng
+
 
 #endif // REPO_HANDLES_BASE_HANDLE_HPP

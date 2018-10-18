@@ -18,7 +18,7 @@
  */
 
 #include "write-handle.hpp"
-
+#if 0
 namespace repo {
 
 static const int RETRY_TIMEOUT = 3;
@@ -543,3 +543,4 @@ WriteHandle::negativeReply(const Interest& interest, int statusCode)
 }
 
 } // namespace repo
+#endif

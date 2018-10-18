@@ -111,7 +111,13 @@ am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
 	src/repo/fast-repo.$(OBJEXT) \
 	src/storage/storage-engine.$(OBJEXT) \
 	src/repo-command-response.pb.$(OBJEXT) \
-	src/repo-command-parameter.pb.$(OBJEXT)
+	src/repo-command-parameter.pb.$(OBJEXT) \
+	src/handles/base-handle.$(OBJEXT) \
+	src/handles/pattern-handle.$(OBJEXT) \
+	src/handles/delete-handle.$(OBJEXT) \
+	src/handles/read-handle.$(OBJEXT) \
+	src/handles/watch-handle.$(OBJEXT) \
+	src/handles/write-handle.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 am__DEPENDENCIES_1 =
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -135,6 +141,12 @@ am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = src/$(DEPDIR)/main.Po \
 	src/$(DEPDIR)/repo-command-parameter.pb.Po \
 	src/$(DEPDIR)/repo-command-response.pb.Po \
+	src/handles/$(DEPDIR)/base-handle.Po \
+	src/handles/$(DEPDIR)/delete-handle.Po \
+	src/handles/$(DEPDIR)/pattern-handle.Po \
+	src/handles/$(DEPDIR)/read-handle.Po \
+	src/handles/$(DEPDIR)/watch-handle.Po \
+	src/handles/$(DEPDIR)/write-handle.Po \
 	src/repo/$(DEPDIR)/fast-repo.Po \
 	src/storage/$(DEPDIR)/storage-engine.Po \
 	third_party/docopt/$(DEPDIR)/docopt.Po
@@ -152,18 +164,6 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
-AM_V_CC = $(am__v_CC_@AM_V@)
-am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
-am__v_CC_0 = @echo "  CC      " $@;
-am__v_CC_1 = 
-CCLD = $(CC)
-LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-AM_V_CCLD = $(am__v_CCLD_@AM_V@)
-am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
-am__v_CCLD_0 = @echo "  CCLD    " $@;
-am__v_CCLD_1 = 
 SOURCES = $(fast_repo_SOURCES)
 DIST_SOURCES = $(fast_repo_SOURCES)
 am__can_run_installinfo = \
@@ -329,8 +329,14 @@ fast_repo_SOURCES = src/main.cpp \
     third_party/docopt/docopt.cpp \
     src/repo/fast-repo.cpp \
     src/storage/storage-engine.cpp \
-    src/repo-command-response.pb.cc src/repo-command-response.pb.h \
-    src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h
+    src/repo-command-response.pb.cc \
+    src/repo-command-parameter.pb.cc \
+    src/handles/base-handle.cpp \
+    src/handles/pattern-handle.cpp \
+    src/handles/delete-handle.cpp \
+    src/handles/read-handle.cpp \
+    src/handles/watch-handle.cpp \
+    src/handles/write-handle.cpp
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} ${BOOST_TIMER_LIB}
@@ -466,6 +472,24 @@ src/repo-command-response.pb.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/repo-command-parameter.pb.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
+src/handles/$(am__dirstamp):
+	@$(MKDIR_P) src/handles
+	@: > src/handles/$(am__dirstamp)
+src/handles/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) src/handles/$(DEPDIR)
+	@: > src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/base-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/pattern-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/delete-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/read-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/watch-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/write-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
 
 fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_repo_DEPENDENCIES) 
 	@rm -f fast-repo$(EXEEXT)
@@ -474,6 +498,7 @@ fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f src/*.$(OBJEXT)
+	-rm -f src/handles/*.$(OBJEXT)
 	-rm -f src/repo/*.$(OBJEXT)
 	-rm -f src/storage/*.$(OBJEXT)
 	-rm -f third_party/docopt/*.$(OBJEXT)
@@ -484,6 +509,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-parameter.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-response.pb.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/base-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/delete-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/pattern-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/read-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/watch-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/write-handle.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast-repo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/storage-engine.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@third_party/docopt/$(DEPDIR)/docopt.Po@am__quote@ # am--include-marker
@@ -788,6 +819,8 @@ distclean-generic:
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/$(am__dirstamp)
+	-rm -f src/handles/$(DEPDIR)/$(am__dirstamp)
+	-rm -f src/handles/$(am__dirstamp)
 	-rm -f src/repo/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/repo/$(am__dirstamp)
 	-rm -f src/storage/$(DEPDIR)/$(am__dirstamp)
@@ -808,6 +841,12 @@ distclean: distclean-am
 		-rm -f src/$(DEPDIR)/main.Po
 	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
+	-rm -f src/handles/$(DEPDIR)/base-handle.Po
+	-rm -f src/handles/$(DEPDIR)/delete-handle.Po
+	-rm -f src/handles/$(DEPDIR)/pattern-handle.Po
+	-rm -f src/handles/$(DEPDIR)/read-handle.Po
+	-rm -f src/handles/$(DEPDIR)/watch-handle.Po
+	-rm -f src/handles/$(DEPDIR)/write-handle.Po
 	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
 	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
 	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
@@ -861,6 +900,12 @@ maintainer-clean: maintainer-clean-am
 		-rm -f src/$(DEPDIR)/main.Po
 	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
+	-rm -f src/handles/$(DEPDIR)/base-handle.Po
+	-rm -f src/handles/$(DEPDIR)/delete-handle.Po
+	-rm -f src/handles/$(DEPDIR)/pattern-handle.Po
+	-rm -f src/handles/$(DEPDIR)/read-handle.Po
+	-rm -f src/handles/$(DEPDIR)/watch-handle.Po
+	-rm -f src/handles/$(DEPDIR)/write-handle.Po
 	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
 	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
 	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po

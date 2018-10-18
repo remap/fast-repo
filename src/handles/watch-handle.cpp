@@ -18,7 +18,7 @@
  */
 
 #include "watch-handle.hpp"
-
+#if 0
 namespace repo {
 
 static const milliseconds PROCESS_DELETE_TIME(10000);
@@ -360,3 +360,4 @@ WatchHandle::onRunning(const Name& name)
 }
 
 } // namespace repo
+#endif

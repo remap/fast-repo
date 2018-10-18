@@ -18,7 +18,7 @@
  */
 
 #include "delete-handle.hpp"
-
+#if 0
 namespace repo {
 
 DeleteHandle::DeleteHandle(Face& face, RepoStorage& storageHandle, KeyChain& keyChain,
@@ -169,3 +169,4 @@ DeleteHandle::processSegmentDeleteCommand(const Interest& interest,
 }
 
 } // namespace repo
+#endif

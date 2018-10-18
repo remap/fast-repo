@@ -45,6 +45,15 @@ namespace fast_repo {
         boost::shared_ptr<ndn::Data> get(const ndn::Name& dataName);
 
         /**
+         * Tries to retrieve data from persistent storage according to the 
+         * interest received. 
+         * The call is synchronous. 
+         * If data is not present in the persistent storage, returned pointer
+         * is invalid.
+         */
+        boost::shared_ptr<ndn::Data> read(const ndn::Interest& interest);
+
+        /**
          * Scans DB for longest common prefixes. May take a while, depending on 
          * DB size.
          * @param io io_service to use for asynchronous scanning

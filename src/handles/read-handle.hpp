@@ -22,34 +22,44 @@
 
 #include "../config.hpp"
 #include "base-handle.hpp"
-#if 0
-namespace repo {
+
+namespace ndn
+{
+class InterestFilter;
+}
+
+namespace repo_ng
+{
 
 class ReadHandle : public BaseHandle
 {
+  public:
+    //   using DataPrefixRegistrationCallback = std::function<void(const ndn::Name&)>;
+    //   using DataPrefixUnregistrationCallback = std::function<void(const ndn::Name&)>;
+    //   struct RegisteredDataPrefix
+    //   {
+    //     const ndn::RegisteredPrefixId* prefixId;
+    //     int useCount;
+    //   };
 
-public:
-  using DataPrefixRegistrationCallback = std::function<void(const ndn::Name&)>;
-  using DataPrefixUnregistrationCallback = std::function<void(const ndn::Name&)>;
-  struct RegisteredDataPrefix
-  {
-    const ndn::RegisteredPrefixId* prefixId;
-    int useCount;
-  };
+    ReadHandle(ndn::Face &face, RepoStorage &storageHandle, ndn::KeyChain &keyChain);
 
-  ReadHandle(Face& face, RepoStorage& storageHandle, KeyChain& keyChain,
-             Scheduler& scheduler, size_t prefixSubsetLength);
+    void
+    listen(const ndn::Name &prefix) override;
 
-  void
-  listen(const Name& prefix) override;
+    // PUBLIC_WITH_TESTS_ELSE_PRIVATE:
+    //   const std::map<ndn::Name, RegisteredDataPrefix>&
+    //   getRegisteredPrefixes()
+    //   {
+    //     return m_insertedDataPrefixes;
+    //   }
 
-PUBLIC_WITH_TESTS_ELSE_PRIVATE:
-  const std::map<ndn::Name, RegisteredDataPrefix>&
-  getRegisteredPrefixes()
-  {
-    return m_insertedDataPrefixes;
-  }
-
+    // TODO: repo-ng had callbacks on the storage to notify about inserted/deleted
+    // data packets. This was used to track use count on the prefixes and unregister
+    // or register them if needed.
+    // I don't think we shall use this functionality for fast-repo as there will be
+    // thousandss of prefixes to watch.
+#if 0
   /**
    * @param after Do something after actually removing a prefix
    */
@@ -64,24 +74,28 @@ PUBLIC_WITH_TESTS_ELSE_PRIVATE:
 
   void
   connectAutoListen();
+#endif
 
-private:
-  /**
+  private:
+    /**
    * @brief Read data from backend storage
    */
-  void
-  onInterest(const Name& prefix, const Interest& interest);
+    void
+    onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
+               const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+               uint64_t interestFilterId,
+               const boost::shared_ptr<const ndn::InterestFilter> &filter);
 
-  void
-  onRegisterFailed(const Name& prefix, const std::string& reason);
+    void
+    onRegisterFailed(const boost::shared_ptr<const ndn::Name> &prefix);
 
-private:
-  size_t m_prefixSubsetLength;
-  std::map<ndn::Name, RegisteredDataPrefix> m_insertedDataPrefixes;
-  ndn::util::signal::ScopedConnection afterDataDeletionConnection;
-  ndn::util::signal::ScopedConnection afterDataInsertionConnection;
+  private:
+    //   size_t m_prefixSubsetLength;
+    //   std::map<ndn::Name, RegisteredDataPrefix> m_insertedDataPrefixes;
+    //   ndn::util::signal::ScopedConnection afterDataDeletionConnection;
+    //   ndn::util::signal::ScopedConnection afterDataInsertionConnection;
 };
 
-} // namespace repo
-#endif
+} // namespace repo_ng
+
 #endif // REPO_HANDLES_READ_HANDLE_HPP

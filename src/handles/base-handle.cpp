@@ -18,15 +18,18 @@
  */
 
 #include "base-handle.hpp"
+#include <ndn-cpp/lite/util/crypto-lite.hpp>
 
-#include <ndn-cxx/util/random.hpp>
-
-namespace repo {
+namespace repo_ng {
 
 uint64_t
 BaseHandle::generateProcessId()
 {
-  return ndn::random::generateWord64();
+    // TODO: check whether using CryptoLite::generateRandomBytes is sufficient
+    // compared to ndn-cxx's ndn::random::generateWord64();
+    uint64_t r;
+    ndn::CryptoLite::generateRandomBytes((unsigned char*)&r, sizeof(r));
+    return r;
 }
 
 } // namespace repo

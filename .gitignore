@@ -58,3 +58,4 @@ tags
 .vscode
 *.pb.cc
 *.pb.h
+src/config.hpp
