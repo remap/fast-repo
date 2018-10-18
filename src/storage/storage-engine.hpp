@@ -35,6 +35,7 @@ namespace fast_repo {
          * The call is thread-safe.
          */
         void put(const boost::shared_ptr<const ndn::Data>& data);
+        void put(const ndn::Data& data);
 
         /**
          * Tries to retrieve data from persistent storage. 

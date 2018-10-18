@@ -48,9 +48,7 @@ class FastRepoImpl : public boost::enable_shared_from_this<FastRepoImpl>
     repo::WatchHandle watchHandle_;
     repo::DeleteHandle deleteHandle_;
 #endif
-    // TODO: implement pattern handler 
-    // PatternHandle patternHandle_;
-
+    PatternHandle patternHandle_;
 };
 } // namespace fast_repo
 
@@ -143,12 +141,7 @@ FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
                            const Config &config,
                            const boost::shared_ptr<ndn::Face> &face,
                            const boost::shared_ptr<ndn::KeyChain> &keyChain)
-    : io_(io)
-    , config_(config)
-    , face_(face)
-    , keyChain_(keyChain)
-    , storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly))
-    , readHandle_(*face_, *storageEngine_, *keyChain_)
+    : io_(io), config_(config), face_(face), keyChain_(keyChain), storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly)), readHandle_(*face_, *storageEngine_, *keyChain_), patternHandle_(*face_, *storageEngine_, *keyChain_)
 
 {
 }
@@ -162,15 +155,21 @@ void FastRepoImpl::enableListening()
 {
     for (const ndn::Name &cmdPrefix : config_.repoPrefixes)
     {
-        // face_->registerPrefix(cmdPrefix, nullptr,
-        //                       [](const Name &cmdPrefix, const std::string &reason) {
-        //                           std::cerr << "Command prefix " << cmdPrefix << " registration error: " << reason << std::endl;
-        //                           BOOST_THROW_EXCEPTION(std::runtime_error("Command prefix registration failed"));
-        //                       });
+        face_->registerPrefix(cmdPrefix,
+                              [](const boost::shared_ptr<const Name> &prefix,
+                                 const boost::shared_ptr<const Interest> &interest,
+                                 Face &face, uint64_t, const boost::shared_ptr<const InterestFilter> &) {
+                                     std::cerr << "unexpected interest received: " << interest->getName() << std::endl;
+                              },
+                              [](const boost::shared_ptr<const Name> &cmdPrefix) {
+                                  std::cerr << "failed to register prefix " << cmdPrefix << std::endl;
+                                  BOOST_THROW_EXCEPTION(std::runtime_error("Command prefix registration failed"));
+                              });
 
         // m_writeHandle.listen(cmdPrefix);
         // m_watchHandle.listen(cmdPrefix);
         // m_deleteHandle.listen(cmdPrefix);
+        patternHandle_.listen(cmdPrefix);
     }
 }
 

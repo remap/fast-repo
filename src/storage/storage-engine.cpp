@@ -89,7 +89,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 #endif
         }
 
-        bool put(const shared_ptr<const Data>& data)
+        bool put(const Data& data)
         {
 #if HAVE_LIBROCKSDB
             if (!db_)
@@ -97,9 +97,9 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 
             db_namespace::Status s = 
                 db_->Put(db_namespace::WriteOptions(),
-                         data->getName().toUri(),
-                         db_namespace::Slice((const char*)data->wireEncode().buf(),
-                                             data->wireEncode().size()));
+                         data.getName().toUri(),
+                         db_namespace::Slice((const char*)data.wireEncode().buf(),
+                                             data.wireEncode().size()));
             return s.ok();
 #else
             return false;
@@ -251,6 +251,11 @@ StorageEngine::~StorageEngine()
 }
 
 void StorageEngine::put(const shared_ptr<const Data>& data)
+{
+    pimpl_->put(*data);
+}
+
+void StorageEngine::put(const Data& data)
 {
     pimpl_->put(data);
 }

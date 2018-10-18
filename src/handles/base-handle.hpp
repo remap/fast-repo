@@ -74,6 +74,12 @@ protected:
     return m_face;
   }
 
+  inline ndn::KeyChain&
+  getKeyChain()
+  {
+      return m_keyChain;
+  }
+
   inline RepoStorage&
   getStorageHandle()
   {
