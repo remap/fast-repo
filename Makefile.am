@@ -35,7 +35,7 @@ TEST_FLAGS = -I$(top_srcdir)/src \
     -I${GTEST_ROOT} -I${GMOCK_ROOT} \
     -I${GTEST_ROOT}/include -I${GMOCK_ROOT}/include
     # -DGTEST_HAS_PTHREAD=1
-TEST_LIBS = ${LIBS} -lcnl-cpp ${BOOST_SYSTEM_LIB}
+TEST_LIBS = ${LIBS} -lcnl-cpp ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS}
 TEST_COMMON_SOURCE = ${GMOCK_ROOT}/src/gmock-all.cc ${GTEST_ROOT}/src/gtest-all.cc
 
 TESTS = tests/test_prefix_match

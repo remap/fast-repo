@@ -93,8 +93,8 @@ TESTS = tests/test_prefix_match$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_timer.m4 \
-	$(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_filesystem.m4 \
+	$(top_srcdir)/m4/ax_boost_timer.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
@@ -134,7 +134,8 @@ am_tests_test_prefix_match_OBJECTS = $(am__objects_1) \
 	src/storage/tests_test_prefix_match-storage-engine.$(OBJEXT)
 tests_test_prefix_match_OBJECTS =  \
 	$(am_tests_test_prefix_match_OBJECTS)
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 tests_test_prefix_match_DEPENDENCIES = $(am__DEPENDENCIES_2)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -445,6 +446,7 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 BOOST_ASIO_LIB = @BOOST_ASIO_LIB@
 BOOST_CPPFLAGS = @BOOST_CPPFLAGS@
+BOOST_FILESYSTEM_LIBS = @BOOST_FILESYSTEM_LIBS@
 BOOST_LDFLAGS = @BOOST_LDFLAGS@
 BOOST_SYSTEM_LIB = @BOOST_SYSTEM_LIB@
 BOOST_THREAD_LIB = @BOOST_THREAD_LIB@
@@ -574,7 +576,7 @@ TEST_FLAGS = -I$(top_srcdir)/src \
     -I${GTEST_ROOT} -I${GMOCK_ROOT} \
     -I${GTEST_ROOT}/include -I${GMOCK_ROOT}/include
 
-TEST_LIBS = ${LIBS} -lcnl-cpp ${BOOST_SYSTEM_LIB}
+TEST_LIBS = ${LIBS} -lcnl-cpp ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS}
 TEST_COMMON_SOURCE = ${GMOCK_ROOT}/src/gmock-all.cc ${GTEST_ROOT}/src/gtest-all.cc
 tests_test_prefix_match_SOURCES = ${TEST_COMMON_SOURCE} tests/test_prefix_match.cc src/storage/storage-engine.cpp
 tests_test_prefix_match_CPPFLAGS = $(TEST_FLAGS)
