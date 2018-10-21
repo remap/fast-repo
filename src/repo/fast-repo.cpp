@@ -164,7 +164,11 @@ void FastRepoImpl::enableListening()
                               [](const boost::shared_ptr<const Name> &cmdPrefix) {
                                   std::cerr << "failed to register prefix " << cmdPrefix << std::endl;
                                   BOOST_THROW_EXCEPTION(std::runtime_error("Command prefix registration failed"));
-                              });
+                              },
+                              [](const boost::shared_ptr<const Name>& prefix,
+                                 uint64_t registeredPrefixId){
+                                     std::cout << "registered cmd prefix " << *prefix << std::endl;
+                                 });
 
         // m_writeHandle.listen(cmdPrefix);
         // m_watchHandle.listen(cmdPrefix);
