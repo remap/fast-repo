@@ -21,35 +21,35 @@ PatternHandle::PatternHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyCh
 void PatternHandle::listen(const ndn::Name &prefix)
 {
     getFace().setInterestFilter(InterestFilter(prefix),
-                                bind(&PatternHandle::onInterest, this, _1, _2, _3, _4, _5));
+                                std::bind(&PatternHandle::onInterest, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5));
 }
 
-void PatternHandle::addPattern(boost::shared_ptr<IFetchPattern> p)
+void PatternHandle::addPattern(std::shared_ptr<IFetchPattern> p)
 {
     patterns_[p->getPatternKeyword()] = p;
 }
 
-void PatternHandle::removePattern(boost::shared_ptr<IFetchPattern> p)
+void PatternHandle::removePattern(std::shared_ptr<IFetchPattern> p)
 {
     if (patterns_.find(p->getPatternKeyword()) != patterns_.end())
         patterns_.erase(p->getPatternKeyword());
 }
 
-void PatternHandle::onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
-                               const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+void PatternHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+                               const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                                uint64_t interestFilterId,
-                               const boost::shared_ptr<const ndn::InterestFilter> &filter)
+                               const std::shared_ptr<const ndn::InterestFilter> &filter)
 {
     // TODO: implement pattern-selection logic
-    boost::shared_ptr<IFetchPattern> p; // = <select pattern from available>
+    std::shared_ptr<IFetchPattern> p; // = <select pattern from available>
 
     if (p) // if found - start fetching
     {
         // TODO: extract fetch prefix from the request
         Name fetchPrefix; // = extractPatternFetchPrefix(interest);
         p->fetch(getFace(), getKeyChain(), fetchPrefix,
-                 bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put), 
-                      &getStorageHandle(), _1));
+                 std::bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put), 
+                      &getStorageHandle(), std::placeholders::_1));
     } // else -- send NetworkNack
     else
     {

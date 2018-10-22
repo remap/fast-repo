@@ -81,13 +81,13 @@ class ReadHandle : public BaseHandle
    * @brief Read data from backend storage
    */
     void
-    onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
-               const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+               const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                uint64_t interestFilterId,
-               const boost::shared_ptr<const ndn::InterestFilter> &filter);
+               const std::shared_ptr<const ndn::InterestFilter> &filter);
 
     void
-    onRegisterFailed(const boost::shared_ptr<const ndn::Name> &prefix);
+    onRegisterFailed(const std::shared_ptr<const ndn::Name> &prefix);
 
   private:
     //   size_t m_prefixSubsetLength;

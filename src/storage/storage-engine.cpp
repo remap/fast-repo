@@ -39,7 +39,7 @@ using namespace boost;
 //******************************************************************************
 namespace fast_repo {
 
-class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
+class StorageEngineImpl : public std::enable_shared_from_this<StorageEngineImpl> {
     public:
         typedef struct _Stats {
             size_t nKeys_;
@@ -106,7 +106,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 #endif
         }
 
-        shared_ptr<Data> get(const Name& dataName)
+        std::shared_ptr<Data> get(const Name& dataName)
         {
 #if HAVE_LIBROCKSDB
             if (!db_)
@@ -118,16 +118,16 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                                               &dataString);
             if (s.ok())
             {
-                shared_ptr<Data> data = make_shared<Data>();
+                std::shared_ptr<Data> data = std::make_shared<Data>();
                 data->wireDecode((const uint8_t*)dataString.data(), dataString.size());
                 
                 return data;
             }
 #endif
-            return shared_ptr<Data>(nullptr);
+            return std::shared_ptr<Data>(nullptr);
         }
 
-        shared_ptr<Data> read(const Interest& interest)
+        std::shared_ptr<Data> read(const Interest& interest)
         {
             // TODO: implement prefix match data retrieval 
             return get(interest.getName());
@@ -140,7 +140,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
             //     onCompletion(keysTrie_.getLongestPrefixes());
             // else
             // {
-                shared_ptr<StorageEngineImpl> me = shared_from_this();
+                std::shared_ptr<StorageEngineImpl> me = shared_from_this();
                 io.dispatch([me,this,onCompletion](){
                     buildKeyTrie();
                     keysTrieBuilt_ = true;
@@ -156,16 +156,16 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
         public: 
             struct TrieNode {
                 bool isLeaf;
-                std::unordered_map<std::string, shared_ptr<TrieNode>> components;
+                std::unordered_map<std::string, std::shared_ptr<TrieNode>> components;
 
                 TrieNode():isLeaf(false){}
             };
 
-            NameTrie():head_(make_shared<TrieNode>()){}
+            NameTrie():head_(std::make_shared<TrieNode>()){}
 
             void insert(const std::string& n) {
 
-                shared_ptr<TrieNode> curr = head_;
+                std::shared_ptr<TrieNode> curr = head_;
                 std::vector<std::string> components;
                 split(components, n, boost::is_any_of("/"));
 
@@ -174,7 +174,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                     if (c.size() == 0)
                         continue;
                     if (curr->components.find(c) == curr->components.end())
-                        curr->components[c] = make_shared<TrieNode>();
+                        curr->components[c] = std::make_shared<TrieNode>();
                     curr = curr->components[c];
                 }
             }
@@ -186,7 +186,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                 for (auto cIt:head_->components)
                 {
                     Name n(cIt.first);
-                    shared_ptr<TrieNode> curr = cIt.second;
+                    std::shared_ptr<TrieNode> curr = cIt.second;
 
                     while (curr.get() && !curr->isLeaf && curr->components.size() == 1){
                         auto it = curr->components.begin();
@@ -199,7 +199,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
                 return longestPrefixes;
             }
         private:
-            shared_ptr<TrieNode> head_;
+            std::shared_ptr<TrieNode> head_;
         };
 
         std::string dbPath_;
@@ -234,7 +234,7 @@ class StorageEngineImpl : public enable_shared_from_this<StorageEngineImpl> {
 
 //******************************************************************************
 StorageEngine::StorageEngine(std::string dbPath, bool readOnly):
-    pimpl_(boost::make_shared<StorageEngineImpl>(dbPath))
+    pimpl_(std::make_shared<StorageEngineImpl>(dbPath))
 {
     try {
         pimpl_->open(readOnly);
@@ -250,7 +250,7 @@ StorageEngine::~StorageEngine()
     pimpl_->close();
 }
 
-void StorageEngine::put(const shared_ptr<const Data>& data)
+void StorageEngine::put(const std::shared_ptr<const Data>& data)
 {
     pimpl_->put(*data);
 }
@@ -260,13 +260,13 @@ void StorageEngine::put(const Data& data)
     pimpl_->put(data);
 }
 
-shared_ptr<Data> 
+std::shared_ptr<Data> 
 StorageEngine::get(const Name& dataName)
 {
     return pimpl_->get(dataName);
 }
 
-shared_ptr<Data>
+std::shared_ptr<Data>
 StorageEngine::read(const Interest& interest)
 {
     return pimpl_->read(interest);

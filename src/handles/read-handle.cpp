@@ -50,12 +50,12 @@ ReadHandle::connectAutoListen()
 }
 #endif
 
-void ReadHandle::onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
-                            const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+void ReadHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+                            const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                             uint64_t interestFilterId,
-                            const boost::shared_ptr<const ndn::InterestFilter> &filter)
+                            const std::shared_ptr<const ndn::InterestFilter> &filter)
 {
-    boost::shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
+    std::shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
     if (data != nullptr)
     {
         getFace().putData(*data);
@@ -63,7 +63,7 @@ void ReadHandle::onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
     // TODO: else - sendNetworkNack
 }
 
-void ReadHandle::onRegisterFailed(const boost::shared_ptr<const ndn::Name> &prefix)
+void ReadHandle::onRegisterFailed(const std::shared_ptr<const ndn::Name> &prefix)
 {
     std::cerr << "ERROR: Failed to register prefix in local hub's daemon" << std::endl;
     getFace().shutdown();
@@ -72,8 +72,8 @@ void ReadHandle::onRegisterFailed(const boost::shared_ptr<const ndn::Name> &pref
 void ReadHandle::listen(const Name &prefix)
 {
     getFace().registerPrefix(prefix,
-                             bind(&ReadHandle::onInterest, this, _1, _2, _3, _4, _5),
-                             bind(&ReadHandle::onRegisterFailed, this, _1));
+                             bind(&ReadHandle::onInterest, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5),
+                             bind(&ReadHandle::onRegisterFailed, this, std::placeholders::_1));
 }
 #if 0
 void

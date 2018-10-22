@@ -67,16 +67,16 @@ class PatternHandle : public repo_ng::BaseHandle
 
     void listen(const ndn::Name &prefix);
 
-    void addPattern(boost::shared_ptr<IFetchPattern> p);
-    void removePattern(boost::shared_ptr<IFetchPattern> p);
+    void addPattern(std::shared_ptr<IFetchPattern> p);
+    void removePattern(std::shared_ptr<IFetchPattern> p);
 
   private:
-    std::map<ndn::Name::Component, boost::shared_ptr<IFetchPattern>> patterns_;
+    std::map<ndn::Name::Component, std::shared_ptr<IFetchPattern>> patterns_;
 
-    void onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
-                    const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    void onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+                    const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                     uint64_t interestFilterId,
-                    const boost::shared_ptr<const ndn::InterestFilter> &filter);
+                    const std::shared_ptr<const ndn::InterestFilter> &filter);
 };
 
 } // namespace fast_repo
