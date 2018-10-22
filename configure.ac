@@ -29,6 +29,7 @@ AX_BOOST_SYSTEM
 AX_BOOST_ASIO
 AX_BOOST_THREAD
 AX_BOOST_TIMER
+AX_BOOST_FILESYSTEM
 
 ###############################
 # Check for RocksDB

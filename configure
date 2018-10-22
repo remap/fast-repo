@@ -628,6 +628,7 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 PROTOC
+BOOST_FILESYSTEM_LIBS
 EGREP
 GREP
 CXXCPP
@@ -751,6 +752,7 @@ with_boost_system
 with_boost_asio
 with_boost_thread
 with_boost_timer
+with_boost_filesystem
 with_protoc
 '
       ac_precious_vars='build_alias
@@ -1421,6 +1423,11 @@ Optional Packages:
                           use the Timer library from boost - it is possible to
                           specify a certain library for the linker e.g.
                           --with-boost-timer=boost_timer-gcc-mt
+   --with-boost-filesystem[=ARG]
+                          use standard Boost.Filesystem library (ARG=yes), use
+                          specific Boost.Filesystem library (ARG=<name>, e.g.
+                          ARG=boost_filesystem-gcc-mt-d-1_33_1), or disable it
+                          (ARG=no) [ARG=yes]
   --with-protoc=/path/of/protoc
                           Location of the protocol buffers compiler protoc.
                           Defaults to looking on path.
@@ -6699,9 +6706,6 @@ $as_echo "$as_me: WARNING: Could not static link against boost_timer" >&2;}
 	LDFLAGS="$LDFLAGS_SAVED"
     fi
 
-
-###############################
-# Check for RocksDB
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -7095,6 +7099,128 @@ fi
 done
 
 
+
+  ax_boost_filesystem_default_libnames="boost_filesystem boost_filesystem-mt"
+
+# Check whether --with-boost-filesystem was given.
+if test "${with_boost_filesystem+set}" = set; then :
+  withval=$with_boost_filesystem;
+      if test "$withval" = "no"; then
+        ax_boost_filesystem_wanted="no"
+      elif test "$withval" = "yes"; then
+        ax_boost_filesystem_wanted="yes"
+        ax_boost_filesystem_libnames="${ax_boost_filesystem_default_libnames}"
+      else
+        ax_boost_filesystem_wanted="yes"
+        ax_boost_filesystem_libnames="$withval"
+      fi
+
+else
+  ax_boost_filesystem_wanted="yes"
+     ax_boost_filesystem_libnames="${ax_boost_filesystem_default_libnames}"
+
+fi
+
+
+  if test "x$ax_boost_filesystem_wanted" = "xyes"; then
+
+    CPPFLAGS_SAVED="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+    export CPPFLAGS
+
+    LDFLAGS_SAVED="$LDFLAGS"
+    LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
+    export LDFLAGS
+
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+    ac_fn_cxx_check_header_mongrel "$LINENO" "boost/filesystem.hpp" "ac_cv_header_boost_filesystem_hpp" "$ac_includes_default"
+if test "x$ac_cv_header_boost_filesystem_hpp" = xyes; then :
+  ax_boost_filesystem_headers=yes
+else
+  ax_boost_filesystem_headers=no
+                     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Could not find header files for Boost.Filesystem" >&5
+$as_echo "$as_me: WARNING: Could not find header files for Boost.Filesystem" >&2;}
+fi
+
+
+    if test "x${ax_boost_filesystem_headers}" = "xyes"; then
+      for ax_boost_filesystem_libname in ${ax_boost_filesystem_libnames} ; do
+        as_ac_Lib=`$as_echo "ac_cv_lib_$ax_boost_filesystem_libname''_main" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -l$ax_boost_filesystem_libname" >&5
+$as_echo_n "checking for main in -l$ax_boost_filesystem_libname... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-l$ax_boost_filesystem_libname  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+  ax_boost_filesystem_links=yes
+                      BOOST_FILESYSTEM_LIBS=-l${ax_boost_filesystem_libname}
+                      break
+
+else
+  ax_boost_filesystem_links=no
+fi
+
+      done
+      test $ax_boost_filesystem_links == "no" && { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Could not link Boost.Filesystem" >&5
+$as_echo "$as_me: WARNING: Could not link Boost.Filesystem" >&2;}
+    fi
+    ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+    if test "x$ax_boost_filesystem_headers" = "xyes" -a "x$ax_boost_filesystem_links" = "xyes"; then
+
+$as_echo "#define HAVE_BOOST_FILESYSTEM /**/" >>confdefs.h
+
+
+      # execute ACTION-IF-FOUND (if present):
+      :
+    else
+      # execute ACTION-IF-NOT-FOUND (if present):
+      :
+    fi
+
+    CPPFLAGS="$CPPFLAGS_SAVED"
+    LDFLAGS="$LDFLAGS_SAVED"
+  fi
+
+
+###############################
+# Check for RocksDB
 for ac_header in rocksdb/db.h
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "rocksdb/db.h" "ac_cv_header_rocksdb_db_h" "$ac_includes_default"

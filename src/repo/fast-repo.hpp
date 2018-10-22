@@ -36,7 +36,7 @@ struct Config
 {
     static const size_t DISABLED_SUBSET_LENGTH = -1;
 
-    bool readOnly;
+    bool readOnly = false;
     std::string repoConfigPath;
     std::string dbPath;
     std::vector<ndn::Name> dataPrefixes;

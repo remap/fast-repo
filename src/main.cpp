@@ -122,7 +122,10 @@ int main(int argc, char **argv)
     
     // override db path, if needed
     if (args["<command_prefix>"].isString())
+    {
+        repoConfig.repoPrefixes.push_back(ndn::Name(args["<command_prefix>"].asString()));
         repoConfig.dbPath = args["--db-path"].asString();
+    }
     // override read only mode if needed
     if (args["--readonly"].asBool())
         repoConfig.readOnly = true;
