@@ -11,6 +11,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
+#include <boost/signals2.hpp>
 #include <ndn-cpp/name.hpp>
 
 namespace ndn {
@@ -72,6 +73,10 @@ namespace fast_repo {
          * Returns total number of keys in this KV-storage.
          */
         const size_t getKeysNum() const;
+
+    public:
+        boost::signals2::signal<void(ndn::Name)> afterDataInsertion;
+        //boost::signal<void(ndn::Name)> afterDataDeletion;
 
     private:
         std::shared_ptr<StorageEngineImpl> pimpl_;

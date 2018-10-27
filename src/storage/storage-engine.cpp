@@ -167,11 +167,13 @@ StorageEngine::~StorageEngine()
 void StorageEngine::put(const std::shared_ptr<const Data> &data)
 {
     pimpl_->put(*data);
+    this->afterDataInsertion(data->getName());
 }
 
 void StorageEngine::put(const Data &data)
 {
     pimpl_->put(data);
+    this->afterDataInsertion(data.getName());
 }
 
 std::shared_ptr<Data>
@@ -288,7 +290,9 @@ std::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
         // extract by prefix match
         Name prefix = interest.getName(), keyName;
         auto it = db_->NewIterator(db_namespace::ReadOptions());
-        db_namespace::Iterator *lastIt = nullptr;
+        //db_namespace::Iterator *lastIt = nullptr;
+        // lastIt won't work because it changes with it.
+        boost::optional<std::string> lastKey = boost::none;
         bool checkMaxSuffixComponents = interest.getMaxSuffixComponents() != -1;
         bool checkMinSuffixComponents = interest.getMinSuffixComponents() != -1;
 
@@ -310,14 +314,15 @@ std::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
                     passCheck = true;
                 
                 if (passCheck)
-                    lastIt = it;
+                    lastKey = it->key().ToString();
             }
-            else
-                lastIt = it;
+            else{
+                lastKey = it->key().ToString();
+            }
         }
 
-        if (lastIt)
-            data = get(Name(it->key().ToString()));
+        if (lastKey)
+            data = get(Name(*lastKey));
 
         delete it;
     }

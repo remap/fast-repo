@@ -65,16 +65,16 @@ class ReadHandle : public BaseHandle
    */
   void
   onDataDeleted(const Name& name);
+#endif
 
   /**
    * @param after Do something after successfully registering the data prefix
    */
   void
-  onDataInserted(const Name& name);
+  onDataInserted(const ndn::Name& name);
 
   void
   connectAutoListen();
-#endif
 
   private:
     /**

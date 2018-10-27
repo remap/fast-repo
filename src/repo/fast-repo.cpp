@@ -49,6 +49,9 @@ class FastRepoImpl : public std::enable_shared_from_this<FastRepoImpl>
     repo::DeleteHandle deleteHandle_;
 #endif
     PatternHandle patternHandle_;
+    repo_ng::WriteHandle writeHandle_;
+
+    //ndn::Validator validator_;
 };
 } // namespace fast_repo
 
@@ -141,7 +144,8 @@ FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
                            const Config &config,
                            const std::shared_ptr<ndn::Face> &face,
                            const std::shared_ptr<ndn::KeyChain> &keyChain)
-    : io_(io), config_(config), face_(face), keyChain_(keyChain), storageEngine_(std::make_shared<StorageEngine>(config_.dbPath, config_.readOnly)), readHandle_(*face_, *storageEngine_, *keyChain_), patternHandle_(*face_, *storageEngine_, *keyChain_)
+    : io_(io), config_(config), face_(face), keyChain_(keyChain), storageEngine_(std::make_shared<StorageEngine>(config_.dbPath, config_.readOnly))
+    , readHandle_(*face_, *storageEngine_, *keyChain_), patternHandle_(*face_, *storageEngine_, *keyChain_), writeHandle_(*face_, *storageEngine_, *keyChain_)
 
 {
 }
@@ -170,7 +174,7 @@ void FastRepoImpl::enableListening()
                                      std::cout << "registered cmd prefix " << *prefix << std::endl;
                                  });
 
-        // m_writeHandle.listen(cmdPrefix);
+        writeHandle_.listen(cmdPrefix);
         // m_watchHandle.listen(cmdPrefix);
         // m_deleteHandle.listen(cmdPrefix);
         patternHandle_.listen(cmdPrefix);

@@ -23,6 +23,73 @@
 #include "base-handle.hpp"
 
 #include <queue>
+#include <map>
+
+namespace repo_ng {
+
+class WriteHandle : public BaseHandle
+{
+
+public:
+  class Error : public BaseHandle::Error
+  {
+  public:
+    explicit
+    Error(const std::string& what)
+      : BaseHandle::Error(what)
+    {
+    }
+  };
+
+public:
+  WriteHandle(ndn::Face &face, RepoStorage &storageHandle, ndn::KeyChain &keyChain
+              /*,ndn::Validator& validator*/);
+
+  virtual void
+  listen(const ndn::Name& prefix);
+
+private: // insert command
+  /**
+   * @brief handle insert commands
+   */
+  void
+  onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+              const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+              uint64_t interestFilterId,
+              const std::shared_ptr<const ndn::InterestFilter> &filter);
+
+  void
+  onValidated(const ndn::Interest& interest, const ndn::Name &prefix);
+
+  void
+  negativeReply(const ndn::Interest& interest, int statusCode);
+
+private:
+  struct ProcessInfo
+  {
+    ndn_message::RepoCommandResponseMessage response;
+  };
+
+  void
+  processSingleInsertCommand(const ndn::Interest& interest, ndn_message::RepoCommandParameterMessage& parameter);
+
+  void
+  onData(const std::shared_ptr<const ndn::Interest>& interest, const std::shared_ptr<ndn::Data>& data, uint64_t processId);
+
+  void
+  onTimeout(const std::shared_ptr<const ndn::Interest>& interest, uint64_t processId);
+
+  void
+  onDataValidated(const ndn::Interest& interest, const ndn::Data& data, uint64_t processId);
+
+private:
+  //ndn::Validator& m_validator;
+
+  std::map<uint64_t, ProcessInfo> m_processes;
+};
+
+} // namespace repo
+
 #if 0
 namespace repo {
 
