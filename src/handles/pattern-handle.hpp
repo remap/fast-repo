@@ -46,7 +46,7 @@ class IFetchPattern
      * @param storePacketFun Must be called by fetch pattern implementations for 
      *                       storing received data packets.
      */
-    virtual void fetch(const ndn::Face &, const ndn::KeyChain &,
+    virtual void fetch(ndn::Face &, ndn::KeyChain &,
                        const ndn::Name &prefix, StoreData storePacketFun) = 0;
 
     /**
@@ -77,6 +77,11 @@ class PatternHandle : public repo_ng::BaseHandle
                     const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                     uint64_t interestFilterId,
                     const std::shared_ptr<const ndn::InterestFilter> &filter);
+
+  private:
+    bool decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,
+                     ndn::Name &patternName,
+                     ndn::Name &fetchPrefix);
 };
 
 } // namespace fast_repo

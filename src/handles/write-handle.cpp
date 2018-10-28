@@ -65,15 +65,6 @@ WriteHandle::onValidated(const ndn::Interest& interest, const ndn::Name &prefix)
 }
 
 void
-WriteHandle::negativeReply(const ndn::Interest& interest, int statusCode)
-{
-  std::cout << "On negtive reply: " << interest.getName() << std::endl; //////TEST
-  ndn_message::RepoCommandResponseMessage response;
-  response.mutable_repo_command_response()->set_status_code(statusCode);
-  reply(interest, response);
-}
-
-void
 WriteHandle::processSingleInsertCommand(const ndn::Interest& interest, ndn_message::RepoCommandParameterMessage& parameter)
 {
   uint64_t processId = generateProcessId();

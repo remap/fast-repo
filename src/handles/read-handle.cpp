@@ -75,6 +75,7 @@ ReadHandle::onDataInserted(const Name& name)
 {
   ndn::InterestFilter filter(name);
   // Note: Do not handle dumplicated name; Do not modify config.dataPrefixes
+  // Do not use longest prefixes
   this->listen(name);
 }
 

@@ -61,9 +61,6 @@ private: // insert command
   void
   onValidated(const ndn::Interest& interest, const ndn::Name &prefix);
 
-  void
-  negativeReply(const ndn::Interest& interest, int statusCode);
-
 private:
   struct ProcessInfo
   {

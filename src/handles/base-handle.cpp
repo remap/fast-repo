@@ -32,4 +32,13 @@ BaseHandle::generateProcessId()
     return r;
 }
 
+void
+BaseHandle::negativeReply(const ndn::Interest& interest, int statusCode)
+{
+  std::cout << "Negtive reply: (" << statusCode << ") " << interest.getName() << std::endl; //////TEST
+  ndn_message::RepoCommandResponseMessage response;
+  response.mutable_repo_command_response()->set_status_code(statusCode);
+  reply(interest, response);
+}
+
 } // namespace repo

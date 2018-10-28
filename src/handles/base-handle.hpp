@@ -108,6 +108,9 @@ protected:
   void
   reply(const ndn::Interest& commandInterest, const ndn_message::RepoCommandResponseMessage& response);
 
+  void
+  negativeReply(const ndn::Interest& interest, int statusCode);
+
   /**
    * @brief extract RepoCommandParameter from a command Interest.
    * @param interest command Interest
