@@ -1,3 +1,5 @@
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
+
 bin_PROGRAMS = fast-repo
 
 src/%.pb.cc: src/%.proto
