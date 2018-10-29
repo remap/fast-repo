@@ -135,7 +135,7 @@ private:
 inline void
 BaseHandle::reply(const ndn::Interest& commandInterest, const ndn_message::RepoCommandResponseMessage& response)
 {
-  std::shared_ptr<ndn::Data> rdata = std::make_shared<ndn::Data>(commandInterest.getName());
+  ndn::ptr_lib::shared_ptr<ndn::Data> rdata = ndn::ptr_lib::make_shared<ndn::Data>(commandInterest.getName());
   rdata->setContent(ndn::ProtobufTlv::encode(response));
   m_keyChain.sign(*rdata);
   m_face.putData(*rdata);

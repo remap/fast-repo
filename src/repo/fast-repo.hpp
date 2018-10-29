@@ -56,14 +56,14 @@ class FastRepo
   public:
     FastRepo(boost::asio::io_service &io,
              const Config &config,
-             const std::shared_ptr<ndn::Face> &face,
-             const std::shared_ptr<ndn::KeyChain> &keyChain);
+             const ndn::ptr_lib::shared_ptr<ndn::Face> &face,
+             const ndn::ptr_lib::shared_ptr<ndn::KeyChain> &keyChain);
 
     void enableListening();
     void enableValidation();
 
   private:
-    std::shared_ptr<FastRepoImpl> pimpl_;
+    ndn::ptr_lib::shared_ptr<FastRepoImpl> pimpl_;
 };
 
 } // namespace fast_repo

@@ -19,6 +19,10 @@
 
 #include "write-handle.hpp"
 
+using ndn::func_lib::bind;
+using ndn::ptr_lib::shared_ptr;
+using ndn::ptr_lib::make_shared;
+
 namespace repo_ng {
 
 WriteHandle::WriteHandle(ndn::Face &face, RepoStorage &storageHandle, ndn::KeyChain &keyChain
@@ -31,16 +35,15 @@ WriteHandle::WriteHandle(ndn::Face &face, RepoStorage &storageHandle, ndn::KeyCh
 void
 WriteHandle::listen(const ndn::Name& prefix)
 {
-  std::cout << "WriteHandle Listen: " << ndn::Name(prefix).append("insert") << std::endl; //////TEST
   getFace().setInterestFilter(ndn::Name(prefix).append("insert"),
-                              bind(&WriteHandle::onInterest, this, ndn::func_lib::_1, ndn::func_lib::_2, ndn::func_lib::_3, ndn::func_lib::_4, ndn::func_lib::_5));
+                              bind(&WriteHandle::onInterest, this, _1, _2, _3, _4, _5));
 }
 
 void
-WriteHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
-                        const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+WriteHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
+                        const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                         uint64_t interestFilterId,
-                        const std::shared_ptr<const ndn::InterestFilter> &filter)
+                        const shared_ptr<const ndn::InterestFilter> &filter)
 {
   // TODO: Set up validator
   // m_validator.validate(interest, )
@@ -50,7 +53,6 @@ WriteHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
 void
 WriteHandle::onValidated(const ndn::Interest& interest, const ndn::Name &prefix)
 {
-  std::cout << "On insert validated: " << interest.getName() << std::endl; //////TEST
   ndn_message::RepoCommandParameterMessage parameter;
   try{
       extractParameter(interest, prefix, parameter);
@@ -80,32 +82,28 @@ WriteHandle::processSingleInsertCommand(const ndn::Interest& interest, ndn_messa
 
   response->set_status_code(300);
 
-  //////TEST
   ndn::Name fetchName;
   for(int i = 0, sz = parameter.repo_command_parameter().name().component_size(); i < sz; i ++){
     fetchName.append(parameter.repo_command_parameter().name().component(i));
   }
-  //////TEST
 
   ndn::Interest fetchInterest(fetchName);
-  //fetchInterest.setInterestLifetime(m_interestLifetime);
-  std::cout << "On fetch request: " << fetchInterest.getName() << std::endl; //////TEST
   fetchInterest.setInterestLifetimeMilliseconds(4000.0);
   getFace().expressInterest(fetchInterest,
-                            bind(&WriteHandle::onData, this, ndn::func_lib::_1, ndn::func_lib::_2, processId),
-                            bind(&WriteHandle::onTimeout, this, ndn::func_lib::_1, processId),
-                            bind(&WriteHandle::onTimeout, this, ndn::func_lib::_1, processId)); //Nack
+                            bind(&WriteHandle::onData, this, _1, _2, processId),
+                            bind(&WriteHandle::onTimeout, this, _1, processId),
+                            bind(&WriteHandle::onTimeout, this, _1, processId)); //Nack
 }
 
 void
-WriteHandle::onTimeout(const std::shared_ptr<const ndn::Interest>& interest, uint64_t processId)
+WriteHandle::onTimeout(const shared_ptr<const ndn::Interest>& interest, uint64_t processId)
 {
   std::cerr << "Timeout" << std::endl;
   m_processes.erase(processId);
 }
 
 void
-WriteHandle::onData(const std::shared_ptr<const ndn::Interest>& interest, const std::shared_ptr<ndn::Data>& data, uint64_t processId)
+WriteHandle::onData(const shared_ptr<const ndn::Interest>& interest, const shared_ptr<ndn::Data>& data, uint64_t processId)
 {
   //TODO: Validate data
   onDataValidated(*interest, *data, processId);
@@ -114,7 +112,6 @@ WriteHandle::onData(const std::shared_ptr<const ndn::Interest>& interest, const 
 void
 WriteHandle::onDataValidated(const ndn::Interest& interest, const ndn::Data& data, uint64_t processId)
 {
-  std::cout << "On data validated: " << data.getName() << std::endl; //////TEST
   if (m_processes.count(processId) == 0) {
     return;
   }

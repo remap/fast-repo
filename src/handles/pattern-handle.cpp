@@ -13,6 +13,10 @@
 using namespace fast_repo;
 using namespace ndn;
 
+using ndn::func_lib::bind;
+using ndn::ptr_lib::shared_ptr;
+using ndn::ptr_lib::make_shared;
+
 /**
  * A simple fetch pattern, for test.
  * I don't know whether a "fetch pattern" looks like this or not.
@@ -51,7 +55,7 @@ public:
         //keyChain_ = &keyChain;
         counter_ = 0;
 
-        face_->callLater(1.0, ndn::func_lib::bind(&CounterPattern::doFetch, this));
+        face_->callLater(1.0, bind(&CounterPattern::doFetch, this));
 
         running_ = true;
     }
@@ -60,23 +64,21 @@ public:
         if(!running_)
             return;
         ndn::Interest fetchInterest(ndn::Name(fetchPrefix_).append(std::to_string(counter_)));
-        std::cout << "Counter interest: " << fetchInterest.getName() << std::endl; //////TEST
         fetchInterest.setInterestLifetimeMilliseconds(4000.0);
         face_->expressInterest(fetchInterest, 
-                               bind(&CounterPattern::onData, this, ndn::func_lib::_1, ndn::func_lib::_2));
+                               bind(&CounterPattern::onData, this, _1, _2));
     }
 
-    void onData(const std::shared_ptr<const ndn::Interest>& interest,
-                const std::shared_ptr<ndn::Data>& data)
+    void onData(const shared_ptr<const ndn::Interest>& interest,
+                const shared_ptr<ndn::Data>& data)
     {
         // Put data without validation
-        std::cout << "On counter data: " << data->getName() << std::endl; //////TEST
         storeFun_(*data);
 
         // Schedule the next fetch
         counter_ ++;
         if(counter_ < 10){
-            face_->callLater(2000.0, ndn::func_lib::bind(&CounterPattern::doFetch, this));
+            face_->callLater(2000.0, bind(&CounterPattern::doFetch, this));
         }else{
             running_ = false;
         }
@@ -86,22 +88,21 @@ public:
 PatternHandle::PatternHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChain &keyChain)
     : BaseHandle(face, storage, keyChain)
 {
-    addPattern(ndn::ptr_lib::make_shared<CounterPattern>());
+    addPattern(make_shared<CounterPattern>());
 }
 
 void PatternHandle::listen(const ndn::Name &prefix)
 {
-    std::cout << "PatternHandle Listen: " << ndn::Name(prefix).append("pattern") << std::endl; //////TEST
     getFace().setInterestFilter(ndn::Name(prefix).append("pattern"),
-                                std::bind(&PatternHandle::onInterest, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5));
+                                bind(&PatternHandle::onInterest, this, _1, _2, _3, _4, _5));
 }
 
-void PatternHandle::addPattern(std::shared_ptr<IFetchPattern> p)
+void PatternHandle::addPattern(shared_ptr<IFetchPattern> p)
 {
     patterns_[p->getPatternKeyword()] = p;
 }
 
-void PatternHandle::removePattern(std::shared_ptr<IFetchPattern> p)
+void PatternHandle::removePattern(shared_ptr<IFetchPattern> p)
 {
     if (patterns_.find(p->getPatternKeyword()) != patterns_.end())
         patterns_.erase(p->getPatternKeyword());
@@ -132,13 +133,11 @@ bool PatternHandle::decodeNames(const ndn_message::RepoCommandParameterMessage_N
     return true;
 }
 
-void PatternHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
-                               const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
+                               const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                                uint64_t interestFilterId,
-                               const std::shared_ptr<const ndn::InterestFilter> &filter)
+                               const shared_ptr<const ndn::InterestFilter> &filter)
 {
-    std::cout << "On pattern: " << interest->getName() << std::endl; //////TEST
-
     ndn_message::RepoCommandParameterMessage parameter;
     try{
         extractParameter(*interest, *prefix, parameter);
@@ -155,7 +154,7 @@ void PatternHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
         return;
     }
 
-    std::shared_ptr<IFetchPattern> p;
+    shared_ptr<IFetchPattern> p;
     auto patIt = patterns_.find(patternName.get(0));
     // If p is not found, 
     // Result code: 404:=No such pattern is known
@@ -168,8 +167,8 @@ void PatternHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
     if (p)
     {
         p->fetch(getFace(), getKeyChain(), fetchPrefix,
-                 std::bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put), 
-                      &getStorageHandle(), std::placeholders::_1));
+                 bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put), 
+                      &getStorageHandle(), _1));
     }else{
         // This should be impossible
         throw Error("Pattern pool is broken.");

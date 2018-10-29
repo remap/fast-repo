@@ -23,41 +23,45 @@
 
 using namespace ndn;
 
+using ndn::ptr_lib::shared_ptr;
+using ndn::ptr_lib::make_shared;
+using ndn::func_lib::bind;
+
 namespace repo_ng
 {
 
 ReadHandle::ReadHandle(Face &face, RepoStorage &storageHandle, KeyChain &keyChain)
     : BaseHandle(face, storageHandle, keyChain)
 {
-    connectAutoListen();
+    // connectAutoListen();
 }
 
 void
 ReadHandle::connectAutoListen()
 {
   // Connect a RepoStorage's signals to the read handle
-  getStorageHandle().afterDataInsertion.connect(std::bind(&ReadHandle::onDataInserted, this, ndn::func_lib::_1));
+  // NOTE : This function is only used in test.
+  // Delete it from the constructor on real use.
+  getStorageHandle().afterDataInsertion.connect(bind(&ReadHandle::onDataInserted, this, _1));
 }
 
-void ReadHandle::onInterest(const std::shared_ptr<const ndn::Name> &prefix,
-                            const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+void ReadHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
+                            const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                             uint64_t interestFilterId,
-                            const std::shared_ptr<const ndn::InterestFilter> &filter)
+                            const shared_ptr<const ndn::InterestFilter> &filter)
 {
-    std::cout << "On interest: " << interest->getName() << std::endl; //////TEST
-    std::shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
+    shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
     if (data != nullptr)
     {
         getFace().putData(*data);
-        std::cout << "Response Data: " << data->getName() << std::endl; //////TEST
     }
     else{
       // TODO: else - sendNetworkNack
-      std::cout << "Data Missed: " << interest->getName() << std::endl; //////TEST
+      
     }
 }
 
-void ReadHandle::onRegisterFailed(const std::shared_ptr<const ndn::Name> &prefix)
+void ReadHandle::onRegisterFailed(const shared_ptr<const ndn::Name> &prefix)
 {
     std::cerr << "ERROR: Failed to register prefix in local hub's daemon" << std::endl;
     getFace().shutdown();
@@ -66,17 +70,20 @@ void ReadHandle::onRegisterFailed(const std::shared_ptr<const ndn::Name> &prefix
 void ReadHandle::listen(const Name &prefix)
 {
     getFace().registerPrefix(prefix,
-                             bind(&ReadHandle::onInterest, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4, std::placeholders::_5),
-                             bind(&ReadHandle::onRegisterFailed, this, std::placeholders::_1));
+                             bind(&ReadHandle::onInterest, this, _1, _2, _3, _4, _5),
+                             bind(&ReadHandle::onRegisterFailed, this, _1));
 }
 
 void
 ReadHandle::onDataInserted(const Name& name)
 {
   ndn::InterestFilter filter(name);
-  // Note: Do not handle dumplicated name; Do not modify config.dataPrefixes
+  // Note: Used only for test.
+  // Different behaviours with "real" run as below.
+  // Do not handle dumplicated name
+  // Do not modify config.dataPrefixes
   // Do not use longest prefixes
-  this->listen(name);
+  // this->listen(name);
 }
 
 #if 0
