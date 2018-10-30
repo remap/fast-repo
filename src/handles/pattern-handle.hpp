@@ -22,7 +22,7 @@ class InterestFilter;
 namespace fast_repo
 {
 
-typedef ndn::func_lib::function<void(const ndn::Data &)> StoreData;
+typedef std::function<void(const ndn::Data &)> StoreData;
 
 /**
  * IFetchPattern is an abstract class for implementation of concrete fetch 
@@ -67,16 +67,16 @@ class PatternHandle : public repo_ng::BaseHandle
 
     void listen(const ndn::Name &prefix);
 
-    void addPattern(ndn::ptr_lib::shared_ptr<IFetchPattern> p);
-    void removePattern(ndn::ptr_lib::shared_ptr<IFetchPattern> p);
+    void addPattern(std::shared_ptr<IFetchPattern> p);
+    void removePattern(std::shared_ptr<IFetchPattern> p);
 
   private:
-    std::map<ndn::Name::Component, ndn::ptr_lib::shared_ptr<IFetchPattern>> patterns_;
+    std::map<ndn::Name::Component, std::shared_ptr<IFetchPattern>> patterns_;
 
-    void onInterest(const ndn::ptr_lib::shared_ptr<const ndn::Name> &prefix,
-                    const ndn::ptr_lib::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    void onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+                    const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                     uint64_t interestFilterId,
-                    const ndn::ptr_lib::shared_ptr<const ndn::InterestFilter> &filter);
+                    const std::shared_ptr<const ndn::InterestFilter> &filter);
 
   private:
     bool decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,

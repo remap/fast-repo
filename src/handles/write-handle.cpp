@@ -19,9 +19,9 @@
 
 #include "write-handle.hpp"
 
-using ndn::func_lib::bind;
-using ndn::ptr_lib::shared_ptr;
-using ndn::ptr_lib::make_shared;
+using std::bind;
+using std::shared_ptr;
+using std::make_shared;
 
 namespace repo_ng {
 

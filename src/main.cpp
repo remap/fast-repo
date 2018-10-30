@@ -40,10 +40,10 @@
 using namespace std;
 using namespace ndn;
 
-using ndn::func_lib::bind;
-using ndn::func_lib::ref;
-using ndn::ptr_lib::shared_ptr;
-using ndn::ptr_lib::make_shared;
+using std::bind;
+using std::ref;
+using std::shared_ptr;
+using std::make_shared;
 
 static const char USAGE[] =
     R"(Fast Repo.

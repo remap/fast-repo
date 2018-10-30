@@ -53,10 +53,10 @@ private: // insert command
    * @brief handle insert commands
    */
   void
-  onInterest(const ndn::ptr_lib::shared_ptr<const ndn::Name> &prefix,
-              const ndn::ptr_lib::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+  onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+              const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
               uint64_t interestFilterId,
-              const ndn::ptr_lib::shared_ptr<const ndn::InterestFilter> &filter);
+              const std::shared_ptr<const ndn::InterestFilter> &filter);
 
   void
   onValidated(const ndn::Interest& interest, const ndn::Name &prefix);
@@ -71,10 +71,10 @@ private:
   processSingleInsertCommand(const ndn::Interest& interest, ndn_message::RepoCommandParameterMessage& parameter);
 
   void
-  onData(const ndn::ptr_lib::shared_ptr<const ndn::Interest>& interest, const ndn::ptr_lib::shared_ptr<ndn::Data>& data, uint64_t processId);
+  onData(const std::shared_ptr<const ndn::Interest>& interest, const std::shared_ptr<ndn::Data>& data, uint64_t processId);
 
   void
-  onTimeout(const ndn::ptr_lib::shared_ptr<const ndn::Interest>& interest, uint64_t processId);
+  onTimeout(const std::shared_ptr<const ndn::Interest>& interest, uint64_t processId);
 
   void
   onDataValidated(const ndn::Interest& interest, const ndn::Data& data, uint64_t processId);

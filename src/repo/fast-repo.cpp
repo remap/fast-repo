@@ -18,9 +18,9 @@
 using namespace fast_repo;
 using namespace ndn;
 
-using ndn::ptr_lib::shared_ptr;
-using ndn::ptr_lib::make_shared;
-using ndn::ptr_lib::enable_shared_from_this;
+using std::shared_ptr;
+using std::make_shared;
+using std::enable_shared_from_this;
 
 static Config DefaultConfig = Config();
 

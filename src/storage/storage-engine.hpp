@@ -35,7 +35,7 @@ namespace fast_repo {
          * Data is saved asynchronously, so the call returns immediately.
          * The call is thread-safe.
          */
-        void put(const ndn::ptr_lib::shared_ptr<const ndn::Data>& data);
+        void put(const std::shared_ptr<const ndn::Data>& data);
         void put(const ndn::Data& data);
 
         /**
@@ -44,7 +44,7 @@ namespace fast_repo {
          * If data is not present in the persistent storage, returned pointer
          * is invalid.
          */
-        ndn::ptr_lib::shared_ptr<ndn::Data> get(const ndn::Name& dataName);
+        std::shared_ptr<ndn::Data> get(const ndn::Name& dataName);
 
         /**
          * Tries to retrieve data from persistent storage according to the 
@@ -53,7 +53,7 @@ namespace fast_repo {
          * If data is not present in the persistent storage, returned pointer
          * is invalid.
          */
-        ndn::ptr_lib::shared_ptr<ndn::Data> read(const ndn::Interest& interest);
+        std::shared_ptr<ndn::Data> read(const ndn::Interest& interest);
 
         /**
          * Scans DB for longest common prefixes. May take a while, depending on 
@@ -80,7 +80,7 @@ namespace fast_repo {
         //boost::signal<void(ndn::Name)> afterDataDeletion;
 
     private:
-        ndn::ptr_lib::shared_ptr<StorageEngineImpl> pimpl_;
+        std::shared_ptr<StorageEngineImpl> pimpl_;
     };
 }
 

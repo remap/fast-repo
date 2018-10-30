@@ -23,9 +23,9 @@
 
 using namespace ndn;
 
-using ndn::ptr_lib::shared_ptr;
-using ndn::ptr_lib::make_shared;
-using ndn::func_lib::bind;
+using std::shared_ptr;
+using std::make_shared;
+using std::bind;
 
 namespace repo_ng
 {

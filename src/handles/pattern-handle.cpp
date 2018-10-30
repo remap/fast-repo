@@ -13,9 +13,9 @@
 using namespace fast_repo;
 using namespace ndn;
 
-using ndn::func_lib::bind;
-using ndn::ptr_lib::shared_ptr;
-using ndn::ptr_lib::make_shared;
+using std::bind;
+using std::shared_ptr;
+using std::make_shared;
 
 /**
  * A simple fetch pattern, for test.
