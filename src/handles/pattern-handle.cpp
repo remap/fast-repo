@@ -7,6 +7,8 @@
 
 #include "pattern-handle.hpp"
 
+#include "patterns/counter-pattern.hpp"
+
 #include <ndn-cpp/face.hpp>
 #include <ndn-cpp/interest-filter.hpp>
 
@@ -16,74 +18,6 @@ using namespace ndn;
 using std::bind;
 using std::shared_ptr;
 using std::make_shared;
-
-/**
- * A simple fetch pattern, for test.
- * I don't know whether a "fetch pattern" looks like this or not.
- */
-class CounterPattern : public IFetchPattern{
-private:
-    bool running_;
-    int counter_;
-    StoreData storeFun_;
-    ndn::Face *face_;
-    ndn::Name fetchPrefix_;
-
-public:
-    CounterPattern():running_(false)
-    { }
-
-    const ndn::Name::Component getPatternKeyword() const override
-    {
-        return "counter";
-    }
-
-    void cancel() override
-    {
-        // TODO: Improve implementation (in a real pattern)
-        running_ = false;
-    }
-
-    // I think there will be little chance to give a different face, keyChain or storePacketFun
-    // Maybe we can change the interface?
-    void fetch(ndn::Face & face, ndn::KeyChain & keyChain,
-               const ndn::Name &prefix, StoreData storePacketFun) override
-    {
-        fetchPrefix_ = prefix;
-        storeFun_ = storePacketFun;
-        face_ = &face;
-        //keyChain_ = &keyChain;
-        counter_ = 0;
-
-        face_->callLater(1.0, bind(&CounterPattern::doFetch, this));
-
-        running_ = true;
-    }
-
-    void doFetch(){
-        if(!running_)
-            return;
-        ndn::Interest fetchInterest(ndn::Name(fetchPrefix_).append(std::to_string(counter_)));
-        fetchInterest.setInterestLifetimeMilliseconds(4000.0);
-        face_->expressInterest(fetchInterest, 
-                               bind(&CounterPattern::onData, this, _1, _2));
-    }
-
-    void onData(const shared_ptr<const ndn::Interest>& interest,
-                const shared_ptr<ndn::Data>& data)
-    {
-        // Put data without validation
-        storeFun_(*data);
-
-        // Schedule the next fetch
-        counter_ ++;
-        if(counter_ < 10){
-            face_->callLater(2000.0, bind(&CounterPattern::doFetch, this));
-        }else{
-            running_ = false;
-        }
-    }
-};
 
 PatternHandle::PatternHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChain &keyChain)
     : BaseHandle(face, storage, keyChain)
