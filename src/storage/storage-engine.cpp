@@ -40,7 +40,7 @@ using namespace boost;
 namespace fast_repo
 {
 
-class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEngineImpl>
+class StorageEngineImpl : public std::enable_shared_from_this<StorageEngineImpl>
 {
   public:
     typedef struct _Stats
@@ -69,8 +69,8 @@ class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEn
     void close();
 
     bool put(const Data &data);
-    ndn::ptr_lib::shared_ptr<Data> get(const Name &dataName);
-    ndn::ptr_lib::shared_ptr<Data> read(const Interest &interest);
+    std::shared_ptr<Data> get(const Name &dataName);
+    std::shared_ptr<Data> read(const Interest &interest);
 
     void getLongestPrefixes(asio::io_service &io,
                             function<void(const std::vector<Name> &)> onCompletion);
@@ -83,17 +83,17 @@ class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEn
         struct TrieNode
         {
             bool isLeaf;
-            std::unordered_map<std::string, ndn::ptr_lib::shared_ptr<TrieNode>> components;
+            std::unordered_map<std::string, std::shared_ptr<TrieNode>> components;
 
             TrieNode() : isLeaf(false) {}
         };
 
-        NameTrie() : head_(ndn::ptr_lib::make_shared<TrieNode>()) {}
+        NameTrie() : head_(std::make_shared<TrieNode>()) {}
 
         void insert(const std::string &n)
         {
 
-            ndn::ptr_lib::shared_ptr<TrieNode> curr = head_;
+            std::shared_ptr<TrieNode> curr = head_;
             std::vector<std::string> components;
             split(components, n, boost::is_any_of("/"));
 
@@ -102,7 +102,7 @@ class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEn
                 if (c.size() == 0)
                     continue;
                 if (curr->components.find(c) == curr->components.end())
-                    curr->components[c] = ndn::ptr_lib::make_shared<TrieNode>();
+                    curr->components[c] = std::make_shared<TrieNode>();
                 curr = curr->components[c];
             }
         }
@@ -115,7 +115,7 @@ class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEn
             for (auto cIt : head_->components)
             {
                 Name n(cIt.first);
-                ndn::ptr_lib::shared_ptr<TrieNode> curr = cIt.second;
+                std::shared_ptr<TrieNode> curr = cIt.second;
 
                 while (curr.get() && !curr->isLeaf && curr->components.size() == 1)
                 {
@@ -130,7 +130,7 @@ class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEn
         }
 
       private:
-        ndn::ptr_lib::shared_ptr<TrieNode> head_;
+        std::shared_ptr<TrieNode> head_;
     };
 
     std::string dbPath_;
@@ -147,7 +147,7 @@ class StorageEngineImpl : public ndn::ptr_lib::enable_shared_from_this<StorageEn
 } // namespace fast_repo
 
 //******************************************************************************
-StorageEngine::StorageEngine(std::string dbPath, bool readOnly) : pimpl_(ndn::ptr_lib::make_shared<StorageEngineImpl>(dbPath))
+StorageEngine::StorageEngine(std::string dbPath, bool readOnly) : pimpl_(std::make_shared<StorageEngineImpl>(dbPath))
 {
     try
     {
@@ -164,7 +164,7 @@ StorageEngine::~StorageEngine()
     pimpl_->close();
 }
 
-void StorageEngine::put(const ndn::ptr_lib::shared_ptr<const Data> &data)
+void StorageEngine::put(const std::shared_ptr<const Data> &data)
 {
     pimpl_->put(*data);
     this->afterDataInsertion(data->getName());
@@ -176,13 +176,13 @@ void StorageEngine::put(const Data &data)
     this->afterDataInsertion(data.getName());
 }
 
-ndn::ptr_lib::shared_ptr<Data>
+std::shared_ptr<Data>
 StorageEngine::get(const Name &dataName)
 {
     return pimpl_->get(dataName);
 }
 
-ndn::ptr_lib::shared_ptr<Data>
+std::shared_ptr<Data>
 StorageEngine::read(const Interest &interest)
 {
     return pimpl_->read(interest);
@@ -257,7 +257,7 @@ bool StorageEngineImpl::put(const Data &data)
 #endif
 }
 
-ndn::ptr_lib::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
+std::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
 {
 #if HAVE_LIBROCKSDB
     if (!db_)
@@ -269,30 +269,27 @@ ndn::ptr_lib::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
                                       &dataString);
     if (s.ok())
     {
-        ndn::ptr_lib::shared_ptr<Data> data = ndn::ptr_lib::make_shared<Data>();
+        std::shared_ptr<Data> data = std::make_shared<Data>();
         data->wireDecode((const uint8_t *)dataString.data(), dataString.size());
 
         return data;
     }
 #endif
-    return ndn::ptr_lib::shared_ptr<Data>(nullptr);
+    return std::shared_ptr<Data>(nullptr);
 }
 
-ndn::ptr_lib::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
+std::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
 {
-    ndn::ptr_lib::shared_ptr<Data> data;
+    std::shared_ptr<Data> data;
+    bool canBePrefix = interest.getCanBePrefix();
 
-    // TODO: change to "getCanBePrefix()" when it's marked as const in ndn-cpp
-    bool canBePrefix = interest.getMaxSuffixComponents() != 1; // = interest.getCanBePrefix()
     if (canBePrefix)
     {
         // TODO: implement prefix match data retrieval
         // extract by prefix match
         Name prefix = interest.getName(), keyName;
         auto it = db_->NewIterator(db_namespace::ReadOptions());
-        //db_namespace::Iterator *lastIt = nullptr;
-        // lastIt won't work because it changes with it.
-        boost::optional<std::string> lastKey = boost::none;
+        std::string key = "";
         bool checkMaxSuffixComponents = interest.getMaxSuffixComponents() != -1;
         bool checkMinSuffixComponents = interest.getMinSuffixComponents() != -1;
 
@@ -314,15 +311,14 @@ ndn::ptr_lib::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
                     passCheck = true;
                 
                 if (passCheck)
-                    lastKey = it->key().ToString();
+                    key = it->key().ToString();
             }
-            else{
-                lastKey = it->key().ToString();
-            }
+            else
+                key = it->key().ToString();
         }
 
-        if (lastKey)
-            data = get(Name(*lastKey));
+        if (key != "")
+            data = get(Name(key));
 
         delete it;
     }
@@ -339,7 +335,7 @@ void StorageEngineImpl::getLongestPrefixes(asio::io_service &io,
     //     onCompletion(keysTrie_.getLongestPrefixes());
     // else
     // {
-    ndn::ptr_lib::shared_ptr<StorageEngineImpl> me = shared_from_this();
+    std::shared_ptr<StorageEngineImpl> me = shared_from_this();
     io.dispatch([me, this, onCompletion]() {
         buildKeyTrie();
         keysTrieBuilt_ = true;

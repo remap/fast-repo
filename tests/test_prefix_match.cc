@@ -122,6 +122,39 @@ TEST(TestDb, TestPrefixMatch)
 #endif
 }
 
+TEST(TestDb, TestPrefixMatchEdgeCase)
+{
+    // test for the specific case that revealed bug in storage-engine.cpp
+    // /hello-ndn/rtc-stream/ndnrtc/%FD%03/video/camera/%FC%00%00%01f%C7%02%A2%AE/t/_meta/%FD%13z/%00%00
+    // /hello-ndn/rtc-stream/ndnrtc/%FD%03/video/camera/%FC%00%00%01f%C7%02%A2%AE/t/d/%FE%05%3A/%00%00
+
+    // setup db
+    StorageEngine storage(dbPath);
+    Data metaPacket("/hello-ndn/rtc-stream/ndnrtc/%FD%03/video/camera/%FC%00%00%01f%C7%02%A2%AE/t/_meta/%FD%13z/%00%00");
+    metaPacket.setContent((uint8_t*)"metadata", 8);
+
+    Data frameSegment("/hello-ndn/rtc-stream/ndnrtc/%FD%03/video/camera/%FC%00%00%01f%C7%02%A2%AE/t/d/%FE%05%3A/%00%00");
+    frameSegment.setContent((uint8_t*)"segment0", 8);
+
+    storage.put(metaPacket);
+    storage.put(frameSegment);
+
+    Interest i(Name("/hello-ndn/rtc-stream/ndnrtc/%FD%03/video/camera/%FC%00%00%01f%C7%02%A2%AE/t/_meta"));
+    i.setCanBePrefix(true);
+        
+    boost::shared_ptr<Data> d = storage.read(i);
+
+    EXPECT_TRUE(d.get());
+    EXPECT_EQ("metadata", d->getContent().toRawStr());
+
+#ifdef HAVE_BOOST_FILESYSTEM
+    EXPECT_TRUE(boost::filesystem::exists(dbPath));
+    boost::filesystem::remove_all(dbPath);
+#endif
+
+
+}
+
 void handler(int sig)
 {
     void *array[10];
