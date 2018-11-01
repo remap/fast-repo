@@ -91,6 +91,8 @@ host_triplet = @host@
 bin_PROGRAMS = fast-repo$(EXEEXT)
 TESTS = tests/test_prefix_match$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
+noinst_PROGRAMS = examples/pattern_fetch$(EXEEXT) \
+	examples/pattern_cancel$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_boost_asio.m4 \
@@ -113,8 +115,24 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 am__EXEEXT_1 = tests/test_prefix_match$(EXEEXT)
-PROGRAMS = $(bin_PROGRAMS)
+PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am__dirstamp = $(am__leading_dot)dirstamp
+am_examples_pattern_cancel_OBJECTS =  \
+	src/repo-command-response.pb.$(OBJEXT) \
+	src/repo-command-parameter.pb.$(OBJEXT) \
+	examples/pattern-cancel.$(OBJEXT)
+examples_pattern_cancel_OBJECTS =  \
+	$(am_examples_pattern_cancel_OBJECTS)
+am__DEPENDENCIES_1 =
+am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
+examples_pattern_cancel_DEPENDENCIES = $(am__DEPENDENCIES_2)
+am_examples_pattern_fetch_OBJECTS =  \
+	src/repo-command-response.pb.$(OBJEXT) \
+	src/repo-command-parameter.pb.$(OBJEXT) \
+	examples/pattern-fetch.$(OBJEXT)
+examples_pattern_fetch_OBJECTS = $(am_examples_pattern_fetch_OBJECTS)
+examples_pattern_fetch_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
 	third_party/docopt/docopt.$(OBJEXT) \
 	src/repo/fast-repo.$(OBJEXT) \
@@ -130,7 +148,6 @@ am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
 	src/handles/patterns/base-pattern.$(OBJEXT) \
 	src/handles/patterns/counter-pattern.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
-am__DEPENDENCIES_1 =
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
@@ -142,8 +159,6 @@ am_tests_test_prefix_match_OBJECTS = $(am__objects_1) \
 	src/storage/tests_test_prefix_match-storage-engine.$(OBJEXT)
 tests_test_prefix_match_OBJECTS =  \
 	$(am_tests_test_prefix_match_OBJECTS)
-am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
 tests_test_prefix_match_DEPENDENCIES = $(am__DEPENDENCIES_2)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -162,7 +177,8 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-all.Po \
 	${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po \
-	src/$(DEPDIR)/main.Po \
+	examples/$(DEPDIR)/pattern-cancel.Po \
+	examples/$(DEPDIR)/pattern-fetch.Po src/$(DEPDIR)/main.Po \
 	src/$(DEPDIR)/repo-command-parameter.pb.Po \
 	src/$(DEPDIR)/repo-command-response.pb.Po \
 	src/handles/$(DEPDIR)/base-handle.Po \
@@ -196,8 +212,12 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(fast_repo_SOURCES) $(tests_test_prefix_match_SOURCES)
-DIST_SOURCES = $(fast_repo_SOURCES) $(tests_test_prefix_match_SOURCES)
+SOURCES = $(examples_pattern_cancel_SOURCES) \
+	$(examples_pattern_fetch_SOURCES) $(fast_repo_SOURCES) \
+	$(tests_test_prefix_match_SOURCES)
+DIST_SOURCES = $(examples_pattern_cancel_SOURCES) \
+	$(examples_pattern_fetch_SOURCES) $(fast_repo_SOURCES) \
+	$(tests_test_prefix_match_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -594,6 +614,18 @@ TEST_COMMON_SOURCE = ${GMOCK_ROOT}/src/gmock-all.cc ${GTEST_ROOT}/src/gtest-all.
 tests_test_prefix_match_SOURCES = ${TEST_COMMON_SOURCE} tests/test_prefix_match.cc src/storage/storage-engine.cpp
 tests_test_prefix_match_CPPFLAGS = $(TEST_FLAGS)
 tests_test_prefix_match_LDADD = $(TEST_LIBS)
+examples_pattern_fetch_SOURCES = \
+    src/repo-command-response.pb.cc \
+    src/repo-command-parameter.pb.cc \
+    examples/pattern-fetch.cpp
+
+examples_pattern_fetch_LDADD = $(TEST_LIBS)
+examples_pattern_cancel_SOURCES = \
+    src/repo-command-response.pb.cc \
+    src/repo-command-parameter.pb.cc \
+    examples/pattern-cancel.cpp
+
+examples_pattern_cancel_LDADD = $(TEST_LIBS)
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -692,12 +724,37 @@ clean-binPROGRAMS:
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+
+clean-noinstPROGRAMS:
+	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
 src/$(am__dirstamp):
 	@$(MKDIR_P) src
 	@: > src/$(am__dirstamp)
 src/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/$(DEPDIR)
 	@: > src/$(DEPDIR)/$(am__dirstamp)
+src/repo-command-response.pb.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+src/repo-command-parameter.pb.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+examples/$(am__dirstamp):
+	@$(MKDIR_P) examples
+	@: > examples/$(am__dirstamp)
+examples/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) examples/$(DEPDIR)
+	@: > examples/$(DEPDIR)/$(am__dirstamp)
+examples/pattern-cancel.$(OBJEXT): examples/$(am__dirstamp) \
+	examples/$(DEPDIR)/$(am__dirstamp)
+
+examples/pattern_cancel$(EXEEXT): $(examples_pattern_cancel_OBJECTS) $(examples_pattern_cancel_DEPENDENCIES) $(EXTRA_examples_pattern_cancel_DEPENDENCIES) examples/$(am__dirstamp)
+	@rm -f examples/pattern_cancel$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(examples_pattern_cancel_OBJECTS) $(examples_pattern_cancel_LDADD) $(LIBS)
+examples/pattern-fetch.$(OBJEXT): examples/$(am__dirstamp) \
+	examples/$(DEPDIR)/$(am__dirstamp)
+
+examples/pattern_fetch$(EXEEXT): $(examples_pattern_fetch_OBJECTS) $(examples_pattern_fetch_DEPENDENCIES) $(EXTRA_examples_pattern_fetch_DEPENDENCIES) examples/$(am__dirstamp)
+	@rm -f examples/pattern_fetch$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(examples_pattern_fetch_OBJECTS) $(examples_pattern_fetch_LDADD) $(LIBS)
 src/main.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 third_party/docopt/$(am__dirstamp):
 	@$(MKDIR_P) third_party/docopt
@@ -724,10 +781,6 @@ src/storage/$(DEPDIR)/$(am__dirstamp):
 	@: > src/storage/$(DEPDIR)/$(am__dirstamp)
 src/storage/storage-engine.$(OBJEXT): src/storage/$(am__dirstamp) \
 	src/storage/$(DEPDIR)/$(am__dirstamp)
-src/repo-command-response.pb.$(OBJEXT): src/$(am__dirstamp) \
-	src/$(DEPDIR)/$(am__dirstamp)
-src/repo-command-parameter.pb.$(OBJEXT): src/$(am__dirstamp) \
-	src/$(DEPDIR)/$(am__dirstamp)
 src/handles/$(am__dirstamp):
 	@$(MKDIR_P) src/handles
 	@: > src/handles/$(am__dirstamp)
@@ -800,6 +853,7 @@ mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
 	-rm -f ${GMOCK_ROOT}/src/*.$(OBJEXT)
 	-rm -f ${GTEST_ROOT}/src/*.$(OBJEXT)
+	-rm -f examples/*.$(OBJEXT)
 	-rm -f src/*.$(OBJEXT)
 	-rm -f src/handles/*.$(OBJEXT)
 	-rm -f src/handles/patterns/*.$(OBJEXT)
@@ -813,6 +867,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/pattern-cancel.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/pattern-fetch.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-parameter.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-response.pb.Po@am__quote@ # am--include-marker
@@ -1356,6 +1412,8 @@ distclean-generic:
 	-rm -f ${GMOCK_ROOT}/src/$(am__dirstamp)
 	-rm -f ${GTEST_ROOT}/src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f ${GTEST_ROOT}/src/$(am__dirstamp)
+	-rm -f examples/$(DEPDIR)/$(am__dirstamp)
+	-rm -f examples/$(am__dirstamp)
 	-rm -f src/$(DEPDIR)/$(am__dirstamp)
 	-rm -f src/$(am__dirstamp)
 	-rm -f src/handles/$(DEPDIR)/$(am__dirstamp)
@@ -1378,12 +1436,14 @@ maintainer-clean-generic:
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-checkPROGRAMS clean-generic \
-	mostlyclean-am
+	clean-noinstPROGRAMS mostlyclean-am
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 		-rm -f ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-all.Po
 	-rm -f ${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po
+	-rm -f examples/$(DEPDIR)/pattern-cancel.Po
+	-rm -f examples/$(DEPDIR)/pattern-fetch.Po
 	-rm -f src/$(DEPDIR)/main.Po
 	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
@@ -1449,6 +1509,8 @@ maintainer-clean: maintainer-clean-am
 	-rm -rf $(top_srcdir)/autom4te.cache
 		-rm -f ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-all.Po
 	-rm -f ${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po
+	-rm -f examples/$(DEPDIR)/pattern-cancel.Po
+	-rm -f examples/$(DEPDIR)/pattern-fetch.Po
 	-rm -f src/$(DEPDIR)/main.Po
 	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
@@ -1486,13 +1548,13 @@ uninstall-am: uninstall-binPROGRAMS
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--depfiles am--refresh check \
 	check-TESTS check-am clean clean-binPROGRAMS \
-	clean-checkPROGRAMS clean-cscope clean-generic cscope \
-	cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
-	dist-gzip dist-lzip dist-shar dist-tarZ dist-xz dist-zip \
-	distcheck distclean distclean-compile distclean-generic \
-	distclean-hdr distclean-tags distcleancheck distdir \
-	distuninstallcheck dvi dvi-am html html-am info info-am \
-	install install-am install-binPROGRAMS install-data \
+	clean-checkPROGRAMS clean-cscope clean-generic \
+	clean-noinstPROGRAMS cscope cscopelist-am ctags ctags-am dist \
+	dist-all dist-bzip2 dist-gzip dist-lzip dist-shar dist-tarZ \
+	dist-xz dist-zip distcheck distclean distclean-compile \
+	distclean-generic distclean-hdr distclean-tags distcleancheck \
+	distdir distuninstallcheck dvi dvi-am html html-am info \
+	info-am install install-am install-binPROGRAMS install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
 	install-info-am install-man install-pdf install-pdf-am \

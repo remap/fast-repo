@@ -48,3 +48,18 @@ check_PROGRAMS = $(TESTS)
 tests_test_prefix_match_SOURCES = ${TEST_COMMON_SOURCE} tests/test_prefix_match.cc src/storage/storage-engine.cpp
 tests_test_prefix_match_CPPFLAGS = $(TEST_FLAGS)
 tests_test_prefix_match_LDADD =  $(TEST_LIBS)
+
+# Integrated tests setup.
+noinst_PROGRAMS = examples/pattern_fetch examples/pattern_cancel
+
+examples_pattern_fetch_SOURCES = \
+    src/repo-command-response.pb.cc \
+    src/repo-command-parameter.pb.cc \
+    examples/pattern-fetch.cpp
+examples_pattern_fetch_LDADD = $(TEST_LIBS)
+
+examples_pattern_cancel_SOURCES = \
+    src/repo-command-response.pb.cc \
+    src/repo-command-parameter.pb.cc \
+    examples/pattern-cancel.cpp
+examples_pattern_cancel_LDADD = $(TEST_LIBS)
