@@ -21,8 +21,8 @@ using std::make_shared;
 
 PatternHandle::PatternHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChain &keyChain)
     : BaseHandle(face, storage, keyChain)
+    , patternFactory_(PatternFactory::getInstance())
 {
-    addPattern(make_shared<CounterPattern>());
 }
 
 void PatternHandle::listen(const ndn::Name &prefix)
@@ -33,13 +33,13 @@ void PatternHandle::listen(const ndn::Name &prefix)
 
 void PatternHandle::addPattern(shared_ptr<IFetchPattern> p)
 {
-    patterns_[p->getPatternKeyword()] = p;
+    //patterns_[p->getPatternKeyword()] = p;
 }
 
 void PatternHandle::removePattern(shared_ptr<IFetchPattern> p)
 {
-    if (patterns_.find(p->getPatternKeyword()) != patterns_.end())
-        patterns_.erase(p->getPatternKeyword());
+    //if (patterns_.find(p->getPatternKeyword()) != patterns_.end())
+    //    patterns_.erase(p->getPatternKeyword());
 }
 
 bool PatternHandle::decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,
@@ -88,23 +88,29 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
         return;
     }
 
-    shared_ptr<IFetchPattern> p;
-    auto patIt = patterns_.find(patternName.get(0));
-    // If p is not found, 
+    auto patIt = patterns_.find(fetchPrefix);
+    // If p is found, 
+    // Result code: 402:=Duplicated fetch request
+    if(patIt != patterns_.end())
+    {
+        negativeReply(*interest, 402);
+        return;
+    }
+
+    // Else try to create specified pattern
+    shared_ptr<IFetchPattern> pattern = patternFactory_.create(
+        patternName, getFace(), getKeyChain(),
+        bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put),
+             &getStorageHandle(), _1));
+
+    // If pattern can not be created, 
     // Result code: 404:=No such pattern is known
-    if(patIt == patterns_.end()){
+    if(pattern == nullptr)
+    {
         negativeReply(*interest, 404);
         return;
     }
-    p = patIt->second;
 
-    if (p)
-    {
-        p->fetch(getFace(), getKeyChain(), fetchPrefix,
-                 bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put), 
-                      &getStorageHandle(), _1));
-    }else{
-        // This should be impossible
-        throw Error("Pattern pool is broken.");
-    }
+    pattern->fetch(fetchPrefix);
+    patterns_[fetchPrefix] = pattern;
 }

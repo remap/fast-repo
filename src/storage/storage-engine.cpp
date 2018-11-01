@@ -281,7 +281,8 @@ std::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
 std::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
 {
     std::shared_ptr<Data> data;
-    bool canBePrefix = interest.getCanBePrefix();
+    // NOTE: Why isn't getCanBePrefix() a const function?
+    bool canBePrefix = const_cast<Interest&>(interest).getCanBePrefix();
 
     if (canBePrefix)
     {

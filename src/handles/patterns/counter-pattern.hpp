@@ -8,7 +8,7 @@
 #ifndef __counter_pattern_hpp__
 #define __counter_pattern_hpp__
 
-#include "../pattern-handle.hpp"
+#include "base-pattern.hpp"
 
 namespace fast_repo
 {
@@ -19,22 +19,29 @@ namespace fast_repo
  * Schedule a next interest 2s after getting a data back.
  * TODO: Refactor FetchPattern class
  */
-class CounterPattern : public IFetchPattern{
+class CounterPattern : public BasePattern
+{
 private:
     bool running_;
     int counter_;
-    StoreData storeFun_;
-    ndn::Face *face_;
     ndn::Name fetchPrefix_;
 
 public:
-    CounterPattern():running_(false)
-    { }
+    CounterPattern(ndn::Face& face, ndn::KeyChain & keyChain, StoreData storePacketFun):
+        BasePattern(face, keyChain, storePacketFun), running_(false)
+    { 
+    }
 
-    // NOTE: static; used by factory
-    const ndn::Name::Component getPatternKeyword() const override
+    static const ndn::Name getPatternKeyword()
     {
         return "counter";
+    }
+
+    static std::shared_ptr<IFetchPattern> create(ndn::Face& face, 
+                                                 ndn::KeyChain & keyChain, 
+                                                 StoreData storePacketFun)
+    {
+        return std::make_shared<CounterPattern>(face, keyChain, storePacketFun);
     }
 
     void cancel() override
@@ -45,8 +52,7 @@ public:
 
     // I think there will be little chance to give a different face, keyChain or storePacketFun
     // Maybe we can change the interface?
-    void fetch(ndn::Face & face, ndn::KeyChain & keyChain,
-               const ndn::Name &prefix, StoreData storePacketFun) override;
+    void fetch(const ndn::Name &prefix) override;
 
     void doFetch();
 

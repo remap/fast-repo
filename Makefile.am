@@ -24,6 +24,7 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/read-handle.cpp \
     src/handles/watch-handle.cpp \
     src/handles/write-handle.cpp \
+    src/handles/patterns/base-pattern.cpp \
     src/handles/patterns/counter-pattern.cpp
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
