@@ -57,7 +57,6 @@ void ReadHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
     }
     else{
       // TODO: else - sendNetworkNack
-      
     }
 }
 

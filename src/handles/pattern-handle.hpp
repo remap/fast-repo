@@ -34,8 +34,7 @@ class PatternHandle : public repo_ng::BaseHandle
 
     void listen(const ndn::Name &prefix);
 
-    void addPattern(std::shared_ptr<IFetchPattern> p);
-    void removePattern(std::shared_ptr<IFetchPattern> p);
+    void removePattern(const ndn::Name &fetchPrefix);
 
   private:
     PatternFactory& patternFactory_;
@@ -46,6 +45,11 @@ class PatternHandle : public repo_ng::BaseHandle
                     const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                     uint64_t interestFilterId,
                     const std::shared_ptr<const ndn::InterestFilter> &filter);
+
+    void onCancelRequest(const std::shared_ptr<const ndn::Name> &prefix,
+                         const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+                         uint64_t interestFilterId,
+                         const std::shared_ptr<const ndn::InterestFilter> &filter);
 
   private:
     bool decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,

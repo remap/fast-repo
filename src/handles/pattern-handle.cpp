@@ -29,17 +29,18 @@ void PatternHandle::listen(const ndn::Name &prefix)
 {
     getFace().setInterestFilter(ndn::Name(prefix).append("pattern"),
                                 bind(&PatternHandle::onInterest, this, _1, _2, _3, _4, _5));
+    getFace().setInterestFilter(ndn::Name(prefix).append("cancel"),
+                                bind(&PatternHandle::onCancelRequest, this, _1, _2, _3, _4, _5));
 }
 
-void PatternHandle::addPattern(shared_ptr<IFetchPattern> p)
+void PatternHandle::removePattern(const ndn::Name &fetchPrefix)
 {
-    //patterns_[p->getPatternKeyword()] = p;
-}
-
-void PatternHandle::removePattern(shared_ptr<IFetchPattern> p)
-{
-    //if (patterns_.find(p->getPatternKeyword()) != patterns_.end())
-    //    patterns_.erase(p->getPatternKeyword());
+    auto patIt = patterns_.find(fetchPrefix);
+    if(patIt != patterns_.end())
+    {
+        patIt->second->cancel();
+        patterns_.erase(patIt);
+    }
 }
 
 bool PatternHandle::decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,
@@ -113,4 +114,43 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
 
     pattern->fetch(fetchPrefix);
     patterns_[fetchPrefix] = pattern;
+
+    // reply with only status code, not negative though
+    negativeReply(*interest, 100);
+}
+
+void PatternHandle::onCancelRequest(const std::shared_ptr<const ndn::Name> &prefix,
+                                    const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+                                    uint64_t interestFilterId,
+                                    const std::shared_ptr<const ndn::InterestFilter> &filter)
+{
+    ndn_message::RepoCommandParameterMessage parameter;
+    try{
+        extractParameter(*interest, *prefix, parameter);
+    }
+    catch (std::exception& e){
+        negativeReply(*interest, 403);
+        return;
+    }
+
+    Name fetchPrefix;
+    for(size_t i = 0; i < parameter.repo_command_parameter().name().component_size(); i ++){
+        fetchPrefix.append(parameter.repo_command_parameter().name().component(i));
+    }
+
+    auto patIt = patterns_.find(fetchPrefix);
+    // If p is found, 
+    // Result code: 404:=No such process is in progress.
+    if(patIt == patterns_.end())
+    {
+        negativeReply(*interest, 402);
+        return;
+    }
+
+    // Cancel the pattern & delete it
+    patIt->second->cancel();
+    patterns_.erase(patIt);
+
+    // reply with only status code, not negative though
+    negativeReply(*interest, 101);
 }
