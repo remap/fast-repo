@@ -21,6 +21,7 @@
 #define REPO_HANDLES_WRITE_HANDLE_HPP
 
 #include "base-handle.hpp"
+#include <boost/signals2.hpp>
 
 #include <queue>
 #include <map>
@@ -83,6 +84,9 @@ private:
   //ndn::Validator& m_validator;
 
   std::map<uint64_t, ProcessInfo> m_processes;
+
+public:
+  boost::signals2::signal<void(const ndn::Name&)> onDataInsertion;
 };
 
 } // namespace repo

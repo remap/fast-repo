@@ -114,6 +114,7 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
 
     pattern->fetch(fetchPrefix);
     patterns_[fetchPrefix] = pattern;
+    this->onDataInsertion(fetchPrefix);
 
     // reply with only status code, not negative though
     negativeReply(*interest, 100);

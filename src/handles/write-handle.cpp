@@ -122,6 +122,7 @@ WriteHandle::onDataValidated(const ndn::Interest& interest, const ndn::Data& dat
   if (response.repo_command_response().insert_num() == 0) {
     getStorageHandle().put(data);
     response.mutable_repo_command_response()->set_insert_num(1);
+    this->onDataInsertion(data.getName());
   }
 
   //deferredDeleteProcess(processId);

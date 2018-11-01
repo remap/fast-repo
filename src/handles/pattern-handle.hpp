@@ -9,6 +9,7 @@
 #define __pattern_handle_hpp__
 
 #include <ndn-cpp/name.hpp>
+#include <boost/signals2.hpp>
 
 #include "base-handle.hpp"
 #include "patterns/base-pattern.hpp"
@@ -55,6 +56,9 @@ class PatternHandle : public repo_ng::BaseHandle
     bool decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,
                      ndn::Name &patternName,
                      ndn::Name &fetchPrefix);
+  
+  public:
+    boost::signals2::signal<void(const ndn::Name&)> onDataInsertion;
 };
 
 } // namespace fast_repo

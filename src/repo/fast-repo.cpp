@@ -56,6 +56,8 @@ class FastRepoImpl : public enable_shared_from_this<FastRepoImpl>
     repo_ng::WriteHandle writeHandle_;
 
     //ndn::Validator validator_;
+
+    void onDataInsertion(const Name& prefix);
 };
 } // namespace fast_repo
 
@@ -182,6 +184,9 @@ void FastRepoImpl::enableListening()
         // m_watchHandle.listen(cmdPrefix);
         // m_deleteHandle.listen(cmdPrefix);
         patternHandle_.listen(cmdPrefix);
+
+        writeHandle_.onDataInsertion.connect(bind(&FastRepoImpl::onDataInsertion, this, _1));
+        patternHandle_.onDataInsertion.connect(bind(&FastRepoImpl::onDataInsertion, this, _1));
     }
 }
 
@@ -204,4 +209,20 @@ void FastRepoImpl::initializeStorage()
             std::cout << "registered data prefix: " << p << std::endl;
         }
     });
+}
+
+void FastRepoImpl::onDataInsertion(const Name& prefix)
+{
+    // Ensure no such prefix is listening
+    for (const auto& p : config_.dataPrefixes){
+        if(p.isPrefixOf(prefix))
+        {
+            return ;
+        }
+    }
+
+    // Let ReadHandle to listen to it
+    config_.dataPrefixes.push_back(Name(prefix));
+    readHandle_.listen(prefix);
+    std::cout << "registered data prefix: " << prefix << std::endl;
 }
