@@ -9,8 +9,16 @@ src/%.pb.cc: src/%.proto
 	  $(PROTOC) --proto_path=$(dir $<) --cpp_out=$(dir $<) $< ; \
 	fi
 
+examples/%_pb2.py: src/%.proto
+	if test "no${PROTOC}" == "no"; then \
+	  cat protobuf-stub.txt > $@ ; \
+	else \
+	  $(PROTOC) --proto_path=$(dir $<) --python_out=$(dir $<)/../examples $< ; \
+	fi
+
 BUILT_SOURCES = src/repo-command-response.pb.cc src/repo-command-response.pb.h \
-    src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h
+    src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h \
+    examples/repo-command-parameter_pb2.py examples/repo-command-response_pb2.py
 
 fast_repo_SOURCES = src/main.cpp \
     third_party/docopt/docopt.cpp \
