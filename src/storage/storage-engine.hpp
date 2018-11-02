@@ -11,6 +11,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
 #include <boost/function.hpp>
+#include <boost/signals2.hpp>
 #include <ndn-cpp/name.hpp>
 
 namespace ndn {
@@ -34,7 +35,7 @@ namespace fast_repo {
          * Data is saved asynchronously, so the call returns immediately.
          * The call is thread-safe.
          */
-        void put(const boost::shared_ptr<const ndn::Data>& data);
+        void put(const std::shared_ptr<const ndn::Data>& data);
         void put(const ndn::Data& data);
 
         /**
@@ -43,7 +44,7 @@ namespace fast_repo {
          * If data is not present in the persistent storage, returned pointer
          * is invalid.
          */
-        boost::shared_ptr<ndn::Data> get(const ndn::Name& dataName);
+        std::shared_ptr<ndn::Data> get(const ndn::Name& dataName);
 
         /**
          * Tries to retrieve data from persistent storage according to the 
@@ -52,7 +53,7 @@ namespace fast_repo {
          * If data is not present in the persistent storage, returned pointer
          * is invalid.
          */
-        boost::shared_ptr<ndn::Data> read(const ndn::Interest& interest);
+        std::shared_ptr<ndn::Data> read(const ndn::Interest& interest);
 
         /**
          * Scans DB for longest common prefixes. May take a while, depending on 
@@ -73,8 +74,13 @@ namespace fast_repo {
          */
         const size_t getKeysNum() const;
 
+    public:
+        // This signal is only used for test
+        boost::signals2::signal<void(ndn::Name)> afterDataInsertion;
+        //boost::signal<void(ndn::Name)> afterDataDeletion;
+
     private:
-        boost::shared_ptr<StorageEngineImpl> pimpl_;
+        std::shared_ptr<StorageEngineImpl> pimpl_;
     };
 }
 

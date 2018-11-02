@@ -23,47 +23,44 @@
 
 using namespace ndn;
 
+using std::shared_ptr;
+using std::make_shared;
+using std::bind;
+
 namespace repo_ng
 {
 
 ReadHandle::ReadHandle(Face &face, RepoStorage &storageHandle, KeyChain &keyChain)
     : BaseHandle(face, storageHandle, keyChain)
 {
-    //   connectAutoListen();
+    // connectAutoListen();
 }
 
-#if 0
 void
 ReadHandle::connectAutoListen()
 {
   // Connect a RepoStorage's signals to the read handle
-  if (m_prefixSubsetLength != RepoConfig::DISABLED_SUBSET_LENGTH) {
-    afterDataDeletionConnection = m_storageHandle.afterDataInsertion.connect(
-      [this] (const Name& prefix) {
-        onDataInserted(prefix);
-      });
-    afterDataInsertionConnection = m_storageHandle.afterDataDeletion.connect(
-      [this] (const Name& prefix) {
-        onDataDeleted(prefix);
-      });
-  }
+  // NOTE : This function is only used in test.
+  // Delete it from the constructor on real use.
+  getStorageHandle().afterDataInsertion.connect(bind(&ReadHandle::onDataInserted, this, _1));
 }
-#endif
 
-void ReadHandle::onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
-                            const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+void ReadHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
+                            const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                             uint64_t interestFilterId,
-                            const boost::shared_ptr<const ndn::InterestFilter> &filter)
+                            const shared_ptr<const ndn::InterestFilter> &filter)
 {
-    boost::shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
+    shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
     if (data != nullptr)
     {
         getFace().putData(*data);
     }
-    // TODO: else - sendNetworkNack
+    else{
+      // TODO: else - sendNetworkNack
+    }
 }
 
-void ReadHandle::onRegisterFailed(const boost::shared_ptr<const ndn::Name> &prefix)
+void ReadHandle::onRegisterFailed(const shared_ptr<const ndn::Name> &prefix)
 {
     std::cerr << "ERROR: Failed to register prefix in local hub's daemon" << std::endl;
     getFace().shutdown();
@@ -75,6 +72,19 @@ void ReadHandle::listen(const Name &prefix)
                              bind(&ReadHandle::onInterest, this, _1, _2, _3, _4, _5),
                              bind(&ReadHandle::onRegisterFailed, this, _1));
 }
+
+void
+ReadHandle::onDataInserted(const Name& name)
+{
+  ndn::InterestFilter filter(name);
+  // Note: Used only for test.
+  // Different behaviours with "real" run as below.
+  // Do not handle dumplicated name
+  // Do not modify config.dataPrefixes
+  // Do not use longest prefixes
+  // this->listen(name);
+}
+
 #if 0
 void
 ReadHandle::onDataDeleted(const Name& name)
@@ -88,39 +98,6 @@ ReadHandle::onDataDeleted(const Name& name)
       getFace().unsetInterestFilter(check->second.prefixId);
       m_insertedDataPrefixes.erase(prefix);
     }
-  }
-}
-
-void
-ReadHandle::onDataInserted(const Name& name)
-{
-  // Note: We want to save the prefix that we register exactly, not the
-  // name that provoked the registration
-  Name prefixToRegister = name.getPrefix(-m_prefixSubsetLength);
-  ndn::InterestFilter filter(prefixToRegister);
-  auto check = m_insertedDataPrefixes.find(prefixToRegister);
-  if (check == m_insertedDataPrefixes.end()) {
-    // Because of stack lifetime problems, we assume here that the
-    // prefix registration will be successful, and we add the registered
-    // prefix to our list. This is because, if we fail, we shut
-    // everything down, anyway. If registration failures are ever
-    // considered to be recoverable, we would need to make this
-    // atomic.
-    const ndn::RegisteredPrefixId* prefixId = getFace().setInterestFilter(filter,
-      [this] (const ndn::InterestFilter& filter, const Interest& interest) {
-        // Implicit conversion to Name of filter
-        onInterest(filter, interest);
-      },
-      [] (const Name&) {},
-      [this] (const Name& prefix, const std::string& reason) {
-        onRegisterFailed(prefix, reason);
-      });
-    RegisteredDataPrefix registeredPrefix{prefixId, 1};
-    // Newly registered prefix
-    m_insertedDataPrefixes.emplace(std::make_pair(prefixToRegister, registeredPrefix));
-  }
-  else {
-    check->second.useCount++;
   }
 }
 #endif

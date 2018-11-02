@@ -40,6 +40,11 @@
 using namespace std;
 using namespace ndn;
 
+using std::bind;
+using std::ref;
+using std::shared_ptr;
+using std::make_shared;
+
 static const char USAGE[] =
     R"(Fast Repo.
 
@@ -96,10 +101,10 @@ int main(int argc, char **argv)
     signalSet.add(SIGHUP);
     signalSet.add(SIGUSR1);
     signalSet.add(SIGUSR2);
-    signalSet.async_wait(std::bind(static_cast<void(*)(boost::asio::io_service&,const boost::system::error_code&,int,boost::asio::signal_set&)>(&terminate), 
-                                   std::ref(ioService),
-                                   std::placeholders::_1, std::placeholders::_2,
-                                   std::ref(signalSet)));
+    signalSet.async_wait(bind(static_cast<void(*)(boost::asio::io_service&,const boost::system::error_code&,int,boost::asio::signal_set&)>(&terminate), 
+                              ref(ioService),
+                              _1, _2,
+                              ref(signalSet)));
 
     std::map<std::string, docopt::value> args = docopt::docopt(USAGE,
                                                                {argv + 1, argv + argc},
@@ -110,8 +115,8 @@ int main(int argc, char **argv)
         std::cout << arg.first << " " <<  arg.second << std::endl;
     }
 
-    boost::shared_ptr<Face> face = boost::make_shared<ThreadsafeFace>(ioService);
-    boost::shared_ptr<KeyChain> keyChain = boost::make_shared<KeyChain>();
+    shared_ptr<Face> face = make_shared<ThreadsafeFace>(ioService);
+    shared_ptr<KeyChain> keyChain = make_shared<KeyChain>();
 
     // TODO: make sure this is setup correctly
     face->setCommandSigningInfo(*keyChain, keyChain->getDefaultCertificateName());

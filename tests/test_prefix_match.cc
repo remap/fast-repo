@@ -80,7 +80,7 @@ TEST(TestDb, TestPrefixMatch)
     // retieve data by prefix
     { // test simple retrieval by prefix
         Interest i(n);
-        boost::shared_ptr<Data> d = storage.read(i);
+        std::shared_ptr<Data> d = storage.read(i);
 
         EXPECT_TRUE(d.get());
         EXPECT_EQ(d->getName()[-2].toVersion(), 2);
@@ -90,7 +90,7 @@ TEST(TestDb, TestPrefixMatch)
         Interest i(n);
         i.setCanBePrefix(false);
 
-        boost::shared_ptr<Data> d = storage.read(i);
+        std::shared_ptr<Data> d = storage.read(i);
 
         EXPECT_FALSE(d.get());
     }
@@ -100,7 +100,7 @@ TEST(TestDb, TestPrefixMatch)
         i.setCanBePrefix(true);
         i.setMaxSuffixComponents(2);
 
-        boost::shared_ptr<Data> d = storage.read(i);
+        std::shared_ptr<Data> d = storage.read(i);
 
         EXPECT_TRUE(d.get());
         EXPECT_EQ(d->getName()[-2].toVersion(), 2);
@@ -111,7 +111,7 @@ TEST(TestDb, TestPrefixMatch)
         i.setCanBePrefix(true);
         i.setMaxSuffixComponents(2);
         
-        boost::shared_ptr<Data> d = storage.read(i);
+        std::shared_ptr<Data> d = storage.read(i);
 
         EXPECT_FALSE(d.get());
     }

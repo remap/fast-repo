@@ -18,6 +18,119 @@
  */
 
 #include "write-handle.hpp"
+
+using std::bind;
+using std::shared_ptr;
+using std::make_shared;
+
+namespace repo_ng {
+
+WriteHandle::WriteHandle(ndn::Face &face, RepoStorage &storageHandle, ndn::KeyChain &keyChain
+                         /*,ndn::Validator& validator*/)
+  : BaseHandle(face, storageHandle, keyChain)
+  //, m_validator(validator)
+{
+}
+
+void
+WriteHandle::listen(const ndn::Name& prefix)
+{
+  getFace().setInterestFilter(ndn::Name(prefix).append("insert"),
+                              bind(&WriteHandle::onInterest, this, _1, _2, _3, _4, _5));
+}
+
+void
+WriteHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
+                        const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+                        uint64_t interestFilterId,
+                        const shared_ptr<const ndn::InterestFilter> &filter)
+{
+  // TODO: Set up validator
+  // m_validator.validate(interest, )
+  this->onValidated(*interest, *prefix);
+}
+
+void
+WriteHandle::onValidated(const ndn::Interest& interest, const ndn::Name &prefix)
+{
+  ndn_message::RepoCommandParameterMessage parameter;
+  try{
+      extractParameter(interest, prefix, parameter);
+  }
+  catch (std::exception& e){
+    negativeReply(interest, 403);
+    return;
+  }
+
+  // TODO: Segmented
+  processSingleInsertCommand(interest, parameter);
+}
+
+void
+WriteHandle::processSingleInsertCommand(const ndn::Interest& interest, ndn_message::RepoCommandParameterMessage& parameter)
+{
+  uint64_t processId = generateProcessId();
+
+  ProcessInfo& process = m_processes[processId];
+
+  auto response = process.response.mutable_repo_command_response();
+  response->set_status_code(100);
+  response->set_process_id(processId);
+  response->set_insert_num(0);
+
+  reply(interest, process.response);
+
+  response->set_status_code(300);
+
+  ndn::Name fetchName;
+  for(int i = 0, sz = parameter.repo_command_parameter().name().component_size(); i < sz; i ++){
+    fetchName.append(parameter.repo_command_parameter().name().component(i));
+  }
+
+  ndn::Interest fetchInterest(fetchName);
+  fetchInterest.setInterestLifetimeMilliseconds(4000.0);
+  getFace().expressInterest(fetchInterest,
+                            bind(&WriteHandle::onData, this, _1, _2, processId),
+                            bind(&WriteHandle::onTimeout, this, _1, processId),
+                            bind(&WriteHandle::onTimeout, this, _1, processId)); //Nack
+}
+
+void
+WriteHandle::onTimeout(const shared_ptr<const ndn::Interest>& interest, uint64_t processId)
+{
+  std::cerr << "Timeout" << std::endl;
+  m_processes.erase(processId);
+}
+
+void
+WriteHandle::onData(const shared_ptr<const ndn::Interest>& interest, const shared_ptr<ndn::Data>& data, uint64_t processId)
+{
+  //TODO: Validate data
+  onDataValidated(*interest, *data, processId);
+}
+
+void
+WriteHandle::onDataValidated(const ndn::Interest& interest, const ndn::Data& data, uint64_t processId)
+{
+  if (m_processes.count(processId) == 0) {
+    return;
+  }
+
+  ProcessInfo& process = m_processes[processId];
+  auto& response = process.response;
+
+  if (response.repo_command_response().insert_num() == 0) {
+    getStorageHandle().put(data);
+    response.mutable_repo_command_response()->set_insert_num(1);
+    this->onDataInsertion(data.getName());
+  }
+
+  //deferredDeleteProcess(processId);
+  // TODO: Wait for a certain time and delete it.
+  m_processes.erase(processId);
+}
+
+} // namespace repo
 #if 0
 namespace repo {
 

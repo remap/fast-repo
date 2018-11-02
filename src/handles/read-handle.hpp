@@ -65,29 +65,29 @@ class ReadHandle : public BaseHandle
    */
   void
   onDataDeleted(const Name& name);
+#endif
 
   /**
    * @param after Do something after successfully registering the data prefix
    */
   void
-  onDataInserted(const Name& name);
+  onDataInserted(const ndn::Name& name);
 
   void
   connectAutoListen();
-#endif
 
   private:
     /**
    * @brief Read data from backend storage
    */
     void
-    onInterest(const boost::shared_ptr<const ndn::Name> &prefix,
-               const boost::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    onInterest(const std::shared_ptr<const ndn::Name> &prefix,
+               const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                uint64_t interestFilterId,
-               const boost::shared_ptr<const ndn::InterestFilter> &filter);
+               const std::shared_ptr<const ndn::InterestFilter> &filter);
 
     void
-    onRegisterFailed(const boost::shared_ptr<const ndn::Name> &prefix);
+    onRegisterFailed(const std::shared_ptr<const ndn::Name> &prefix);
 
   private:
     //   size_t m_prefixSubsetLength;

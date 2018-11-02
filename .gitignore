@@ -58,4 +58,7 @@ tags
 .vscode
 *.pb.cc
 *.pb.h
+*_pb2.py*
+*__pycache__
+*.pyc
 src/config.hpp

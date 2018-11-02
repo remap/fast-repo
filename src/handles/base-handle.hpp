@@ -23,14 +23,18 @@
 #include "../config.hpp"
 
 #include "../storage/storage-engine.hpp"
+#include <ndn-cpp/face.hpp>
+#include <ndn-cpp/security/key-chain.hpp>
+#include <ndn-cpp/security/v2/validator.hpp>
+#include <ndn-cpp/encoding/protobuf-tlv.hpp>
 #include "repo-command-response.pb.h"
 #include "repo-command-parameter.pb.h"
 
-namespace ndn {
-    class Face;
-    class KeyChain;
-    class Name;
-}
+// namespace ndn {
+//     class Face;
+//     class KeyChain;
+//     class Name;
+// }
 
 namespace repo_ng {
 
@@ -101,11 +105,11 @@ protected:
   uint64_t
   generateProcessId();
 
-  // TODO: refactor for ndn-cpp
-#if 0
   void
-  reply(const Interest& commandInterest, const RepoCommandResponse& response);
+  reply(const ndn::Interest& commandInterest, const ndn_message::RepoCommandResponseMessage& response);
 
+  void
+  negativeReply(const ndn::Interest& interest, int statusCode);
 
   /**
    * @brief extract RepoCommandParameter from a command Interest.
@@ -115,8 +119,8 @@ protected:
    * @throw RepoCommandParameter::Error parse error
    */
   void
-  extractParameter(const Interest& interest, const Name& prefix, RepoCommandParameter& parameter);
-#endif
+  extractParameter(const ndn::Interest& interest, const ndn::Name& prefix, 
+                   ndn_message::RepoCommandParameterMessage& parameter);
 
 protected:
   RepoStorage& m_storageHandle;
@@ -128,24 +132,22 @@ private:
  // RepoStorage& m_storeindex;
 };
 
-// TODO: refactor for ndn-cpp
-#if 0
 inline void
-BaseHandle::reply(const Interest& commandInterest, const RepoCommandResponse& response)
+BaseHandle::reply(const ndn::Interest& commandInterest, const ndn_message::RepoCommandResponseMessage& response)
 {
-  std::shared_ptr<Data> rdata = std::make_shared<Data>(commandInterest.getName());
-  rdata->setContent(response.wireEncode());
+  std::shared_ptr<ndn::Data> rdata = std::make_shared<ndn::Data>(commandInterest.getName());
+  rdata->setContent(ndn::ProtobufTlv::encode(response));
   m_keyChain.sign(*rdata);
-  m_face.put(*rdata);
+  m_face.putData(*rdata);
 }
 
 inline void
-BaseHandle::extractParameter(const Interest& interest, const Name& prefix,
-                             RepoCommandParameter& parameter)
+BaseHandle::extractParameter(const ndn::Interest& interest, const ndn::Name& prefix,
+                             ndn_message::RepoCommandParameterMessage& parameter)
 {
-  parameter.wireDecode(interest.getName().get(prefix.size()).blockFromValue());
+  auto component = interest.getName().get(prefix.size());
+  ndn::ProtobufTlv::decode(parameter, component.getValue());
 }
-#endif
 
 } // namespace repo_ng
 
