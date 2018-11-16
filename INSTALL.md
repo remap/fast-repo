@@ -5,7 +5,7 @@ Reposistory has a number of submodules it depends on, so clone using `--recursiv
 # Dependencies
 
 * [ndn-cpp](https://github.com/named-data/ndn-cpp/blob/master/INSTALL.md)
-* [cpp-cnl](https://github.com/named-data/cnl-cpp/blob/master/INSTALL.md)
+* [cnl-cpp](https://github.com/named-data/cnl-cpp/blob/master/INSTALL.md)
 * [rocksdb](https://github.com/facebook/rocksdb/blob/master/INSTALL.md)
 * protobuf
 * boost
