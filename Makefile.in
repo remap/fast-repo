@@ -146,7 +146,8 @@ am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
 	src/handles/watch-handle.$(OBJEXT) \
 	src/handles/write-handle.$(OBJEXT) \
 	src/handles/patterns/base-pattern.$(OBJEXT) \
-	src/handles/patterns/counter-pattern.$(OBJEXT)
+	src/handles/patterns/counter-pattern.$(OBJEXT) \
+	src/handles/patterns/pattern-factory.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -189,6 +190,7 @@ am__depfiles_remade = ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-
 	src/handles/$(DEPDIR)/write-handle.Po \
 	src/handles/patterns/$(DEPDIR)/base-pattern.Po \
 	src/handles/patterns/$(DEPDIR)/counter-pattern.Po \
+	src/handles/patterns/$(DEPDIR)/pattern-factory.Po \
 	src/repo/$(DEPDIR)/fast-repo.Po \
 	src/storage/$(DEPDIR)/storage-engine.Po \
 	src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po \
@@ -597,7 +599,8 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/watch-handle.cpp \
     src/handles/write-handle.cpp \
     src/handles/patterns/base-pattern.cpp \
-    src/handles/patterns/counter-pattern.cpp
+    src/handles/patterns/counter-pattern.cpp \
+    src/handles/patterns/pattern-factory.cpp 
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
@@ -814,6 +817,9 @@ src/handles/patterns/base-pattern.$(OBJEXT):  \
 src/handles/patterns/counter-pattern.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
+src/handles/patterns/pattern-factory.$(OBJEXT):  \
+	src/handles/patterns/$(am__dirstamp) \
+	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
 
 fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_repo_DEPENDENCIES) 
 	@rm -f fast-repo$(EXEEXT)
@@ -883,6 +889,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/write-handle.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/base-pattern.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/counter-pattern.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/pattern-factory.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast-repo.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/storage-engine.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po@am__quote@ # am--include-marker
@@ -1458,6 +1465,7 @@ distclean: distclean-am
 	-rm -f src/handles/$(DEPDIR)/write-handle.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/base-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/counter-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/pattern-factory.Po
 	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
 	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
 	-rm -f src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po
@@ -1525,6 +1533,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f src/handles/$(DEPDIR)/write-handle.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/base-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/counter-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/pattern-factory.Po
 	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
 	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
 	-rm -f src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po

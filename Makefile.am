@@ -33,7 +33,8 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/watch-handle.cpp \
     src/handles/write-handle.cpp \
     src/handles/patterns/base-pattern.cpp \
-    src/handles/patterns/counter-pattern.cpp
+    src/handles/patterns/counter-pattern.cpp \
+    src/handles/patterns/pattern-factory.cpp 
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
