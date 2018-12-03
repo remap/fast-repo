@@ -36,7 +36,8 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/patterns/counter-pattern.cpp
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
-    ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} ${BOOST_TIMER_LIB}
+    ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
+    ${BOOST_TIMER_LIB} ${BOOST_LOG_LIB}
 
 
 # Testing setup. Type 'make check' or 'make recheck' to run the tests.

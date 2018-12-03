@@ -150,7 +150,7 @@ am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__objects_1 =  \
 	${GMOCK_ROOT}/src/tests_test_prefix_match-gmock-all.$(OBJEXT) \
 	${GTEST_ROOT}/src/tests_test_prefix_match-gtest-all.$(OBJEXT)
@@ -448,8 +448,8 @@ TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/test-driver
 TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
 	$(TEST_LOG_FLAGS)
 am__DIST_COMMON = $(srcdir)/Makefile.in \
-	$(top_srcdir)/src/config.hpp.in compile config.guess \
-	config.sub depcomp install-sh missing test-driver
+	$(top_srcdir)/src/config.hpp.in COPYING INSTALL compile \
+	config.guess config.sub depcomp install-sh missing test-driver
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -478,6 +478,7 @@ BOOST_ASIO_LIB = @BOOST_ASIO_LIB@
 BOOST_CPPFLAGS = @BOOST_CPPFLAGS@
 BOOST_FILESYSTEM_LIBS = @BOOST_FILESYSTEM_LIBS@
 BOOST_LDFLAGS = @BOOST_LDFLAGS@
+BOOST_LOG_LIB = @BOOST_LOG_LIB@
 BOOST_SYSTEM_LIB = @BOOST_SYSTEM_LIB@
 BOOST_THREAD_LIB = @BOOST_THREAD_LIB@
 BOOST_TIMER_LIB = @BOOST_TIMER_LIB@
@@ -599,7 +600,8 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/patterns/counter-pattern.cpp
 
 fast_repo_LDADD = ${LIBS} -lcnl-cpp \
-    ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} ${BOOST_TIMER_LIB}
+    ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
+    ${BOOST_TIMER_LIB} ${BOOST_LOG_LIB}
 
 
 # Testing setup. Type 'make check' or 'make recheck' to run the tests.

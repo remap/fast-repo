@@ -628,6 +628,7 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 PROTOC
+BOOST_LOG_LIB
 BOOST_FILESYSTEM_LIBS
 EGREP
 GREP
@@ -753,6 +754,7 @@ with_boost_asio
 with_boost_thread
 with_boost_timer
 with_boost_filesystem
+with_boost_log
 with_protoc
 '
       ac_precious_vars='build_alias
@@ -1428,6 +1430,10 @@ Optional Packages:
                           specific Boost.Filesystem library (ARG=<name>, e.g.
                           ARG=boost_filesystem-gcc-mt-d-1_33_1), or disable it
                           (ARG=no) [ARG=yes]
+  --with-boost-log[=special-lib]
+                          use the Log library from boost - it is possible to
+                          specify a certain library for the linker e.g.
+                          --with-boost-log=boost_log-gcc-mt
   --with-protoc=/path/of/protoc
                           Location of the protocol buffers compiler protoc.
                           Defaults to looking on path.
@@ -6445,6 +6451,250 @@ $as_echo "#define HAVE_BOOST_FILESYSTEM /**/" >>confdefs.h
   fi
 
 
+
+# Check whether --with-boost-log was given.
+if test "${with_boost_log+set}" = set; then :
+  withval=$with_boost_log;
+		if test "$withval" = "no"; then
+			want_boost="no"
+		elif test "$withval" = "yes"; then
+			want_boost="yes"
+			ax_boost_user_log_lib=""
+		else
+			want_boost="yes"
+			ax_boost_user_log_lib="$withval"
+		fi
+
+else
+  want_boost="yes"
+
+fi
+
+
+	if test "x$want_boost" = "xyes"; then
+
+
+
+		CPPFLAGS_SAVED="$CPPFLAGS"
+		CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+		export CPPFLAGS
+
+		LDFLAGS_SAVED="$LDFLAGS"
+		LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
+		export LDFLAGS
+
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the Boost::Log library is available" >&5
+$as_echo_n "checking whether the Boost::Log library is available... " >&6; }
+if ${ax_cv_boost_log+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+			CXXFLAGS_SAVE=$CXXFLAGS
+
+			cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <boost/log/trivial.hpp>
+int
+main ()
+{
+BOOST_LOG_TRIVIAL(trace) << "A boost::log test";
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  ax_cv_boost_log=yes
+else
+  ax_cv_boost_log=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+				CXXFLAGS=$CXXFLAGS_SAVE
+			ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_boost_log" >&5
+$as_echo "$ax_cv_boost_log" >&6; }
+
+		if test "x$ax_cv_boost_log" = "xyes"; then
+
+
+
+$as_echo "#define HAVE_BOOST_LOG /**/" >>confdefs.h
+
+			BOOSTLIBDIR=`echo $BOOST_LDFLAGS | sed -e 's/[^\/]*//'`
+
+			if test "x$ax_boost_user_log_lib" = "x"; then
+				for libextension in `ls $BOOSTLIBDIR/libboost_log*.so* $BOOSTLIBDIR/libboost_log*.dylib* $BOOSTLIBDIR/libboost_log*.a* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_log.*\)\.so.*$;\1;' -e 's;^lib\(boost_log.*\)\.dylib.*$;\1;' -e 's;^lib\(boost_log.*\)\.a.*$;\1;'` ; do
+					ax_lib=${libextension}
+					as_ac_Lib=`$as_echo "ac_cv_lib_$ax_lib''_exit" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for exit in -l$ax_lib" >&5
+$as_echo_n "checking for exit in -l$ax_lib... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-l$ax_lib  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char exit ();
+int
+main ()
+{
+return exit ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+  BOOST_LOG_LIB="-l$ax_lib";  link_log="yes"; break
+else
+  link_log="no"
+fi
+
+				done
+
+				if test "x$link_log" != "xyes"; then
+					for libextension in `ls $BOOSTLIBDIR/boost_log*.dll* $BOOSTLIBDIR/boost_log*.a* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^\(boost_log.*\)\.dll.*$;\1;' -e 's;^\(boost_log.*\)\.a.*$;\1;'` ; do
+						ax_lib=${libextension}
+						as_ac_Lib=`$as_echo "ac_cv_lib_$ax_lib''_exit" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for exit in -l$ax_lib" >&5
+$as_echo_n "checking for exit in -l$ax_lib... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-l$ax_lib  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char exit ();
+int
+main ()
+{
+return exit ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+  BOOST_LOG_LIB="-l$ax_lib";  link_log="yes"; break
+else
+  link_log="no"
+fi
+
+					done
+				fi
+
+			else
+				for ax_lib in $ax_boost_user_log_lib boost_log-$ax_boost_user_log_lib; do
+					as_ac_Lib=`$as_echo "ac_cv_lib_$ax_lib''_exit" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for exit in -l$ax_lib" >&5
+$as_echo_n "checking for exit in -l$ax_lib... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-l$ax_lib  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char exit ();
+int
+main ()
+{
+return exit ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+  BOOST_LOG_LIB="-l$ax_lib";  link_log="yes"; break
+else
+  link_log="no"
+fi
+
+				done
+			fi
+
+			if test "x$ax_lib" = "x"; then
+				as_fn_error $? "Could not find a version of the library!" "$LINENO" 5
+			fi
+
+			if test "x$link_log" = "xno"; then
+				as_fn_error $? "Could not link against $ax_lib !" "$LINENO" 5
+			fi
+		fi
+
+		CPPFLAGS="$CPPFLAGS_SAVED"
+		LDFLAGS="$LDFLAGS_SAVED"
+	fi
+
+
 ###############################
 # Check for RocksDB
 for ac_header in rocksdb/db.h
@@ -6601,6 +6851,33 @@ done
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CNL-CPP library..." >&5
 $as_echo_n "checking for CNL-CPP library...... " >&6; }
+
+SAVED_LIBS=$LIBS
+LIBS="$LIBS -lcnl-cpp"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <cnl-cpp/namespace.hpp>
+int
+main ()
+{
+cnl_cpp::Namespace n(ndn::Name("/test"))
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "can't find CNL-CPP lib
+See \`config.log' for more details" "$LINENO" 5; }
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$SAVED_LIBS
 
 ###############################
 # Check for protobuf
@@ -6787,32 +7064,8 @@ fi
 fi
 fi
 
-SAVED_LIBS=$LIBS
-LIBS="$LIBS -lcnl-cpp"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <cnl-cpp/namespace.hpp>
-int
-main ()
-{
-cnl_cpp::Namespace n(ndn::Name("/test"))
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "can't find CNL-CPP lib
-See \`config.log' for more details" "$LINENO" 5; }
-
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$SAVED_LIBS
+###############################
+# Check for NDN-RTC
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure

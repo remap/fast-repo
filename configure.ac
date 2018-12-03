@@ -30,6 +30,7 @@ AX_BOOST_ASIO
 AX_BOOST_THREAD
 AX_BOOST_TIMER
 AX_BOOST_FILESYSTEM
+AX_BOOST_LOG
 
 ###############################
 # Check for RocksDB
@@ -46,6 +47,16 @@ AC_CHECK_LIB([ndn-cpp], [ndn_getErrorString], [],
 # Check for CNL
 AC_CHECK_HEADERS([cnl-cpp/namespace.hpp],,[AC_MSG_FAILURE([can't find namespace.hpp])])
 AC_MSG_CHECKING([for CNL-CPP library...])
+
+SAVED_LIBS=$LIBS
+LIBS="$LIBS -lcnl-cpp"
+AC_LINK_IFELSE(
+    [AC_LANG_PROGRAM([#include <cnl-cpp/namespace.hpp>],
+        [cnl_cpp::Namespace n(ndn::Name("/test"))])],
+        [AC_MSG_RESULT([yes])],
+        [AC_MSG_FAILURE([can't find CNL-CPP lib])]
+)
+LIBS=$SAVED_LIBS
 
 ###############################
 # Check for protobuf
@@ -80,15 +91,8 @@ if test "$HAVE_PROTOBUF" == "1" ; then
   AS_IF([test "${PROTOC}" == "no"], [AC_MSG_ERROR([ProtoBuf compiler "protoc" not found.])])
 fi
 
-SAVED_LIBS=$LIBS
-LIBS="$LIBS -lcnl-cpp"
-AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM([#include <cnl-cpp/namespace.hpp>],
-        [cnl_cpp::Namespace n(ndn::Name("/test"))])],
-        [AC_MSG_RESULT([yes])],
-        [AC_MSG_FAILURE([can't find CNL-CPP lib])]
-)
-LIBS=$SAVED_LIBS
+###############################
+# Check for NDN-RTC
 
 AC_OUTPUT
 
