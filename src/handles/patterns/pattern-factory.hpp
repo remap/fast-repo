@@ -12,13 +12,15 @@
 
 namespace fast_repo {
 
-typedef std::function<std::shared_ptr<IFetchPattern>(ndn::Face&,ndn::KeyChain&,StoreData)> CreatePattern;
+using boost::shared_ptr;
+
+typedef std::function<shared_ptr<IFetchPattern>(ndn::Face&,ndn::KeyChain&,StoreData)> CreatePattern;
 
 class PatternFactory
 {
   private:
     PatternFactory();
-    static std::shared_ptr<PatternFactory> instance_;
+    static shared_ptr<PatternFactory> instance_;
     std::map<ndn::Name, CreatePattern> patterns_;
 
   public:
@@ -32,10 +34,12 @@ class PatternFactory
      * @param storePacketFun Must be called by fetch pattern implementations for 
      *                       storing received data packets.
      */
-    std::shared_ptr<IFetchPattern> create(ndn::Name name, 
+    shared_ptr<IFetchPattern> create(ndn::Name name, 
                                           ndn::Face& face, 
                                           ndn::KeyChain& keyChain, 
                                           StoreData storePacketFun);
+
+    std::vector<ndn::Name> getSupportedPatterns() const;
 };
 
 }

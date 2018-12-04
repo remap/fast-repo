@@ -10,6 +10,7 @@
 #include <fstream>
 #include <boost/property_tree/info_parser.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/log/trivial.hpp>
 #include <ndn-cpp/name.hpp>
 #include <ndn-cpp/face.hpp>
 
@@ -18,9 +19,12 @@
 using namespace fast_repo;
 using namespace ndn;
 
-using std::shared_ptr;
-using std::make_shared;
-using std::enable_shared_from_this;
+using boost::shared_ptr;
+// using std::shared_ptr;
+using boost::make_shared;
+// using std::make_shared;
+using boost::enable_shared_from_this;
+// using std::enable_shared_from_this;
 
 static Config DefaultConfig = Config();
 
@@ -66,7 +70,7 @@ fast_repo::parseConfig(const std::string &configPath)
 {
     if (configPath.empty())
     {
-        std::cerr << "configuration file path is empty" << std::endl;
+        BOOST_LOG_TRIVIAL(error) << "configuration file path is empty";
     }
 
     std::ifstream fin(configPath.c_str());
@@ -130,7 +134,7 @@ FastRepo::FastRepo(boost::asio::io_service &io,
                    const Config &config,
                    const shared_ptr<ndn::Face> &face,
                    const shared_ptr<ndn::KeyChain> &keyChain)
-    : pimpl_(make_shared<FastRepoImpl>(io, config, face, keyChain))
+    : pimpl_(boost::make_shared<FastRepoImpl>(io, config, face, keyChain))
 {
     pimpl_->initializeStorage();
 }
@@ -150,9 +154,11 @@ FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
                            const Config &config,
                            const shared_ptr<ndn::Face> &face,
                            const shared_ptr<ndn::KeyChain> &keyChain)
-    : io_(io), config_(config), face_(face), keyChain_(keyChain), storageEngine_(make_shared<StorageEngine>(config_.dbPath, config_.readOnly))
-    , readHandle_(*face_, *storageEngine_, *keyChain_), patternHandle_(*face_, *storageEngine_, *keyChain_), writeHandle_(*face_, *storageEngine_, *keyChain_)
-
+    : io_(io), config_(config), face_(face), keyChain_(keyChain)
+    , storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly))
+    , readHandle_(*face_, *storageEngine_, *keyChain_)
+    , patternHandle_(*face_, *storageEngine_, *keyChain_)
+    , writeHandle_(*face_, *storageEngine_, *keyChain_)
 {
 }
 
@@ -166,11 +172,12 @@ void FastRepoImpl::enableListening()
     for (const ndn::Name &cmdPrefix : config_.repoPrefixes)
     {
         face_->registerPrefix(cmdPrefix,
-                              [](const shared_ptr<const Name> &prefix,
-                                 const shared_ptr<const Interest> &interest,
-                                 Face &face, uint64_t, const shared_ptr<const InterestFilter> &) {
-                                     std::cerr << "unexpected interest received: " << interest->getName() << std::endl;
-                              },
+                              OnInterestCallback(),
+                            //   [](const shared_ptr<const Name> &prefix,
+                            //      const shared_ptr<const Interest> &interest,
+                            //      Face &face, uint64_t, const shared_ptr<const InterestFilter> &) {
+                            //          std::cerr << "unexpected interest received: " << interest->getName() << std::endl;
+                            //   },
                               [](const shared_ptr<const Name> &cmdPrefix) {
                                   std::cerr << "failed to register prefix " << cmdPrefix << std::endl;
                                   BOOST_THROW_EXCEPTION(std::runtime_error("Command prefix registration failed"));
@@ -196,8 +203,9 @@ void FastRepoImpl::enableValidation()
 
 void FastRepoImpl::initializeStorage()
 {
-    std::cout << "opened storage in " << (config_.readOnly ? "readonly" : "read-write")
-              << " mode at " << config_.dbPath << std::endl;
+    BOOST_LOG_TRIVIAL(info) 
+              << "opened storage in " << (config_.readOnly ? "readonly" : "read-write")
+              << " mode at " << config_.dbPath;
 
     shared_ptr<FastRepoImpl> me = shared_from_this();
     storageEngine_->scanForLongestPrefixes(io_, [me, this](const std::vector<ndn::Name> &prefixes) {
@@ -206,7 +214,7 @@ void FastRepoImpl::initializeStorage()
         for (auto p : config_.dataPrefixes)
         {
             readHandle_.listen(p);
-            std::cout << "registered data prefix: " << p << std::endl;
+            std::cout << "registered data prefix: " << p;
         }
     });
 }

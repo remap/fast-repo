@@ -8,6 +8,7 @@
 #include "pattern-handle.hpp"
 
 #include "patterns/counter-pattern.hpp"
+#include "patterns/pattern-factory.hpp"
 
 #include <ndn-cpp/face.hpp>
 #include <ndn-cpp/interest-filter.hpp>
@@ -16,8 +17,8 @@ using namespace fast_repo;
 using namespace ndn;
 
 using std::bind;
-using std::shared_ptr;
-using std::make_shared;
+using boost::shared_ptr;
+using boost::make_shared;
 
 PatternHandle::PatternHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChain &keyChain)
     : BaseHandle(face, storage, keyChain)
@@ -31,6 +32,12 @@ void PatternHandle::listen(const ndn::Name &prefix)
                                 bind(&PatternHandle::onInterest, this, _1, _2, _3, _4, _5));
     getFace().setInterestFilter(ndn::Name(prefix).append("cancel"),
                                 bind(&PatternHandle::onCancelRequest, this, _1, _2, _3, _4, _5));
+
+    std::cout << "started pattern handle.." << std::endl;
+    std::cout << "supported patterns: " << std::endl;
+    
+    for (auto p : patternFactory_.getSupportedPatterns()) 
+        std::cout << "\t" << p << std::endl;
 }
 
 void PatternHandle::removePattern(const ndn::Name &fetchPrefix)
@@ -78,6 +85,9 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
         extractParameter(*interest, *prefix, parameter);
     }
     catch (std::exception& e){
+        std::cerr << "error extracting parameters from interest " 
+                  << interest->getName() << ": " << e.what() << std::endl;
+
         negativeReply(*interest, 403);
         return;
     }
@@ -85,6 +95,9 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
     // ABUSE Name field: compo[0]:=PatternName(only 1st component); compo[1]:=FetchPrefix;
     Name patternName, fetchPrefix;
     if(!decodeNames(parameter.repo_command_parameter().name(), patternName, fetchPrefix)){
+        std::cerr << "couldn't decode names from interst parameters: " 
+                  << interest->getName() << std::endl;
+
         negativeReply(*interest, 403);
         return;
     }
@@ -94,6 +107,8 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
     // Result code: 402:=Duplicated fetch request
     if(patIt != patterns_.end())
     {
+        std::cerr << "fetching pattern for " << fetchPrefix << " is already active" << std::endl;
+
         negativeReply(*interest, 402);
         return;
     }
@@ -108,9 +123,13 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
     // Result code: 404:=No such pattern is known
     if(pattern == nullptr)
     {
+        std::cerr << "requested pattern " << patternName << " is not supported" << std::endl;
+
         negativeReply(*interest, 404);
         return;
     }
+
+    std::cout << "initiate fetching for " << patternName << " pattern" << std::endl;
 
     pattern->fetch(fetchPrefix);
     patterns_[fetchPrefix] = pattern;
@@ -120,10 +139,10 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
     negativeReply(*interest, 100);
 }
 
-void PatternHandle::onCancelRequest(const std::shared_ptr<const ndn::Name> &prefix,
-                                    const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+void PatternHandle::onCancelRequest(const shared_ptr<const ndn::Name> &prefix,
+                                    const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                                     uint64_t interestFilterId,
-                                    const std::shared_ptr<const ndn::InterestFilter> &filter)
+                                    const shared_ptr<const ndn::InterestFilter> &filter)
 {
     ndn_message::RepoCommandParameterMessage parameter;
     try{

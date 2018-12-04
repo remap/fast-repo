@@ -31,6 +31,8 @@ class InterestFilter;
 namespace repo_ng
 {
 
+using boost::shared_ptr;
+
 class ReadHandle : public BaseHandle
 {
   public:
@@ -81,13 +83,13 @@ class ReadHandle : public BaseHandle
    * @brief Read data from backend storage
    */
     void
-    onInterest(const std::shared_ptr<const ndn::Name> &prefix,
-               const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    onInterest(const shared_ptr<const ndn::Name> &prefix,
+               const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                uint64_t interestFilterId,
-               const std::shared_ptr<const ndn::InterestFilter> &filter);
+               const shared_ptr<const ndn::InterestFilter> &filter);
 
     void
-    onRegisterFailed(const std::shared_ptr<const ndn::Name> &prefix);
+    onRegisterFailed(const shared_ptr<const ndn::Name> &prefix);
 
   private:
     //   size_t m_prefixSubsetLength;

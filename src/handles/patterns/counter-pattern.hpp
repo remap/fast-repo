@@ -13,6 +13,9 @@
 namespace fast_repo
 {
 
+using boost::shared_ptr;
+using boost::make_shared;
+
 /**
  * A simple fetch pattern, for test.
  * Try to fetch the prefix/<n>/, n from 0 to 9.
@@ -37,11 +40,11 @@ public:
         return "counter";
     }
 
-    static std::shared_ptr<IFetchPattern> create(ndn::Face& face, 
+    static shared_ptr<IFetchPattern> create(ndn::Face& face, 
                                                  ndn::KeyChain & keyChain, 
                                                  StoreData storePacketFun)
     {
-        return std::make_shared<CounterPattern>(face, keyChain, storePacketFun);
+        return boost::make_shared<CounterPattern>(face, keyChain, storePacketFun);
     }
 
     void cancel() override
@@ -56,8 +59,8 @@ public:
 
     void doFetch();
 
-    void onData(const std::shared_ptr<const ndn::Interest>& interest,
-                const std::shared_ptr<ndn::Data>& data);
+    void onData(const shared_ptr<const ndn::Interest>& interest,
+                const shared_ptr<ndn::Data>& data);
 };
 
 } // namespace fast_repo

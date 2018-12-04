@@ -15,9 +15,8 @@ using namespace fast_repo;
 using namespace ndn;
 
 using std::bind;
-using std::shared_ptr;
-using std::make_shared;
-using namespace std::placeholders;
+using boost::shared_ptr;
+using boost::make_shared;
 
 void CounterPattern::fetch(const ndn::Name &prefix)
 {
@@ -40,8 +39,8 @@ void CounterPattern::doFetch()
                            bind(&CounterPattern::onData, this, _1, _2));
 }
 
-void CounterPattern::onData(const std::shared_ptr<const ndn::Interest>& interest,
-                            const std::shared_ptr<ndn::Data>& data)
+void CounterPattern::onData(const shared_ptr<const ndn::Interest>& interest,
+                            const shared_ptr<ndn::Data>& data)
 {
     // Put data without validation
     storePacketFun_(*data);

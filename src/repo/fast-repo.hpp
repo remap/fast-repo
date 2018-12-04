@@ -8,6 +8,8 @@
 #ifndef __fast_repo_hpp__
 #define __fast_repo_hpp__
 
+#define BOOST_LOG_DYN_LINK 1
+
 #include <vector>
 #include <string>
 #include <boost/property_tree/ptree.hpp>
@@ -29,6 +31,8 @@ class KeyChain;
 
 namespace fast_repo
 {
+
+using boost::shared_ptr;
 
 class StorageEngine;
 
@@ -56,14 +60,14 @@ class FastRepo
   public:
     FastRepo(boost::asio::io_service &io,
              const Config &config,
-             const std::shared_ptr<ndn::Face> &face,
-             const std::shared_ptr<ndn::KeyChain> &keyChain);
+             const shared_ptr<ndn::Face> &face,
+             const shared_ptr<ndn::KeyChain> &keyChain);
 
     void enableListening();
     void enableValidation();
 
   private:
-    std::shared_ptr<FastRepoImpl> pimpl_;
+    shared_ptr<FastRepoImpl> pimpl_;
 };
 
 } // namespace fast_repo

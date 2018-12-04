@@ -24,6 +24,10 @@ class InterestFilter;
 namespace fast_repo
 {
 
+using boost::shared_ptr;
+
+class PatternFactory;
+
 /**
  * A handle for pattern fetching. 
  * Exact pattern fetching implementations must derive from IPatternFetch
@@ -40,17 +44,17 @@ class PatternHandle : public repo_ng::BaseHandle
   private:
     PatternFactory& patternFactory_;
 
-    std::map<ndn::Name, std::shared_ptr<IFetchPattern>> patterns_;
+    std::map<ndn::Name, shared_ptr<IFetchPattern>> patterns_;
 
-    void onInterest(const std::shared_ptr<const ndn::Name> &prefix,
-                    const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    void onInterest(const shared_ptr<const ndn::Name> &prefix,
+                    const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                     uint64_t interestFilterId,
-                    const std::shared_ptr<const ndn::InterestFilter> &filter);
+                    const shared_ptr<const ndn::InterestFilter> &filter);
 
-    void onCancelRequest(const std::shared_ptr<const ndn::Name> &prefix,
-                         const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+    void onCancelRequest(const shared_ptr<const ndn::Name> &prefix,
+                         const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
                          uint64_t interestFilterId,
-                         const std::shared_ptr<const ndn::InterestFilter> &filter);
+                         const shared_ptr<const ndn::InterestFilter> &filter);
 
   private:
     bool decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,

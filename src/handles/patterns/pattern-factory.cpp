@@ -14,14 +14,16 @@ using namespace ndn;
 using namespace fast_repo;
 using namespace std;
 using namespace std::placeholders;
+using boost::shared_ptr;
 
-
-std::shared_ptr<PatternFactory> PatternFactory::instance_;
+boost::shared_ptr<PatternFactory> PatternFactory::instance_;
 
 PatternFactory::PatternFactory()
 {
     patterns_[CounterPattern::getPatternKeyword()] = &CounterPattern::create;
-    // patterns_[]
+#if HAVE_LIBNDNRTC
+    patterns_[NdnrtcPattern::getPatternKeyword()] = &NdnrtcPattern::create;
+#endif
 }
 
 PatternFactory& PatternFactory::getInstance()
@@ -32,7 +34,7 @@ PatternFactory& PatternFactory::getInstance()
     return *instance_;
 }
 
-shared_ptr<IFetchPattern> PatternFactory::create(Name name, 
+boost::shared_ptr<IFetchPattern> PatternFactory::create(Name name, 
                                                  Face& face, 
                                                  KeyChain& keyChain, 
                                                  StoreData storePacketFun)
@@ -43,4 +45,12 @@ shared_ptr<IFetchPattern> PatternFactory::create(Name name,
     }else{
         return it->second(face, keyChain, storePacketFun);
     }
+}
+
+vector<Name> PatternFactory::getSupportedPatterns() const 
+{
+    vector<Name> p;
+    for (auto it:patterns_)
+        p.push_back(it.first);
+    return p;
 }

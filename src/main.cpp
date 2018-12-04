@@ -26,24 +26,24 @@
 #include <execinfo.h>
 #include <functional>
 
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/info_parser.hpp>
-#include <ndn-cpp/threadsafe-face.hpp>
-#include <ndn-cpp/security/key-chain.hpp>
-
 #include "../third_party/docopt/docopt.h"
 #include "config.hpp"
 #include "repo/fast-repo.hpp"
 
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/info_parser.hpp>
+#include <boost/log/trivial.hpp>
+#include <ndn-cpp/threadsafe-face.hpp>
+#include <ndn-cpp/security/key-chain.hpp>
+
 using namespace std;
 using namespace ndn;
+namespace logging = boost::log;
 
 using std::bind;
 using std::ref;
-using std::shared_ptr;
-using std::make_shared;
 
 static const char USAGE[] =
     R"(Fast Repo.
@@ -67,6 +67,17 @@ static const char USAGE[] =
       fast-repo --config=repo.conf
       fast-repo /ndn/fast-repo --db-path=$HOME/fast-repo
 )";
+
+void init_logging(bool verbose)
+{
+    if (!verbose)
+    {
+        // logging::core::get()->set_filter
+        // (
+        //     logging::trivial::severity >= logging::trivial::info
+        // );
+    }
+}
 
 void terminate(boost::asio::io_service &ioService,
                const boost::system::error_code &error,
@@ -111,12 +122,13 @@ int main(int argc, char **argv)
                                                                true,
                                                                (string("Fast Repo ") + string(PACKAGE_VERSION)).c_str());
 
-    for(auto const& arg : args) {
-        std::cout << arg.first << " " <<  arg.second << std::endl;
-    }
+    init_logging(args["--verbose"].asBool());
 
-    shared_ptr<Face> face = make_shared<ThreadsafeFace>(ioService);
-    shared_ptr<KeyChain> keyChain = make_shared<KeyChain>();
+    for(auto const& arg : args)
+        BOOST_LOG_TRIVIAL(trace) << arg.first << " " <<  arg.second;
+
+    boost::shared_ptr<Face> face = boost::make_shared<ThreadsafeFace>(ioService);
+    boost::shared_ptr<KeyChain> keyChain = boost::make_shared<KeyChain>();
 
     // TODO: make sure this is setup correctly
     face->setCommandSigningInfo(*keyChain, keyChain->getDefaultCertificateName());

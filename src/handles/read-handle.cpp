@@ -23,8 +23,8 @@
 
 using namespace ndn;
 
-using std::shared_ptr;
-using std::make_shared;
+using boost::shared_ptr;
+using boost::make_shared;
 using std::bind;
 
 namespace repo_ng

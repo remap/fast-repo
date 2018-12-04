@@ -28,6 +28,8 @@
 
 namespace repo_ng {
 
+using boost::shared_ptr;
+
 class WriteHandle : public BaseHandle
 {
 
@@ -54,10 +56,10 @@ private: // insert command
    * @brief handle insert commands
    */
   void
-  onInterest(const std::shared_ptr<const ndn::Name> &prefix,
-              const std::shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
+  onInterest(const shared_ptr<const ndn::Name> &prefix,
+              const shared_ptr<const ndn::Interest> &interest, ndn::Face &face,
               uint64_t interestFilterId,
-              const std::shared_ptr<const ndn::InterestFilter> &filter);
+              const shared_ptr<const ndn::InterestFilter> &filter);
 
   void
   onValidated(const ndn::Interest& interest, const ndn::Name &prefix);
@@ -72,10 +74,10 @@ private:
   processSingleInsertCommand(const ndn::Interest& interest, ndn_message::RepoCommandParameterMessage& parameter);
 
   void
-  onData(const std::shared_ptr<const ndn::Interest>& interest, const std::shared_ptr<ndn::Data>& data, uint64_t processId);
+  onData(const shared_ptr<const ndn::Interest>& interest, const shared_ptr<ndn::Data>& data, uint64_t processId);
 
   void
-  onTimeout(const std::shared_ptr<const ndn::Interest>& interest, uint64_t processId);
+  onTimeout(const shared_ptr<const ndn::Interest>& interest, uint64_t processId);
 
   void
   onDataValidated(const ndn::Interest& interest, const ndn::Data& data, uint64_t processId);

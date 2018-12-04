@@ -93,6 +93,8 @@ fi
 
 ###############################
 # Check for NDN-RTC
+AC_CHECK_HEADERS([ndnrtc/interfaces.hpp],,[AC_MSG_FAILURE([can't find NDN-RTC])])
+AC_CHECK_LIB([ndnrtc], [ndnrtc_getVersion])
 
 AC_OUTPUT
 

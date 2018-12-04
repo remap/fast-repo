@@ -34,19 +34,19 @@ using namespace ndn;
 using namespace ndn::func_lib;
 using namespace ndn::ptr_lib;
 
-const std::string PATTERN_NAME = "counter";
+const std::string PATTERN_NAME = "ndnrtc3";
 
-typedef function<void()> SimpleCallback;
+typedef ndn::ptr_lib::function<void()> SimpleCallback;
 
 static void
 requestFetchOnData
-(const shared_ptr<const Interest>& interest,
- const shared_ptr<Data>& data, const SimpleCallback& onInsertStarted,
+(const ndn::ptr_lib::shared_ptr<const Interest>& interest,
+ const ndn::ptr_lib::shared_ptr<Data>& data, const SimpleCallback& onInsertStarted,
  const SimpleCallback& onFailed);
 
 static void
 requestFetchOnTimeout
-(const shared_ptr<const Interest>& interest,
+(const ndn::ptr_lib::shared_ptr<const Interest>& interest,
  const SimpleCallback& onFailed);
 
 void
