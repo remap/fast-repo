@@ -9,6 +9,9 @@
 /* define if the Boost.Filesystem library is available */
 #undef HAVE_BOOST_FILESYSTEM
 
+/* define if the Boost::Log library is available */
+#undef HAVE_BOOST_LOG
+
 /* define if the Boost::System library is available */
 #undef HAVE_BOOST_SYSTEM
 
@@ -27,6 +30,9 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `ndnrtc' library (-lndnrtc). */
+#undef HAVE_LIBNDNRTC
+
 /* Define to 1 if you have the `ndn-cpp' library (-lndn-cpp). */
 #undef HAVE_LIBNDN_CPP
 
@@ -41,6 +47,9 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the <ndnrtc/interfaces.hpp> header file. */
+#undef HAVE_NDNRTC_INTERFACES_HPP
 
 /* Define to 1 if you have the <ndn-cpp/interest.hpp> header file. */
 #undef HAVE_NDN_CPP_INTEREST_HPP
