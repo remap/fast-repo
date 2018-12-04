@@ -14,6 +14,10 @@
 
 #include <ndnrtc/name-components.hpp>
 
+namespace ndnrtc {
+    class StreamRecorder;
+}
+
 namespace fast_repo {
 
 using boost::shared_ptr;
@@ -44,7 +48,7 @@ public:
     void cancel() override;
 
 private:
-
+    shared_ptr<ndnrtc::StreamRecorder> streamRecorder_;
 };
 
 }
