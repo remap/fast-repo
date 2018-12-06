@@ -133,26 +133,29 @@ am_examples_pattern_fetch_OBJECTS =  \
 	examples/pattern-fetch.$(OBJEXT)
 examples_pattern_fetch_OBJECTS = $(am_examples_pattern_fetch_OBJECTS)
 examples_pattern_fetch_DEPENDENCIES = $(am__DEPENDENCIES_2)
-am_fast_repo_OBJECTS = src/main.$(OBJEXT) \
-	third_party/docopt/docopt.$(OBJEXT) \
-	src/repo/fast-repo.$(OBJEXT) \
-	src/storage/storage-engine.$(OBJEXT) \
-	src/repo-command-response.pb.$(OBJEXT) \
-	src/repo-command-parameter.pb.$(OBJEXT) \
-	src/handles/base-handle.$(OBJEXT) \
-	src/handles/pattern-handle.$(OBJEXT) \
-	src/handles/delete-handle.$(OBJEXT) \
-	src/handles/read-handle.$(OBJEXT) \
-	src/handles/watch-handle.$(OBJEXT) \
-	src/handles/write-handle.$(OBJEXT) \
-	src/handles/patterns/base-pattern.$(OBJEXT) \
-	src/handles/patterns/counter-pattern.$(OBJEXT) \
-	src/handles/patterns/pattern-factory.$(OBJEXT) \
-	src/handles/patterns/ndnrtc-pattern.$(OBJEXT)
+am_fast_repo_OBJECTS = src/fast_repo-main.$(OBJEXT) \
+	third_party/docopt/fast_repo-docopt.$(OBJEXT) \
+	src/repo/fast_repo-fast-repo.$(OBJEXT) \
+	src/storage/fast_repo-storage-engine.$(OBJEXT) \
+	src/fast_repo-repo-command-response.pb.$(OBJEXT) \
+	src/fast_repo-repo-command-parameter.pb.$(OBJEXT) \
+	src/handles/fast_repo-base-handle.$(OBJEXT) \
+	src/handles/fast_repo-pattern-handle.$(OBJEXT) \
+	src/handles/fast_repo-delete-handle.$(OBJEXT) \
+	src/handles/fast_repo-read-handle.$(OBJEXT) \
+	src/handles/fast_repo-status-handle.$(OBJEXT) \
+	src/handles/fast_repo-watch-handle.$(OBJEXT) \
+	src/handles/fast_repo-write-handle.$(OBJEXT) \
+	src/handles/patterns/fast_repo-base-pattern.$(OBJEXT) \
+	src/handles/patterns/fast_repo-counter-pattern.$(OBJEXT) \
+	src/handles/patterns/fast_repo-pattern-factory.$(OBJEXT) \
+	src/handles/patterns/fast_repo-ndnrtc-pattern.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+fast_repo_LINK = $(CXXLD) $(fast_repo_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am__objects_1 =  \
 	${GMOCK_ROOT}/src/tests_test_prefix_match-gmock-all.$(OBJEXT) \
 	${GTEST_ROOT}/src/tests_test_prefix_match-gtest-all.$(OBJEXT)
@@ -180,24 +183,28 @@ am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-all.Po \
 	${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po \
 	examples/$(DEPDIR)/pattern-cancel.Po \
-	examples/$(DEPDIR)/pattern-fetch.Po src/$(DEPDIR)/main.Po \
+	examples/$(DEPDIR)/pattern-fetch.Po \
+	src/$(DEPDIR)/fast_repo-main.Po \
+	src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Po \
+	src/$(DEPDIR)/fast_repo-repo-command-response.pb.Po \
 	src/$(DEPDIR)/repo-command-parameter.pb.Po \
 	src/$(DEPDIR)/repo-command-response.pb.Po \
-	src/handles/$(DEPDIR)/base-handle.Po \
-	src/handles/$(DEPDIR)/delete-handle.Po \
-	src/handles/$(DEPDIR)/pattern-handle.Po \
-	src/handles/$(DEPDIR)/read-handle.Po \
-	src/handles/$(DEPDIR)/watch-handle.Po \
-	src/handles/$(DEPDIR)/write-handle.Po \
-	src/handles/patterns/$(DEPDIR)/base-pattern.Po \
-	src/handles/patterns/$(DEPDIR)/counter-pattern.Po \
-	src/handles/patterns/$(DEPDIR)/ndnrtc-pattern.Po \
-	src/handles/patterns/$(DEPDIR)/pattern-factory.Po \
-	src/repo/$(DEPDIR)/fast-repo.Po \
-	src/storage/$(DEPDIR)/storage-engine.Po \
+	src/handles/$(DEPDIR)/fast_repo-base-handle.Po \
+	src/handles/$(DEPDIR)/fast_repo-delete-handle.Po \
+	src/handles/$(DEPDIR)/fast_repo-pattern-handle.Po \
+	src/handles/$(DEPDIR)/fast_repo-read-handle.Po \
+	src/handles/$(DEPDIR)/fast_repo-status-handle.Po \
+	src/handles/$(DEPDIR)/fast_repo-watch-handle.Po \
+	src/handles/$(DEPDIR)/fast_repo-write-handle.Po \
+	src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po \
+	src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po \
+	src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po \
+	src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po \
+	src/repo/$(DEPDIR)/fast_repo-fast-repo.Po \
+	src/storage/$(DEPDIR)/fast_repo-storage-engine.Po \
 	src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po \
 	tests/$(DEPDIR)/test_prefix_match-test_prefix_match.Po \
-	third_party/docopt/$(DEPDIR)/docopt.Po
+	third_party/docopt/$(DEPDIR)/fast_repo-docopt.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -588,6 +595,7 @@ BUILT_SOURCES = src/repo-command-response.pb.cc src/repo-command-response.pb.h \
     src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h \
     examples/repo-command-parameter_pb2.py examples/repo-command-response_pb2.py
 
+fast_repo_CXXFLAGS = -I$(top_srcdir)/third_party
 fast_repo_SOURCES = src/main.cpp \
     third_party/docopt/docopt.cpp \
     src/repo/fast-repo.cpp \
@@ -598,6 +606,7 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/pattern-handle.cpp \
     src/handles/delete-handle.cpp \
     src/handles/read-handle.cpp \
+    src/handles/status-handle.cpp \
     src/handles/watch-handle.cpp \
     src/handles/write-handle.cpp \
     src/handles/patterns/base-pattern.cpp \
@@ -764,14 +773,15 @@ examples/pattern-fetch.$(OBJEXT): examples/$(am__dirstamp) \
 examples/pattern_fetch$(EXEEXT): $(examples_pattern_fetch_OBJECTS) $(examples_pattern_fetch_DEPENDENCIES) $(EXTRA_examples_pattern_fetch_DEPENDENCIES) examples/$(am__dirstamp)
 	@rm -f examples/pattern_fetch$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(examples_pattern_fetch_OBJECTS) $(examples_pattern_fetch_LDADD) $(LIBS)
-src/main.$(OBJEXT): src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
+src/fast_repo-main.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
 third_party/docopt/$(am__dirstamp):
 	@$(MKDIR_P) third_party/docopt
 	@: > third_party/docopt/$(am__dirstamp)
 third_party/docopt/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) third_party/docopt/$(DEPDIR)
 	@: > third_party/docopt/$(DEPDIR)/$(am__dirstamp)
-third_party/docopt/docopt.$(OBJEXT):  \
+third_party/docopt/fast_repo-docopt.$(OBJEXT):  \
 	third_party/docopt/$(am__dirstamp) \
 	third_party/docopt/$(DEPDIR)/$(am__dirstamp)
 src/repo/$(am__dirstamp):
@@ -780,7 +790,7 @@ src/repo/$(am__dirstamp):
 src/repo/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/repo/$(DEPDIR)
 	@: > src/repo/$(DEPDIR)/$(am__dirstamp)
-src/repo/fast-repo.$(OBJEXT): src/repo/$(am__dirstamp) \
+src/repo/fast_repo-fast-repo.$(OBJEXT): src/repo/$(am__dirstamp) \
 	src/repo/$(DEPDIR)/$(am__dirstamp)
 src/storage/$(am__dirstamp):
 	@$(MKDIR_P) src/storage
@@ -788,25 +798,39 @@ src/storage/$(am__dirstamp):
 src/storage/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/storage/$(DEPDIR)
 	@: > src/storage/$(DEPDIR)/$(am__dirstamp)
-src/storage/storage-engine.$(OBJEXT): src/storage/$(am__dirstamp) \
+src/storage/fast_repo-storage-engine.$(OBJEXT):  \
+	src/storage/$(am__dirstamp) \
 	src/storage/$(DEPDIR)/$(am__dirstamp)
+src/fast_repo-repo-command-response.pb.$(OBJEXT): src/$(am__dirstamp) \
+	src/$(DEPDIR)/$(am__dirstamp)
+src/fast_repo-repo-command-parameter.pb.$(OBJEXT):  \
+	src/$(am__dirstamp) src/$(DEPDIR)/$(am__dirstamp)
 src/handles/$(am__dirstamp):
 	@$(MKDIR_P) src/handles
 	@: > src/handles/$(am__dirstamp)
 src/handles/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/handles/$(DEPDIR)
 	@: > src/handles/$(DEPDIR)/$(am__dirstamp)
-src/handles/base-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+src/handles/fast_repo-base-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
 	src/handles/$(DEPDIR)/$(am__dirstamp)
-src/handles/pattern-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+src/handles/fast_repo-pattern-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
 	src/handles/$(DEPDIR)/$(am__dirstamp)
-src/handles/delete-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+src/handles/fast_repo-delete-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
 	src/handles/$(DEPDIR)/$(am__dirstamp)
-src/handles/read-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+src/handles/fast_repo-read-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
 	src/handles/$(DEPDIR)/$(am__dirstamp)
-src/handles/watch-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+src/handles/fast_repo-status-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
 	src/handles/$(DEPDIR)/$(am__dirstamp)
-src/handles/write-handle.$(OBJEXT): src/handles/$(am__dirstamp) \
+src/handles/fast_repo-watch-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
+	src/handles/$(DEPDIR)/$(am__dirstamp)
+src/handles/fast_repo-write-handle.$(OBJEXT):  \
+	src/handles/$(am__dirstamp) \
 	src/handles/$(DEPDIR)/$(am__dirstamp)
 src/handles/patterns/$(am__dirstamp):
 	@$(MKDIR_P) src/handles/patterns
@@ -814,22 +838,22 @@ src/handles/patterns/$(am__dirstamp):
 src/handles/patterns/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) src/handles/patterns/$(DEPDIR)
 	@: > src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
-src/handles/patterns/base-pattern.$(OBJEXT):  \
+src/handles/patterns/fast_repo-base-pattern.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
-src/handles/patterns/counter-pattern.$(OBJEXT):  \
+src/handles/patterns/fast_repo-counter-pattern.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
-src/handles/patterns/pattern-factory.$(OBJEXT):  \
+src/handles/patterns/fast_repo-pattern-factory.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
-src/handles/patterns/ndnrtc-pattern.$(OBJEXT):  \
+src/handles/patterns/fast_repo-ndnrtc-pattern.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
 
 fast-repo$(EXEEXT): $(fast_repo_OBJECTS) $(fast_repo_DEPENDENCIES) $(EXTRA_fast_repo_DEPENDENCIES) 
 	@rm -f fast-repo$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(fast_repo_OBJECTS) $(fast_repo_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(fast_repo_LINK) $(fast_repo_OBJECTS) $(fast_repo_LDADD) $(LIBS)
 ${GMOCK_ROOT}/src/$(am__dirstamp):
 	@$(MKDIR_P) ${GMOCK_ROOT}/src
 	@: > ${GMOCK_ROOT}/src/$(am__dirstamp)
@@ -884,24 +908,27 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/pattern-cancel.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@examples/$(DEPDIR)/pattern-fetch.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/fast_repo-main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/fast_repo-repo-command-response.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-parameter.pb.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/repo-command-response.pb.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/base-handle.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/delete-handle.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/pattern-handle.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/read-handle.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/watch-handle.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/write-handle.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/base-pattern.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/counter-pattern.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/ndnrtc-pattern.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/pattern-factory.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast-repo.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/storage-engine.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-base-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-delete-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-pattern-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-read-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-status-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-watch-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-write-handle.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast_repo-fast-repo.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/fast_repo-storage-engine.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@tests/$(DEPDIR)/test_prefix_match-test_prefix_match.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@third_party/docopt/$(DEPDIR)/docopt.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@third_party/docopt/$(DEPDIR)/fast_repo-docopt.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -924,6 +951,244 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+src/fast_repo-main.o: src/main.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/fast_repo-main.o -MD -MP -MF src/$(DEPDIR)/fast_repo-main.Tpo -c -o src/fast_repo-main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/fast_repo-main.Tpo src/$(DEPDIR)/fast_repo-main.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/main.cpp' object='src/fast_repo-main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/fast_repo-main.o `test -f 'src/main.cpp' || echo '$(srcdir)/'`src/main.cpp
+
+src/fast_repo-main.obj: src/main.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/fast_repo-main.obj -MD -MP -MF src/$(DEPDIR)/fast_repo-main.Tpo -c -o src/fast_repo-main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/fast_repo-main.Tpo src/$(DEPDIR)/fast_repo-main.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/main.cpp' object='src/fast_repo-main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/fast_repo-main.obj `if test -f 'src/main.cpp'; then $(CYGPATH_W) 'src/main.cpp'; else $(CYGPATH_W) '$(srcdir)/src/main.cpp'; fi`
+
+third_party/docopt/fast_repo-docopt.o: third_party/docopt/docopt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT third_party/docopt/fast_repo-docopt.o -MD -MP -MF third_party/docopt/$(DEPDIR)/fast_repo-docopt.Tpo -c -o third_party/docopt/fast_repo-docopt.o `test -f 'third_party/docopt/docopt.cpp' || echo '$(srcdir)/'`third_party/docopt/docopt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) third_party/docopt/$(DEPDIR)/fast_repo-docopt.Tpo third_party/docopt/$(DEPDIR)/fast_repo-docopt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='third_party/docopt/docopt.cpp' object='third_party/docopt/fast_repo-docopt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o third_party/docopt/fast_repo-docopt.o `test -f 'third_party/docopt/docopt.cpp' || echo '$(srcdir)/'`third_party/docopt/docopt.cpp
+
+third_party/docopt/fast_repo-docopt.obj: third_party/docopt/docopt.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT third_party/docopt/fast_repo-docopt.obj -MD -MP -MF third_party/docopt/$(DEPDIR)/fast_repo-docopt.Tpo -c -o third_party/docopt/fast_repo-docopt.obj `if test -f 'third_party/docopt/docopt.cpp'; then $(CYGPATH_W) 'third_party/docopt/docopt.cpp'; else $(CYGPATH_W) '$(srcdir)/third_party/docopt/docopt.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) third_party/docopt/$(DEPDIR)/fast_repo-docopt.Tpo third_party/docopt/$(DEPDIR)/fast_repo-docopt.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='third_party/docopt/docopt.cpp' object='third_party/docopt/fast_repo-docopt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o third_party/docopt/fast_repo-docopt.obj `if test -f 'third_party/docopt/docopt.cpp'; then $(CYGPATH_W) 'third_party/docopt/docopt.cpp'; else $(CYGPATH_W) '$(srcdir)/third_party/docopt/docopt.cpp'; fi`
+
+src/repo/fast_repo-fast-repo.o: src/repo/fast-repo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/repo/fast_repo-fast-repo.o -MD -MP -MF src/repo/$(DEPDIR)/fast_repo-fast-repo.Tpo -c -o src/repo/fast_repo-fast-repo.o `test -f 'src/repo/fast-repo.cpp' || echo '$(srcdir)/'`src/repo/fast-repo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/repo/$(DEPDIR)/fast_repo-fast-repo.Tpo src/repo/$(DEPDIR)/fast_repo-fast-repo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/repo/fast-repo.cpp' object='src/repo/fast_repo-fast-repo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/repo/fast_repo-fast-repo.o `test -f 'src/repo/fast-repo.cpp' || echo '$(srcdir)/'`src/repo/fast-repo.cpp
+
+src/repo/fast_repo-fast-repo.obj: src/repo/fast-repo.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/repo/fast_repo-fast-repo.obj -MD -MP -MF src/repo/$(DEPDIR)/fast_repo-fast-repo.Tpo -c -o src/repo/fast_repo-fast-repo.obj `if test -f 'src/repo/fast-repo.cpp'; then $(CYGPATH_W) 'src/repo/fast-repo.cpp'; else $(CYGPATH_W) '$(srcdir)/src/repo/fast-repo.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/repo/$(DEPDIR)/fast_repo-fast-repo.Tpo src/repo/$(DEPDIR)/fast_repo-fast-repo.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/repo/fast-repo.cpp' object='src/repo/fast_repo-fast-repo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/repo/fast_repo-fast-repo.obj `if test -f 'src/repo/fast-repo.cpp'; then $(CYGPATH_W) 'src/repo/fast-repo.cpp'; else $(CYGPATH_W) '$(srcdir)/src/repo/fast-repo.cpp'; fi`
+
+src/storage/fast_repo-storage-engine.o: src/storage/storage-engine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/storage/fast_repo-storage-engine.o -MD -MP -MF src/storage/$(DEPDIR)/fast_repo-storage-engine.Tpo -c -o src/storage/fast_repo-storage-engine.o `test -f 'src/storage/storage-engine.cpp' || echo '$(srcdir)/'`src/storage/storage-engine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/storage/$(DEPDIR)/fast_repo-storage-engine.Tpo src/storage/$(DEPDIR)/fast_repo-storage-engine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/storage/storage-engine.cpp' object='src/storage/fast_repo-storage-engine.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/storage/fast_repo-storage-engine.o `test -f 'src/storage/storage-engine.cpp' || echo '$(srcdir)/'`src/storage/storage-engine.cpp
+
+src/storage/fast_repo-storage-engine.obj: src/storage/storage-engine.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/storage/fast_repo-storage-engine.obj -MD -MP -MF src/storage/$(DEPDIR)/fast_repo-storage-engine.Tpo -c -o src/storage/fast_repo-storage-engine.obj `if test -f 'src/storage/storage-engine.cpp'; then $(CYGPATH_W) 'src/storage/storage-engine.cpp'; else $(CYGPATH_W) '$(srcdir)/src/storage/storage-engine.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/storage/$(DEPDIR)/fast_repo-storage-engine.Tpo src/storage/$(DEPDIR)/fast_repo-storage-engine.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/storage/storage-engine.cpp' object='src/storage/fast_repo-storage-engine.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/storage/fast_repo-storage-engine.obj `if test -f 'src/storage/storage-engine.cpp'; then $(CYGPATH_W) 'src/storage/storage-engine.cpp'; else $(CYGPATH_W) '$(srcdir)/src/storage/storage-engine.cpp'; fi`
+
+src/fast_repo-repo-command-response.pb.o: src/repo-command-response.pb.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/fast_repo-repo-command-response.pb.o -MD -MP -MF src/$(DEPDIR)/fast_repo-repo-command-response.pb.Tpo -c -o src/fast_repo-repo-command-response.pb.o `test -f 'src/repo-command-response.pb.cc' || echo '$(srcdir)/'`src/repo-command-response.pb.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/fast_repo-repo-command-response.pb.Tpo src/$(DEPDIR)/fast_repo-repo-command-response.pb.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/repo-command-response.pb.cc' object='src/fast_repo-repo-command-response.pb.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/fast_repo-repo-command-response.pb.o `test -f 'src/repo-command-response.pb.cc' || echo '$(srcdir)/'`src/repo-command-response.pb.cc
+
+src/fast_repo-repo-command-response.pb.obj: src/repo-command-response.pb.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/fast_repo-repo-command-response.pb.obj -MD -MP -MF src/$(DEPDIR)/fast_repo-repo-command-response.pb.Tpo -c -o src/fast_repo-repo-command-response.pb.obj `if test -f 'src/repo-command-response.pb.cc'; then $(CYGPATH_W) 'src/repo-command-response.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/repo-command-response.pb.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/fast_repo-repo-command-response.pb.Tpo src/$(DEPDIR)/fast_repo-repo-command-response.pb.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/repo-command-response.pb.cc' object='src/fast_repo-repo-command-response.pb.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/fast_repo-repo-command-response.pb.obj `if test -f 'src/repo-command-response.pb.cc'; then $(CYGPATH_W) 'src/repo-command-response.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/repo-command-response.pb.cc'; fi`
+
+src/fast_repo-repo-command-parameter.pb.o: src/repo-command-parameter.pb.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/fast_repo-repo-command-parameter.pb.o -MD -MP -MF src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Tpo -c -o src/fast_repo-repo-command-parameter.pb.o `test -f 'src/repo-command-parameter.pb.cc' || echo '$(srcdir)/'`src/repo-command-parameter.pb.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Tpo src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/repo-command-parameter.pb.cc' object='src/fast_repo-repo-command-parameter.pb.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/fast_repo-repo-command-parameter.pb.o `test -f 'src/repo-command-parameter.pb.cc' || echo '$(srcdir)/'`src/repo-command-parameter.pb.cc
+
+src/fast_repo-repo-command-parameter.pb.obj: src/repo-command-parameter.pb.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/fast_repo-repo-command-parameter.pb.obj -MD -MP -MF src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Tpo -c -o src/fast_repo-repo-command-parameter.pb.obj `if test -f 'src/repo-command-parameter.pb.cc'; then $(CYGPATH_W) 'src/repo-command-parameter.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/repo-command-parameter.pb.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Tpo src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/repo-command-parameter.pb.cc' object='src/fast_repo-repo-command-parameter.pb.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/fast_repo-repo-command-parameter.pb.obj `if test -f 'src/repo-command-parameter.pb.cc'; then $(CYGPATH_W) 'src/repo-command-parameter.pb.cc'; else $(CYGPATH_W) '$(srcdir)/src/repo-command-parameter.pb.cc'; fi`
+
+src/handles/fast_repo-base-handle.o: src/handles/base-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-base-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-base-handle.Tpo -c -o src/handles/fast_repo-base-handle.o `test -f 'src/handles/base-handle.cpp' || echo '$(srcdir)/'`src/handles/base-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-base-handle.Tpo src/handles/$(DEPDIR)/fast_repo-base-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/base-handle.cpp' object='src/handles/fast_repo-base-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-base-handle.o `test -f 'src/handles/base-handle.cpp' || echo '$(srcdir)/'`src/handles/base-handle.cpp
+
+src/handles/fast_repo-base-handle.obj: src/handles/base-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-base-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-base-handle.Tpo -c -o src/handles/fast_repo-base-handle.obj `if test -f 'src/handles/base-handle.cpp'; then $(CYGPATH_W) 'src/handles/base-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/base-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-base-handle.Tpo src/handles/$(DEPDIR)/fast_repo-base-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/base-handle.cpp' object='src/handles/fast_repo-base-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-base-handle.obj `if test -f 'src/handles/base-handle.cpp'; then $(CYGPATH_W) 'src/handles/base-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/base-handle.cpp'; fi`
+
+src/handles/fast_repo-pattern-handle.o: src/handles/pattern-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-pattern-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-pattern-handle.Tpo -c -o src/handles/fast_repo-pattern-handle.o `test -f 'src/handles/pattern-handle.cpp' || echo '$(srcdir)/'`src/handles/pattern-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-pattern-handle.Tpo src/handles/$(DEPDIR)/fast_repo-pattern-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/pattern-handle.cpp' object='src/handles/fast_repo-pattern-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-pattern-handle.o `test -f 'src/handles/pattern-handle.cpp' || echo '$(srcdir)/'`src/handles/pattern-handle.cpp
+
+src/handles/fast_repo-pattern-handle.obj: src/handles/pattern-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-pattern-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-pattern-handle.Tpo -c -o src/handles/fast_repo-pattern-handle.obj `if test -f 'src/handles/pattern-handle.cpp'; then $(CYGPATH_W) 'src/handles/pattern-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/pattern-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-pattern-handle.Tpo src/handles/$(DEPDIR)/fast_repo-pattern-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/pattern-handle.cpp' object='src/handles/fast_repo-pattern-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-pattern-handle.obj `if test -f 'src/handles/pattern-handle.cpp'; then $(CYGPATH_W) 'src/handles/pattern-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/pattern-handle.cpp'; fi`
+
+src/handles/fast_repo-delete-handle.o: src/handles/delete-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-delete-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-delete-handle.Tpo -c -o src/handles/fast_repo-delete-handle.o `test -f 'src/handles/delete-handle.cpp' || echo '$(srcdir)/'`src/handles/delete-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-delete-handle.Tpo src/handles/$(DEPDIR)/fast_repo-delete-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/delete-handle.cpp' object='src/handles/fast_repo-delete-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-delete-handle.o `test -f 'src/handles/delete-handle.cpp' || echo '$(srcdir)/'`src/handles/delete-handle.cpp
+
+src/handles/fast_repo-delete-handle.obj: src/handles/delete-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-delete-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-delete-handle.Tpo -c -o src/handles/fast_repo-delete-handle.obj `if test -f 'src/handles/delete-handle.cpp'; then $(CYGPATH_W) 'src/handles/delete-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/delete-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-delete-handle.Tpo src/handles/$(DEPDIR)/fast_repo-delete-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/delete-handle.cpp' object='src/handles/fast_repo-delete-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-delete-handle.obj `if test -f 'src/handles/delete-handle.cpp'; then $(CYGPATH_W) 'src/handles/delete-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/delete-handle.cpp'; fi`
+
+src/handles/fast_repo-read-handle.o: src/handles/read-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-read-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-read-handle.Tpo -c -o src/handles/fast_repo-read-handle.o `test -f 'src/handles/read-handle.cpp' || echo '$(srcdir)/'`src/handles/read-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-read-handle.Tpo src/handles/$(DEPDIR)/fast_repo-read-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/read-handle.cpp' object='src/handles/fast_repo-read-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-read-handle.o `test -f 'src/handles/read-handle.cpp' || echo '$(srcdir)/'`src/handles/read-handle.cpp
+
+src/handles/fast_repo-read-handle.obj: src/handles/read-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-read-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-read-handle.Tpo -c -o src/handles/fast_repo-read-handle.obj `if test -f 'src/handles/read-handle.cpp'; then $(CYGPATH_W) 'src/handles/read-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/read-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-read-handle.Tpo src/handles/$(DEPDIR)/fast_repo-read-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/read-handle.cpp' object='src/handles/fast_repo-read-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-read-handle.obj `if test -f 'src/handles/read-handle.cpp'; then $(CYGPATH_W) 'src/handles/read-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/read-handle.cpp'; fi`
+
+src/handles/fast_repo-status-handle.o: src/handles/status-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-status-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-status-handle.Tpo -c -o src/handles/fast_repo-status-handle.o `test -f 'src/handles/status-handle.cpp' || echo '$(srcdir)/'`src/handles/status-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-status-handle.Tpo src/handles/$(DEPDIR)/fast_repo-status-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/status-handle.cpp' object='src/handles/fast_repo-status-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-status-handle.o `test -f 'src/handles/status-handle.cpp' || echo '$(srcdir)/'`src/handles/status-handle.cpp
+
+src/handles/fast_repo-status-handle.obj: src/handles/status-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-status-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-status-handle.Tpo -c -o src/handles/fast_repo-status-handle.obj `if test -f 'src/handles/status-handle.cpp'; then $(CYGPATH_W) 'src/handles/status-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/status-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-status-handle.Tpo src/handles/$(DEPDIR)/fast_repo-status-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/status-handle.cpp' object='src/handles/fast_repo-status-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-status-handle.obj `if test -f 'src/handles/status-handle.cpp'; then $(CYGPATH_W) 'src/handles/status-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/status-handle.cpp'; fi`
+
+src/handles/fast_repo-watch-handle.o: src/handles/watch-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-watch-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-watch-handle.Tpo -c -o src/handles/fast_repo-watch-handle.o `test -f 'src/handles/watch-handle.cpp' || echo '$(srcdir)/'`src/handles/watch-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-watch-handle.Tpo src/handles/$(DEPDIR)/fast_repo-watch-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/watch-handle.cpp' object='src/handles/fast_repo-watch-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-watch-handle.o `test -f 'src/handles/watch-handle.cpp' || echo '$(srcdir)/'`src/handles/watch-handle.cpp
+
+src/handles/fast_repo-watch-handle.obj: src/handles/watch-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-watch-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-watch-handle.Tpo -c -o src/handles/fast_repo-watch-handle.obj `if test -f 'src/handles/watch-handle.cpp'; then $(CYGPATH_W) 'src/handles/watch-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/watch-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-watch-handle.Tpo src/handles/$(DEPDIR)/fast_repo-watch-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/watch-handle.cpp' object='src/handles/fast_repo-watch-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-watch-handle.obj `if test -f 'src/handles/watch-handle.cpp'; then $(CYGPATH_W) 'src/handles/watch-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/watch-handle.cpp'; fi`
+
+src/handles/fast_repo-write-handle.o: src/handles/write-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-write-handle.o -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-write-handle.Tpo -c -o src/handles/fast_repo-write-handle.o `test -f 'src/handles/write-handle.cpp' || echo '$(srcdir)/'`src/handles/write-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-write-handle.Tpo src/handles/$(DEPDIR)/fast_repo-write-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/write-handle.cpp' object='src/handles/fast_repo-write-handle.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-write-handle.o `test -f 'src/handles/write-handle.cpp' || echo '$(srcdir)/'`src/handles/write-handle.cpp
+
+src/handles/fast_repo-write-handle.obj: src/handles/write-handle.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/fast_repo-write-handle.obj -MD -MP -MF src/handles/$(DEPDIR)/fast_repo-write-handle.Tpo -c -o src/handles/fast_repo-write-handle.obj `if test -f 'src/handles/write-handle.cpp'; then $(CYGPATH_W) 'src/handles/write-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/write-handle.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/$(DEPDIR)/fast_repo-write-handle.Tpo src/handles/$(DEPDIR)/fast_repo-write-handle.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/write-handle.cpp' object='src/handles/fast_repo-write-handle.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/fast_repo-write-handle.obj `if test -f 'src/handles/write-handle.cpp'; then $(CYGPATH_W) 'src/handles/write-handle.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/write-handle.cpp'; fi`
+
+src/handles/patterns/fast_repo-base-pattern.o: src/handles/patterns/base-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-base-pattern.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Tpo -c -o src/handles/patterns/fast_repo-base-pattern.o `test -f 'src/handles/patterns/base-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/base-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/base-pattern.cpp' object='src/handles/patterns/fast_repo-base-pattern.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-base-pattern.o `test -f 'src/handles/patterns/base-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/base-pattern.cpp
+
+src/handles/patterns/fast_repo-base-pattern.obj: src/handles/patterns/base-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-base-pattern.obj -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Tpo -c -o src/handles/patterns/fast_repo-base-pattern.obj `if test -f 'src/handles/patterns/base-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/base-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/base-pattern.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/base-pattern.cpp' object='src/handles/patterns/fast_repo-base-pattern.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-base-pattern.obj `if test -f 'src/handles/patterns/base-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/base-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/base-pattern.cpp'; fi`
+
+src/handles/patterns/fast_repo-counter-pattern.o: src/handles/patterns/counter-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-counter-pattern.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Tpo -c -o src/handles/patterns/fast_repo-counter-pattern.o `test -f 'src/handles/patterns/counter-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/counter-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/counter-pattern.cpp' object='src/handles/patterns/fast_repo-counter-pattern.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-counter-pattern.o `test -f 'src/handles/patterns/counter-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/counter-pattern.cpp
+
+src/handles/patterns/fast_repo-counter-pattern.obj: src/handles/patterns/counter-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-counter-pattern.obj -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Tpo -c -o src/handles/patterns/fast_repo-counter-pattern.obj `if test -f 'src/handles/patterns/counter-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/counter-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/counter-pattern.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/counter-pattern.cpp' object='src/handles/patterns/fast_repo-counter-pattern.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-counter-pattern.obj `if test -f 'src/handles/patterns/counter-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/counter-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/counter-pattern.cpp'; fi`
+
+src/handles/patterns/fast_repo-pattern-factory.o: src/handles/patterns/pattern-factory.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-pattern-factory.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Tpo -c -o src/handles/patterns/fast_repo-pattern-factory.o `test -f 'src/handles/patterns/pattern-factory.cpp' || echo '$(srcdir)/'`src/handles/patterns/pattern-factory.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/pattern-factory.cpp' object='src/handles/patterns/fast_repo-pattern-factory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-pattern-factory.o `test -f 'src/handles/patterns/pattern-factory.cpp' || echo '$(srcdir)/'`src/handles/patterns/pattern-factory.cpp
+
+src/handles/patterns/fast_repo-pattern-factory.obj: src/handles/patterns/pattern-factory.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-pattern-factory.obj -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Tpo -c -o src/handles/patterns/fast_repo-pattern-factory.obj `if test -f 'src/handles/patterns/pattern-factory.cpp'; then $(CYGPATH_W) 'src/handles/patterns/pattern-factory.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/pattern-factory.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/pattern-factory.cpp' object='src/handles/patterns/fast_repo-pattern-factory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-pattern-factory.obj `if test -f 'src/handles/patterns/pattern-factory.cpp'; then $(CYGPATH_W) 'src/handles/patterns/pattern-factory.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/pattern-factory.cpp'; fi`
+
+src/handles/patterns/fast_repo-ndnrtc-pattern.o: src/handles/patterns/ndnrtc-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-ndnrtc-pattern.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Tpo -c -o src/handles/patterns/fast_repo-ndnrtc-pattern.o `test -f 'src/handles/patterns/ndnrtc-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/ndnrtc-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/ndnrtc-pattern.cpp' object='src/handles/patterns/fast_repo-ndnrtc-pattern.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-ndnrtc-pattern.o `test -f 'src/handles/patterns/ndnrtc-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/ndnrtc-pattern.cpp
+
+src/handles/patterns/fast_repo-ndnrtc-pattern.obj: src/handles/patterns/ndnrtc-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-ndnrtc-pattern.obj -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Tpo -c -o src/handles/patterns/fast_repo-ndnrtc-pattern.obj `if test -f 'src/handles/patterns/ndnrtc-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/ndnrtc-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/ndnrtc-pattern.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/ndnrtc-pattern.cpp' object='src/handles/patterns/fast_repo-ndnrtc-pattern.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-ndnrtc-pattern.obj `if test -f 'src/handles/patterns/ndnrtc-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/ndnrtc-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/ndnrtc-pattern.cpp'; fi`
 
 ${GMOCK_ROOT}/src/tests_test_prefix_match-gmock-all.o: ${GMOCK_ROOT}/src/gmock-all.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(tests_test_prefix_match_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ${GMOCK_ROOT}/src/tests_test_prefix_match-gmock-all.o -MD -MP -MF ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-all.Tpo -c -o ${GMOCK_ROOT}/src/tests_test_prefix_match-gmock-all.o `test -f '${GMOCK_ROOT}/src/gmock-all.cc' || echo '$(srcdir)/'`${GMOCK_ROOT}/src/gmock-all.cc
@@ -1461,24 +1726,27 @@ distclean: distclean-am
 	-rm -f ${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po
 	-rm -f examples/$(DEPDIR)/pattern-cancel.Po
 	-rm -f examples/$(DEPDIR)/pattern-fetch.Po
-	-rm -f src/$(DEPDIR)/main.Po
+	-rm -f src/$(DEPDIR)/fast_repo-main.Po
+	-rm -f src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Po
+	-rm -f src/$(DEPDIR)/fast_repo-repo-command-response.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
-	-rm -f src/handles/$(DEPDIR)/base-handle.Po
-	-rm -f src/handles/$(DEPDIR)/delete-handle.Po
-	-rm -f src/handles/$(DEPDIR)/pattern-handle.Po
-	-rm -f src/handles/$(DEPDIR)/read-handle.Po
-	-rm -f src/handles/$(DEPDIR)/watch-handle.Po
-	-rm -f src/handles/$(DEPDIR)/write-handle.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/base-pattern.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/counter-pattern.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/ndnrtc-pattern.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/pattern-factory.Po
-	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
-	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-base-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-delete-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-pattern-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-read-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-status-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-watch-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-write-handle.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po
+	-rm -f src/repo/$(DEPDIR)/fast_repo-fast-repo.Po
+	-rm -f src/storage/$(DEPDIR)/fast_repo-storage-engine.Po
 	-rm -f src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po
 	-rm -f tests/$(DEPDIR)/test_prefix_match-test_prefix_match.Po
-	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
+	-rm -f third_party/docopt/$(DEPDIR)/fast_repo-docopt.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -1530,24 +1798,27 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ${GTEST_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gtest-all.Po
 	-rm -f examples/$(DEPDIR)/pattern-cancel.Po
 	-rm -f examples/$(DEPDIR)/pattern-fetch.Po
-	-rm -f src/$(DEPDIR)/main.Po
+	-rm -f src/$(DEPDIR)/fast_repo-main.Po
+	-rm -f src/$(DEPDIR)/fast_repo-repo-command-parameter.pb.Po
+	-rm -f src/$(DEPDIR)/fast_repo-repo-command-response.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-parameter.pb.Po
 	-rm -f src/$(DEPDIR)/repo-command-response.pb.Po
-	-rm -f src/handles/$(DEPDIR)/base-handle.Po
-	-rm -f src/handles/$(DEPDIR)/delete-handle.Po
-	-rm -f src/handles/$(DEPDIR)/pattern-handle.Po
-	-rm -f src/handles/$(DEPDIR)/read-handle.Po
-	-rm -f src/handles/$(DEPDIR)/watch-handle.Po
-	-rm -f src/handles/$(DEPDIR)/write-handle.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/base-pattern.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/counter-pattern.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/ndnrtc-pattern.Po
-	-rm -f src/handles/patterns/$(DEPDIR)/pattern-factory.Po
-	-rm -f src/repo/$(DEPDIR)/fast-repo.Po
-	-rm -f src/storage/$(DEPDIR)/storage-engine.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-base-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-delete-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-pattern-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-read-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-status-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-watch-handle.Po
+	-rm -f src/handles/$(DEPDIR)/fast_repo-write-handle.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po
+	-rm -f src/repo/$(DEPDIR)/fast_repo-fast-repo.Po
+	-rm -f src/storage/$(DEPDIR)/fast_repo-storage-engine.Po
 	-rm -f src/storage/$(DEPDIR)/tests_test_prefix_match-storage-engine.Po
 	-rm -f tests/$(DEPDIR)/test_prefix_match-test_prefix_match.Po
-	-rm -f third_party/docopt/$(DEPDIR)/docopt.Po
+	-rm -f third_party/docopt/$(DEPDIR)/fast_repo-docopt.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

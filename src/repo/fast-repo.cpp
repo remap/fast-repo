@@ -13,18 +13,25 @@
 #include <boost/log/trivial.hpp>
 #include <ndn-cpp/name.hpp>
 #include <ndn-cpp/face.hpp>
+#include <nlohmann/json.hpp>
 
 #include "../storage/storage-engine.hpp"
 
+#include "../handles/read-handle.hpp"
+#include "../handles/write-handle.hpp"
+#include "../handles/watch-handle.hpp"
+#include "../handles/delete-handle.hpp"
+#include "../handles/pattern-handle.hpp"
+#include "../handles/status-handle.hpp"
+
+
 using namespace fast_repo;
 using namespace ndn;
+using json = nlohmann::json;
 
 using boost::shared_ptr;
-// using std::shared_ptr;
 using boost::make_shared;
-// using std::make_shared;
 using boost::enable_shared_from_this;
-// using std::enable_shared_from_this;
 
 static Config DefaultConfig = Config();
 
@@ -42,6 +49,8 @@ class FastRepoImpl : public enable_shared_from_this<FastRepoImpl>
     void enableListening();
     void enableValidation();
     void initializeStorage();
+    
+    std::pair<std::string,std::string> getStatusReport() const;
 
   private:
     boost::asio::io_service &io_;
@@ -58,6 +67,7 @@ class FastRepoImpl : public enable_shared_from_this<FastRepoImpl>
 #endif
     PatternHandle patternHandle_;
     repo_ng::WriteHandle writeHandle_;
+    StatusHandle statusHandle_;
 
     //ndn::Validator validator_;
 
@@ -159,6 +169,7 @@ FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
     , readHandle_(*face_, *storageEngine_, *keyChain_)
     , patternHandle_(*face_, *storageEngine_, *keyChain_)
     , writeHandle_(*face_, *storageEngine_, *keyChain_)
+    , statusHandle_(*face_, *storageEngine_, *keyChain_)
 {
 }
 
@@ -191,6 +202,9 @@ void FastRepoImpl::enableListening()
         // m_watchHandle.listen(cmdPrefix);
         // m_deleteHandle.listen(cmdPrefix);
         patternHandle_.listen(cmdPrefix);
+
+        statusHandle_.addStatusReportSource(bind(&FastRepoImpl::getStatusReport, this));
+        statusHandle_.listen(cmdPrefix);
 
         writeHandle_.onDataInsertion.connect(bind(&FastRepoImpl::onDataInsertion, this, _1));
         patternHandle_.onDataInsertion.connect(bind(&FastRepoImpl::onDataInsertion, this, _1));
@@ -233,4 +247,25 @@ void FastRepoImpl::onDataInsertion(const Name& prefix)
     config_.dataPrefixes.push_back(Name(prefix));
     readHandle_.listen(prefix);
     std::cout << "registered data prefix: " << prefix << std::endl;
+}
+
+std::pair<std::string,std::string> FastRepoImpl::getStatusReport() const
+{
+    // control prefixes
+    // data prefixes
+    // storage: read-only / read-write
+    // storage: approx current size
+
+    json status;
+    
+    for (const auto& name:config_.repoPrefixes)
+        status["control"].push_back(name.toUri());
+    for (const auto& name:config_.dataPrefixes)
+        status["data"].push_back(name.toUri());
+    
+    status["storage"]["access"] = (config_.readOnly ? "read-only" : "read-write");
+    status["storage"]["nKeys"] = storageEngine_->getKeysNum();
+    status["storage"]["size"] = storageEngine_->getPayloadSize();
+
+    return std::pair<std::string, std::string>("repo", status.dump());
 }

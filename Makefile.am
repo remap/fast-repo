@@ -20,6 +20,7 @@ BUILT_SOURCES = src/repo-command-response.pb.cc src/repo-command-response.pb.h \
     src/repo-command-parameter.pb.cc src/repo-command-parameter.pb.h \
     examples/repo-command-parameter_pb2.py examples/repo-command-response_pb2.py
 
+fast_repo_CXXFLAGS = -I$(top_srcdir)/third_party
 fast_repo_SOURCES = src/main.cpp \
     third_party/docopt/docopt.cpp \
     src/repo/fast-repo.cpp \
@@ -30,6 +31,7 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/pattern-handle.cpp \
     src/handles/delete-handle.cpp \
     src/handles/read-handle.cpp \
+    src/handles/status-handle.cpp \
     src/handles/watch-handle.cpp \
     src/handles/write-handle.cpp \
     src/handles/patterns/base-pattern.cpp \

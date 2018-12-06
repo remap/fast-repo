@@ -16,13 +16,6 @@
 #include <boost/asio.hpp>
 #include <ndn-cpp/name.hpp>
 
-#include "../handles/read-handle.hpp"
-#include "../handles/write-handle.hpp"
-#include "../handles/watch-handle.hpp"
-#include "../handles/delete-handle.hpp"
-#include "../handles/pattern-handle.hpp"
-
-
 namespace ndn
 {
 class Face;
