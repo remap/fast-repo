@@ -41,6 +41,8 @@ class PatternHandle : public repo_ng::BaseHandle
 
     void removePattern(const ndn::Name &fetchPrefix);
 
+    std::pair<std::string, std::string> getStatusReport() const;
+
   private:
     PatternFactory& patternFactory_;
 

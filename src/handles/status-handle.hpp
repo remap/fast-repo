@@ -50,7 +50,7 @@ class StatusHandle : public repo_ng::BaseHandle
     shared_ptr<cnl_cpp::Namespace> statusNamespace_;
     std::vector<GetStatusReport> statusReportSources_;
 
-    void publishStatus();
+    std::string publishStatus();
 };
 
 }

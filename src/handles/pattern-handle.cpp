@@ -12,7 +12,9 @@
 
 #include <ndn-cpp/face.hpp>
 #include <ndn-cpp/interest-filter.hpp>
+#include <nlohmann/json.hpp>
 
+using json = nlohmann::json;
 using namespace fast_repo;
 using namespace ndn;
 
@@ -48,6 +50,19 @@ void PatternHandle::removePattern(const ndn::Name &fetchPrefix)
         patIt->second->cancel();
         patterns_.erase(patIt);
     }
+}
+
+std::pair<std::string,std::string> PatternHandle::getStatusReport() const
+{
+    json status;
+
+    for (const auto& name:patternFactory_.getSupportedPatterns())
+        status["supported"].push_back(name.toUri());
+    
+    for (auto &it:patterns_)
+        status["active"][it.first.toUri()] = json::parse(it.second->getStatusReport());
+
+    return std::pair<std::string,std::string>("pattern-handle", status.dump());
 }
 
 bool PatternHandle::decodeNames(const ndn_message::RepoCommandParameterMessage_Name &composed,

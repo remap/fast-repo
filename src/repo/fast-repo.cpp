@@ -204,6 +204,7 @@ void FastRepoImpl::enableListening()
         patternHandle_.listen(cmdPrefix);
 
         statusHandle_.addStatusReportSource(bind(&FastRepoImpl::getStatusReport, this));
+        statusHandle_.addStatusReportSource(bind(&PatternHandle::getStatusReport, &patternHandle_));
         statusHandle_.listen(cmdPrefix);
 
         writeHandle_.onDataInsertion.connect(bind(&FastRepoImpl::onDataInsertion, this, _1));
@@ -251,11 +252,6 @@ void FastRepoImpl::onDataInsertion(const Name& prefix)
 
 std::pair<std::string,std::string> FastRepoImpl::getStatusReport() const
 {
-    // control prefixes
-    // data prefixes
-    // storage: read-only / read-write
-    // storage: approx current size
-
     json status;
     
     for (const auto& name:config_.repoPrefixes)

@@ -50,6 +50,12 @@ class IFetchPattern
      */
     virtual void cancel() = 0;
 
+    /**
+     * This method shall return JSON dictionary containing status of the current
+     * pattern, for example, # of packets fetched, interest timeouts, etc.
+     */
+    virtual std::string getStatusReport() const = 0;
+
     virtual ~IFetchPattern() = default;
 };
 

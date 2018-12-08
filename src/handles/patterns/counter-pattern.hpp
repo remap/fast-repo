@@ -61,6 +61,8 @@ public:
 
     void onData(const shared_ptr<const ndn::Interest>& interest,
                 const shared_ptr<ndn::Data>& data);
+
+    std::string getStatusReport() const;
 };
 
 } // namespace fast_repo

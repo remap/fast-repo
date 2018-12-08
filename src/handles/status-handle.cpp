@@ -29,9 +29,9 @@ void StatusHandle::listen(const ndn::Name &prefix)
     });
     statusNamespace_->addOnObjectNeeded([this](Namespace&, Namespace& neededNamespace, uint64_t)
     {
-        publishStatus();
-        // neededNamespace.serializeObject();
-        return false;
+        // publishStatus();
+        neededNamespace.serializeObject(make_shared<BlobObject>(Blob::fromRawStr(publishStatus())));
+        return true;
     });
 }
 
@@ -40,7 +40,7 @@ void StatusHandle::addStatusReportSource(GetStatusReport getStatusReportFun)
     statusReportSources_.push_back(getStatusReportFun);
 }
 
-void StatusHandle::publishStatus()
+std::string StatusHandle::publishStatus()
 {
     json status;
     
@@ -57,6 +57,7 @@ void StatusHandle::publishStatus()
     }
 
     std::cout << "status:" << std::endl << status.dump() << std::endl;
+    return status.dump();
     // GeneralizedObjectHandler().setObject(*statusNamespace_, 
     //                                      Blob::fromRawStr("status ok"), 
     //                                      "text/html");

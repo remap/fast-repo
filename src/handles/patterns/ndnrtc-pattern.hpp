@@ -46,6 +46,7 @@ public:
 
     void fetch(const ndn::Name& prefix) override;
     void cancel() override;
+    std::string getStatusReport() const;
 
 private:
     shared_ptr<ndnrtc::StreamRecorder> streamRecorder_;

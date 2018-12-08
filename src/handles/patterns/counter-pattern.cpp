@@ -53,3 +53,10 @@ void CounterPattern::onData(const shared_ptr<const ndn::Interest>& interest,
         running_ = false;
     }
 }
+
+std::string CounterPattern::getStatusReport() const
+{
+    std::stringstream status;
+    status << "{'counter':" << counter_ << ";}";
+    return status.str();
+}
