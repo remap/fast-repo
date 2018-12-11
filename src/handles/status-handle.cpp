@@ -8,7 +8,6 @@
 #include "status-handle.hpp"
 
 #include <cnl-cpp/namespace.hpp>
-#include <cnl-cpp/generalized-object/generalized-object-handler.hpp>
 #include <nlohmann/json.hpp>
 
 using namespace ndn;
@@ -23,16 +22,30 @@ StatusHandle::StatusHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChai
 
 void StatusHandle::listen(const ndn::Name &prefix)
 {
-    statusNamespace_ = make_shared<Namespace>(Name(prefix).append("status"));
+    statusNamespace_ = make_shared<Namespace>(Name(prefix).append("status"), &getKeyChain());
     statusNamespace_->setFace(&getFace(), [](const shared_ptr<const Name>& prefix){
         std::cerr << "Register failed for prefix " << prefix << std::endl;
     });
-    statusNamespace_->addOnObjectNeeded([this](Namespace&, Namespace& neededNamespace, uint64_t)
-    {
-        // publishStatus();
-        neededNamespace.serializeObject(make_shared<BlobObject>(Blob::fromRawStr(publishStatus())));
-        return true;
-    });
+
+    MetaInfo metaInfo;
+    metaInfo.setFreshnessPeriod(100);
+
+    auto onObjectNeeded = [metaInfo, this]
+        (Namespace& nameSpace, Namespace& neededNamespace, uint64_t callbackId) {
+            if (&neededNamespace != statusNamespace_.get())
+                return false;
+
+            Namespace& versionedNamespace = (*statusNamespace_)
+                [Name::Component::fromVersion((uint64_t)ndn_getNowMilliseconds())];
+            versionedNamespace.setNewDataMetaInfo(metaInfo);
+
+            handler_.setObject(versionedNamespace,
+                              Blob::fromRawStr(publishStatus()),
+                              "application/json");
+            return true;
+        };
+
+    statusNamespace_->addOnObjectNeeded(onObjectNeeded);
 }
 
 void StatusHandle::addStatusReportSource(GetStatusReport getStatusReportFun)
@@ -56,9 +69,5 @@ std::string StatusHandle::publishStatus()
         }
     }
 
-    std::cout << "status:" << std::endl << status.dump() << std::endl;
     return status.dump();
-    // GeneralizedObjectHandler().setObject(*statusNamespace_, 
-    //                                      Blob::fromRawStr("status ok"), 
-    //                                      "text/html");
 }
