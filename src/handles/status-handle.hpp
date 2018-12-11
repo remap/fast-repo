@@ -9,6 +9,7 @@
 #define __status_handle_hpp__
 
 #include "base-handle.hpp"
+#include <cnl-cpp/generalized-object/generalized-object-handler.hpp>
 
 namespace ndn 
 {
@@ -48,6 +49,7 @@ class StatusHandle : public repo_ng::BaseHandle
 
   private:
     shared_ptr<cnl_cpp::Namespace> statusNamespace_;
+    cnl_cpp::GeneralizedObjectHandler handler_;
     std::vector<GetStatusReport> statusReportSources_;
 
     std::string publishStatus();
