@@ -120,9 +120,9 @@ WriteHandle::onDataValidated(const ndn::Interest& interest, const ndn::Data& dat
   auto& response = process.response;
 
   if (response.repo_command_response().insert_num() == 0) {
-    getStorageHandle().put(data);
+    ndn::Name n = getStorageHandle().put(data);
     response.mutable_repo_command_response()->set_insert_num(1);
-    this->onDataInsertion(data.getName());
+    this->onDataInsertion(n);
   }
 
   //deferredDeleteProcess(processId);

@@ -49,7 +49,7 @@ static const char USAGE[] =
     R"(Fast Repo.
 
     Usage:
-      fast-repo  ( --config=<config_file> | ( <command_prefix> [ --db-path=<path_to_db> ] )) [ --validate | --readonly | --verbose ]
+      fast-repo  ( --config=<config_file> | ( <command_prefix> [ --db-path=<path_to_db> ] )) [ --rename-prefix=<repo_prefix> ] [ --validate | --readonly | --verbose ]
 
     Arguments:
       <command_prefix>              Prefix repo must register for incoming commands
@@ -61,6 +61,9 @@ static const char USAGE[] =
       --readonly                    Starts repo in read-only mode: repo won't listen for commands, only serve data.
                                     DB will open in read-only mode, thus allowing multiple processes to open at the 
                                     same time.
+      --rename-prefix=<repo_prefix>   Optional argument, when present, repo will re-package received data packets into new 
+                                    data packets with new names that have this prefix. This is a hack and won't work if 
+                                    data is signed. Repo will sign using dummy signature.
       -v --verbose                  Verbose output
 
     Examples:
@@ -146,6 +149,9 @@ int main(int argc, char **argv)
     // override read only mode if needed
     if (args["--readonly"].asBool())
         repoConfig.readOnly = true;
+
+    if (args["--rename-prefix"].isString())
+        repoConfig.renamePrefix = args["--rename-prefix"].asString();
 
     fast_repo::FastRepo repoInstance(ioService, 
                                      repoConfig, 

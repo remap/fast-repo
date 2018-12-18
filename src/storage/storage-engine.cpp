@@ -13,6 +13,7 @@
 #include <ndn-cpp/name.hpp>
 #include <ndn-cpp/util/blob.hpp>
 #include <boost/algorithm/string.hpp>
+#include <ndn-cpp/digest-sha256-signature.hpp>
 
 #include "../config.hpp"
 
@@ -67,8 +68,10 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
 
     bool open(bool readOnly);
     void close();
+    void setRenamePrefix(const std::string& p){ renamePrefix_ = p; }
+    std::string getRenamePrefix()  { return renamePrefix_; }
 
-    bool put(const Data &data);
+    Name put(const Data &data);
     boost::shared_ptr<Data> get(const Name &dataName);
     boost::shared_ptr<Data> read(const Interest &interest);
 
@@ -133,7 +136,7 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
         boost::shared_ptr<TrieNode> head_;
     };
 
-    std::string dbPath_;
+    std::string dbPath_, renamePrefix_;
     bool keysTrieBuilt_;
     NameTrie keysTrie_;
     Stats stats_;
@@ -147,11 +150,15 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
 } // namespace fast_repo
 
 //******************************************************************************
-StorageEngine::StorageEngine(std::string dbPath, bool readOnly) : pimpl_(boost::make_shared<StorageEngineImpl>(dbPath))
+StorageEngine::StorageEngine(std::string dbPath, bool readOnly, std::string renamePrefix) 
+    : pimpl_(boost::make_shared<StorageEngineImpl>(dbPath))
 {
     try
     {
         pimpl_->open(readOnly);
+        
+        if (renamePrefix != "")
+            pimpl_->setRenamePrefix(renamePrefix);
     }
     catch (std::exception &e)
     {
@@ -164,16 +171,18 @@ StorageEngine::~StorageEngine()
     pimpl_->close();
 }
 
-void StorageEngine::put(const boost::shared_ptr<const Data> &data)
+Name StorageEngine::put(const boost::shared_ptr<const Data> &data)
 {
-    pimpl_->put(*data);
+    Name n = pimpl_->put(*data);
     this->afterDataInsertion(data->getName());
+    return n;
 }
 
-void StorageEngine::put(const Data &data)
+Name StorageEngine::put(const Data &data)
 {
-    pimpl_->put(data);
+    Name n = pimpl_->put(data);
     this->afterDataInsertion(data.getName());
+    return n;
 }
 
 boost::shared_ptr<Data>
@@ -204,6 +213,12 @@ const size_t
 StorageEngine::getKeysNum() const
 {
     return pimpl_->getStats().nKeys_;
+}
+
+std::string 
+StorageEngine::getRenamePrefix() const
+{
+    return pimpl_->getRenamePrefix();
 }
 
 //******************************************************************************
@@ -240,21 +255,48 @@ void StorageEngineImpl::close()
 #endif
 }
 
-bool StorageEngineImpl::put(const Data &data)
-{
+Name StorageEngineImpl::put(const Data &data)
+{ 
 #if HAVE_LIBROCKSDB
     if (!db_)
         throw std::runtime_error("DB is not open");
+    if (renamePrefix_ != "")
+    {
+        // let's rename data packet here
+        Data d(Name(renamePrefix_).append(data.getName()));
+        d.setMetaInfo(data.getMetaInfo());
+        d.setContent(data.getContent());
 
-    db_namespace::Status s =
-        db_->Put(db_namespace::WriteOptions(),
+
+        std::cout << "PUT: renaming data " << data.getName() << " -> " << d.getName() << std::endl;
+        // add phony signature
+        static uint8_t digest[ndn_SHA256_DIGEST_SIZE];
+        memset(digest, 0, ndn_SHA256_DIGEST_SIZE);
+        ndn::Blob signatureBits(digest, sizeof(digest));
+        d.setSignature(ndn::DigestSha256Signature());
+        ndn::DigestSha256Signature *sha256Signature = (ndn::DigestSha256Signature *)d.getSignature();
+        sha256Signature->setSignature(signatureBits);
+        
+        db_namespace::Status s =
+            db_->Put(db_namespace::WriteOptions(),
+                 d.getName().toUri(),
+                 db_namespace::Slice((const char *)d.wireEncode().buf(),
+                                     d.wireEncode().size()));
+        if (s.ok())
+            return d.getName();
+    }
+    else
+    {
+        db_namespace::Status s =
+            db_->Put(db_namespace::WriteOptions(),
                  data.getName().toUri(),
                  db_namespace::Slice((const char *)data.wireEncode().buf(),
                                      data.wireEncode().size()));
-    return s.ok();
-#else
-    return false;
+        if (s.ok())
+            return data.getName();
+    }
 #endif
+    return Name();
 }
 
 boost::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)

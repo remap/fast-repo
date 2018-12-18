@@ -165,7 +165,7 @@ FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
                            const shared_ptr<ndn::Face> &face,
                            const shared_ptr<ndn::KeyChain> &keyChain)
     : io_(io), config_(config), face_(face), keyChain_(keyChain)
-    , storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly))
+    , storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly, config_.renamePrefix))
     , readHandle_(*face_, *storageEngine_, *keyChain_)
     , patternHandle_(*face_, *storageEngine_, *keyChain_)
     , writeHandle_(*face_, *storageEngine_, *keyChain_)
@@ -262,6 +262,7 @@ std::pair<std::string,std::string> FastRepoImpl::getStatusReport() const
     status["storage"]["access"] = (config_.readOnly ? "read-only" : "read-write");
     status["storage"]["nKeys"] = storageEngine_->getKeysNum();
     status["storage"]["size"] = storageEngine_->getPayloadSize();
+    status["storage"]["rename"] = storageEngine_->getRenamePrefix();
 
     return std::pair<std::string, std::string>("repo", status.dump());
 }
