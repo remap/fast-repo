@@ -267,8 +267,6 @@ Name StorageEngineImpl::put(const Data &data)
         d.setMetaInfo(data.getMetaInfo());
         d.setContent(data.getContent());
 
-
-        std::cout << "PUT: renaming data " << data.getName() << " -> " << d.getName() << std::endl;
         // add phony signature
         static uint8_t digest[ndn_SHA256_DIGEST_SIZE];
         memset(digest, 0, ndn_SHA256_DIGEST_SIZE);

@@ -29,7 +29,7 @@ void
 NdnrtcPattern::fetch(const Name& prefix)
 {
     Logger::initAsyncLogging();
-    Logger::getLoggerPtr("")->setLogLevel(ndnlog::NdnLoggerDetailLevelAll);
+    Logger::getLoggerPtr("")->setLogLevel(ndnlog::NdnLoggerDetailLevelNone);
 
     NamespaceInfo ninfo;
     
