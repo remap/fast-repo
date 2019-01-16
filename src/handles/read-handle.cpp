@@ -50,14 +50,20 @@ void ReadHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
                             uint64_t interestFilterId,
                             const shared_ptr<const ndn::InterestFilter> &filter)
 {
-    shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
-    if (data != nullptr)
+    if (interest->getMustBeFresh() == false) // ignore
     {
-        getFace().putData(*data);
+        shared_ptr<ndn::Data> data = getStorageHandle().read(*interest);
+        if (data != nullptr)
+        {
+            getFace().putData(*data);
+        }
+        else
+        {
+            // TODO: else - sendNetworkNack
+        }
     }
-    else{
-      // TODO: else - sendNetworkNack
-    }
+    else
+      std::cerr << "DROP (MustBeFresh == true) interest: " << interest->getName() << std::endl;
 }
 
 void ReadHandle::onRegisterFailed(const shared_ptr<const ndn::Name> &prefix)

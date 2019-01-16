@@ -49,7 +49,7 @@ class FastRepoImpl : public enable_shared_from_this<FastRepoImpl>
     void enableListening();
     void enableValidation();
     void initializeStorage();
-    
+
     std::pair<std::string,std::string> getStatusReport() const;
 
   private:
@@ -218,7 +218,7 @@ void FastRepoImpl::enableValidation()
 
 void FastRepoImpl::initializeStorage()
 {
-    BOOST_LOG_TRIVIAL(info) 
+    BOOST_LOG_TRIVIAL(info)
               << "opened storage in " << (config_.readOnly ? "readonly" : "read-write")
               << " mode at " << config_.dbPath;
 
@@ -229,7 +229,7 @@ void FastRepoImpl::initializeStorage()
         for (auto p : config_.dataPrefixes)
         {
             readHandle_.listen(p);
-            std::cout << "registered data prefix: " << p;
+            std::cout << "registered data prefix: " << p << std::endl;
         }
     });
 }
@@ -253,12 +253,12 @@ void FastRepoImpl::onDataInsertion(const Name& prefix)
 std::pair<std::string,std::string> FastRepoImpl::getStatusReport() const
 {
     json status;
-    
+
     for (const auto& name:config_.repoPrefixes)
         status["control"].push_back(name.toUri());
     for (const auto& name:config_.dataPrefixes)
         status["data"].push_back(name.toUri());
-    
+
     status["storage"]["access"] = (config_.readOnly ? "read-only" : "read-write");
     status["storage"]["nKeys"] = storageEngine_->getKeysNum();
     status["storage"]["size"] = storageEngine_->getPayloadSize();
