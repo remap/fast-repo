@@ -131,7 +131,7 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
     // Else try to create specified pattern
     shared_ptr<IFetchPattern> pattern = patternFactory_.create(
         patternName, getFace(), getKeyChain(),
-        bind(static_cast<void(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put),
+        bind(static_cast<ndn::Name(StorageEngine::*)(const ndn::Data&)>(&StorageEngine::put),
              &getStorageHandle(), _1));
 
     // If pattern can not be created, 
@@ -148,7 +148,8 @@ void PatternHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
 
     pattern->fetch(fetchPrefix);
     patterns_[fetchPrefix] = pattern;
-    this->onDataInsertion(fetchPrefix);
+    // TODO: this is a hack for EB workshop
+    this->onDataInsertion(Name(getStorageHandle().getRenamePrefix()).append(fetchPrefix));
 
     // reply with only status code, not negative though
     negativeReply(*interest, 100);

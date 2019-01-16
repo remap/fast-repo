@@ -36,6 +36,7 @@ struct Config
     bool readOnly = false;
     std::string repoConfigPath;
     std::string dbPath;
+    std::string renamePrefix;
     std::vector<ndn::Name> dataPrefixes;
     size_t registrationSubset = DISABLED_SUBSET_LENGTH;
     std::vector<ndn::Name> repoPrefixes;

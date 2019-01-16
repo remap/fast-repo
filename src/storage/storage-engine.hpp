@@ -29,16 +29,18 @@ namespace fast_repo {
      */
     class StorageEngine {
     public:
-        StorageEngine(std::string dpPath, bool readOnly = false);
+        StorageEngine(std::string dpPath, bool readOnly = false, std::string renamePrefix = "");
         ~StorageEngine();
 
         /**
          * Puts new data packet into the storage.
          * Data is saved asynchronously, so the call returns immediately.
          * The call is thread-safe.
+         * @return Name of the key, under which data was inserted. Equals to passed data name
+         * if renamePrefix was not preovided.
          */
-        void put(const shared_ptr<const ndn::Data>& data);
-        void put(const ndn::Data& data);
+        ndn::Name put(const shared_ptr<const ndn::Data>& data);
+        ndn::Name put(const ndn::Data& data);
 
         /**
          * Tries to retrieve data from persistent storage. 
@@ -75,6 +77,8 @@ namespace fast_repo {
          * Returns total number of keys in this KV-storage.
          */
         const size_t getKeysNum() const;
+
+        std::string getRenamePrefix() const;
 
     public:
         // This signal is only used for test
