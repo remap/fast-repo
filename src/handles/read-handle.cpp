@@ -62,8 +62,8 @@ void ReadHandle::onInterest(const shared_ptr<const ndn::Name> &prefix,
             // TODO: else - sendNetworkNack
         }
     }
-    else
-      std::cerr << "DROP (MustBeFresh == true) interest: " << interest->getName() << std::endl;
+    // else
+      // std::cerr << "DROP (MustBeFresh == true) interest: " << interest->getName() << std::endl;
 }
 
 void ReadHandle::onRegisterFailed(const shared_ptr<const ndn::Name> &prefix)
