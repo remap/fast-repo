@@ -39,9 +39,15 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/patterns/pattern-factory.cpp \
     src/handles/patterns/ndnrtc-pattern.cpp
 
-fast_repo_LDADD = ${LIBS} -lcnl-cpp \
+fast_repo_LDADD = ${LIBS} \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
     ${BOOST_TIMER_LIB} ${BOOST_LOG_LIB}
+
+if HAVE_CNL_CPP
+
+fast_repo_LDADD += -lcnl-cpp
+
+endif
 
 
 # Testing setup. Type 'make check' or 'make recheck' to run the tests.
@@ -52,8 +58,14 @@ TEST_FLAGS = -I$(top_srcdir)/src \
     -I${GTEST_ROOT} -I${GMOCK_ROOT} \
     -I${GTEST_ROOT}/include -I${GMOCK_ROOT}/include
     # -DGTEST_HAS_PTHREAD=1
-TEST_LIBS = ${LIBS} -lcnl-cpp ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS}
+TEST_LIBS = ${LIBS} ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS}
 TEST_COMMON_SOURCE = ${GMOCK_ROOT}/src/gmock-all.cc ${GTEST_ROOT}/src/gtest-all.cc
+
+if HAVE_CNL_CPP
+
+TEST_LIBS += -lcnl-cpp
+
+endif
 
 TESTS = tests/test_prefix_match
 check_PROGRAMS = $(TESTS)

@@ -89,6 +89,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = fast-repo$(EXEEXT)
+@HAVE_CNL_CPP_TRUE@am__append_1 = -lcnl-cpp
+@HAVE_CNL_CPP_TRUE@am__append_2 = -lcnl-cpp
 TESTS = tests/test_prefix_match$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
 noinst_PROGRAMS = examples/pattern_fetch$(EXEEXT) \
@@ -125,7 +127,7 @@ examples_pattern_cancel_OBJECTS =  \
 	$(am_examples_pattern_cancel_OBJECTS)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 examples_pattern_cancel_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_examples_pattern_fetch_OBJECTS =  \
 	src/repo-command-response.pb.$(OBJEXT) \
@@ -153,7 +155,8 @@ am_fast_repo_OBJECTS = src/fast_repo-main.$(OBJEXT) \
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
 fast_repo_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 fast_repo_LINK = $(CXXLD) $(fast_repo_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 am__objects_1 =  \
@@ -614,10 +617,9 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/patterns/pattern-factory.cpp \
     src/handles/patterns/ndnrtc-pattern.cpp
 
-fast_repo_LDADD = ${LIBS} -lcnl-cpp \
-    ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
-    ${BOOST_TIMER_LIB} ${BOOST_LOG_LIB}
-
+fast_repo_LDADD = ${LIBS} ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} \
+	${BOOST_THREAD_LIB} ${BOOST_TIMER_LIB} ${BOOST_LOG_LIB} \
+	$(am__append_1)
 
 # Testing setup. Type 'make check' or 'make recheck' to run the tests.
 # TESTS defines a list of tests to run. Define their sources in the usual way.
@@ -627,7 +629,8 @@ TEST_FLAGS = -I$(top_srcdir)/src \
     -I${GTEST_ROOT} -I${GMOCK_ROOT} \
     -I${GTEST_ROOT}/include -I${GMOCK_ROOT}/include
 
-TEST_LIBS = ${LIBS} -lcnl-cpp ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS}
+TEST_LIBS = ${LIBS} ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS} \
+	$(am__append_2)
 TEST_COMMON_SOURCE = ${GMOCK_ROOT}/src/gmock-all.cc ${GTEST_ROOT}/src/gtest-all.cc
 tests_test_prefix_match_SOURCES = ${TEST_COMMON_SOURCE} tests/test_prefix_match.cc src/storage/storage-engine.cpp
 tests_test_prefix_match_CPPFLAGS = $(TEST_FLAGS)

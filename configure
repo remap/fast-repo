@@ -628,6 +628,8 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 PROTOC
+HAVE_CNL_CPP_FALSE
+HAVE_CNL_CPP_TRUE
 BOOST_LOG_LIB
 BOOST_FILESYSTEM_LIBS
 EGREP
@@ -6832,6 +6834,9 @@ fi
 
 ###############################
 # Check for CNL
+SAVED_LIBS=$LIBS
+LIBS="$LIBS -lcnl-cpp"
+
 for ac_header in cnl-cpp/namespace.hpp
 do :
   ac_fn_cxx_check_header_mongrel "$LINENO" "cnl-cpp/namespace.hpp" "ac_cv_header_cnl_cpp_namespace_hpp" "$ac_includes_default"
@@ -6841,10 +6846,8 @@ if test "x$ac_cv_header_cnl_cpp_namespace_hpp" = xyes; then :
 _ACEOF
 
 else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "can't find namespace.hpp
-See \`config.log' for more details" "$LINENO" 5; }
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: can't find namespace.hpp" >&5
+$as_echo "$as_me: WARNING: can't find namespace.hpp" >&2;}
 fi
 
 done
@@ -6852,27 +6855,42 @@ done
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CNL-CPP library..." >&5
 $as_echo_n "checking for CNL-CPP library...... " >&6; }
 
-SAVED_LIBS=$LIBS
-LIBS="$LIBS -lcnl-cpp"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-#include <cnl-cpp/namespace.hpp>
+
+					#include <cnl-cpp/namespace.hpp>
+
 int
 main ()
 {
-cnl_cpp::Namespace n(ndn::Name("/test"))
+
+					cnl_cpp::Namespace n(ndn::Name("/test"))
+
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_CNL_CPP /**/" >>confdefs.h
+
+			 if test "true" = true; then
+  HAVE_CNL_CPP_TRUE=
+  HAVE_CNL_CPP_FALSE='#'
 else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "can't find CNL-CPP lib
-See \`config.log' for more details" "$LINENO" 5; }
+  HAVE_CNL_CPP_TRUE='#'
+  HAVE_CNL_CPP_FALSE=
+fi
+
+
+else
+
+			{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: can't find CNL-CPP lib" >&5
+$as_echo "$as_me: WARNING: can't find CNL-CPP lib" >&2;}
+			LIBS=$SAVED_LIBS
 
 fi
 rm -f core conftest.err conftest.$ac_objext \
@@ -7268,6 +7286,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${HAVE_CNL_CPP_TRUE}" && test -z "${HAVE_CNL_CPP_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_CNL_CPP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 
@@ -8592,5 +8614,4 @@ if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5
 $as_echo "$as_me: WARNING: unrecognized options: $ac_unrecognized_opts" >&2;}
 fi
-
 
