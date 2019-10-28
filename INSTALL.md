@@ -22,10 +22,20 @@ sudo apt-get install -y libboost-all-dev protobuf-compiler
 
 # Build
 
-Specify paths to dependencies in `CPPFLAGS` and `LDFLAGS` variables and configure & compile the project:
+1. Clone with third-party code:
+
+```
+git clone --recursive https://github.com/remap/fast-repo.git
+```
+
+2. Specify paths to dependencies in `CPPFLAGS` and `LDFLAGS` variables and configure & compile the project:
 
 ```
 CPPFLAGS="..." LDFLAGS="..." ./configure 
 make
 ```
+
+# Run
+
+Run `fast-repo` to see the help message on supported arguments.
 
