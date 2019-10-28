@@ -628,8 +628,8 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 PROTOC
-HAVE_CNL_CPP_FALSE
-HAVE_CNL_CPP_TRUE
+HAVE_LIBCNL_CPP_FALSE
+HAVE_LIBCNL_CPP_TRUE
 BOOST_LOG_LIB
 BOOST_FILESYSTEM_LIBS
 EGREP
@@ -6837,24 +6837,10 @@ fi
 SAVED_LIBS=$LIBS
 LIBS="$LIBS -lcnl-cpp"
 
-for ac_header in cnl-cpp/namespace.hpp
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "cnl-cpp/namespace.hpp" "ac_cv_header_cnl_cpp_namespace_hpp" "$ac_includes_default"
-if test "x$ac_cv_header_cnl_cpp_namespace_hpp" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_CNL_CPP_NAMESPACE_HPP 1
-_ACEOF
-
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: can't find namespace.hpp" >&5
-$as_echo "$as_me: WARNING: can't find namespace.hpp" >&2;}
-fi
-
-done
+#AC_CHECK_HEADERS([cnl-cpp/namespace.hpp],,[AC_MSG_WARN([can't find namespace.hpp])])
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for CNL-CPP library..." >&5
 $as_echo_n "checking for CNL-CPP library...... " >&6; }
-
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -6872,22 +6858,21 @@ main ()
 _ACEOF
 if ac_fn_cxx_try_link "$LINENO"; then :
 
-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-
-$as_echo "#define HAVE_CNL_CPP /**/" >>confdefs.h
-
-			 if test "true" = true; then
-  HAVE_CNL_CPP_TRUE=
-  HAVE_CNL_CPP_FALSE='#'
+             if true; then
+  HAVE_LIBCNL_CPP_TRUE=
+  HAVE_LIBCNL_CPP_FALSE='#'
 else
-  HAVE_CNL_CPP_TRUE='#'
-  HAVE_CNL_CPP_FALSE=
+  HAVE_LIBCNL_CPP_TRUE='#'
+  HAVE_LIBCNL_CPP_FALSE=
 fi
 
+            HAVE_LIBCNL_CPP=1
+            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 
 else
 
+            HAVE_LIBCNL_CPP=0
 			{ $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: can't find CNL-CPP lib" >&5
 $as_echo "$as_me: WARNING: can't find CNL-CPP lib" >&2;}
 			LIBS=$SAVED_LIBS
@@ -6895,6 +6880,11 @@ $as_echo "$as_me: WARNING: can't find CNL-CPP lib" >&2;}
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBCNL_CPP $HAVE_LIBCNL_CPP
+_ACEOF
+
 LIBS=$SAVED_LIBS
 
 ###############################
@@ -7084,68 +7074,38 @@ fi
 
 ###############################
 # Check for NDN-RTC
-for ac_header in ndnrtc/interfaces.hpp
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "ndnrtc/interfaces.hpp" "ac_cv_header_ndnrtc_interfaces_hpp" "$ac_includes_default"
-if test "x$ac_cv_header_ndnrtc_interfaces_hpp" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_NDNRTC_INTERFACES_HPP 1
-_ACEOF
-
-else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "can't find NDN-RTC
-See \`config.log' for more details" "$LINENO" 5; }
-fi
-
-done
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ndnrtc_getVersion in -lndnrtc" >&5
-$as_echo_n "checking for ndnrtc_getVersion in -lndnrtc... " >&6; }
-if ${ac_cv_lib_ndnrtc_ndnrtc_getVersion+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lndnrtc  $LIBS"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for NDN-RTC" >&5
+$as_echo_n "checking for NDN-RTC... " >&6; }
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char ndnrtc_getVersion ();
+#include <ndnrtc/interfaces.hpp>
+    ndnrtc::FrameInfo frameInfo;
 int
 main ()
 {
-return ndnrtc_getVersion ();
+
   ;
   return 0;
 }
+
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_ndnrtc_ndnrtc_getVersion=yes
+if ac_fn_cxx_try_compile "$LINENO"; then :
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+    HAVE_LIBNDNRTC=1
+
 else
-  ac_cv_lib_ndnrtc_ndnrtc_getVersion=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ndnrtc_ndnrtc_getVersion" >&5
-$as_echo "$ac_cv_lib_ndnrtc_ndnrtc_getVersion" >&6; }
-if test "x$ac_cv_lib_ndnrtc_ndnrtc_getVersion" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBNDNRTC 1
-_ACEOF
 
-  LIBS="-lndnrtc $LIBS"
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+    HAVE_LIBNDNRTC=0
 
 fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
+#AC_CHECK_HEADERS([ndnrtc/interfaces.hpp],,[AC_MSG_FAILURE([can't find NDN-RTC])])
+#AC_CHECK_LIB([ndnrtc], [ndnrtc_getVersion])
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -7288,8 +7248,8 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_CNL_CPP_TRUE}" && test -z "${HAVE_CNL_CPP_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_CNL_CPP\" was never defined.
+if test -z "${HAVE_LIBCNL_CPP_TRUE}" && test -z "${HAVE_LIBCNL_CPP_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_LIBCNL_CPP\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

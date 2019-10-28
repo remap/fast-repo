@@ -89,8 +89,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 bin_PROGRAMS = fast-repo$(EXEEXT)
-@HAVE_CNL_CPP_TRUE@am__append_1 = -lcnl-cpp
-@HAVE_CNL_CPP_TRUE@am__append_2 = -lcnl-cpp
+@HAVE_LIBCNL_CPP_TRUE@am__append_1 = -lcnl-cpp
+@HAVE_LIBCNL_CPP_TRUE@am__append_2 = -lcnl-cpp
 TESTS = tests/test_prefix_match$(EXEEXT)
 check_PROGRAMS = $(am__EXEEXT_1)
 noinst_PROGRAMS = examples/pattern_fetch$(EXEEXT) \
@@ -150,6 +150,8 @@ am_fast_repo_OBJECTS = src/fast_repo-main.$(OBJEXT) \
 	src/handles/fast_repo-write-handle.$(OBJEXT) \
 	src/handles/patterns/fast_repo-base-pattern.$(OBJEXT) \
 	src/handles/patterns/fast_repo-counter-pattern.$(OBJEXT) \
+	src/handles/patterns/fast_repo-gobj-pattern.$(OBJEXT) \
+	src/handles/patterns/fast_repo-gobj-stream-pattern.$(OBJEXT) \
 	src/handles/patterns/fast_repo-pattern-factory.$(OBJEXT) \
 	src/handles/patterns/fast_repo-ndnrtc-pattern.$(OBJEXT)
 fast_repo_OBJECTS = $(am_fast_repo_OBJECTS)
@@ -201,6 +203,8 @@ am__depfiles_remade = ${GMOCK_ROOT}/src/$(DEPDIR)/tests_test_prefix_match-gmock-
 	src/handles/$(DEPDIR)/fast_repo-write-handle.Po \
 	src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po \
 	src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po \
+	src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Po \
+	src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Po \
 	src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po \
 	src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po \
 	src/repo/$(DEPDIR)/fast_repo-fast-repo.Po \
@@ -614,6 +618,8 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/write-handle.cpp \
     src/handles/patterns/base-pattern.cpp \
     src/handles/patterns/counter-pattern.cpp \
+	src/handles/patterns/gobj-pattern.cpp \
+	src/handles/patterns/gobj-stream-pattern.cpp \
     src/handles/patterns/pattern-factory.cpp \
     src/handles/patterns/ndnrtc-pattern.cpp
 
@@ -847,6 +853,12 @@ src/handles/patterns/fast_repo-base-pattern.$(OBJEXT):  \
 src/handles/patterns/fast_repo-counter-pattern.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
+src/handles/patterns/fast_repo-gobj-pattern.$(OBJEXT):  \
+	src/handles/patterns/$(am__dirstamp) \
+	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
+src/handles/patterns/fast_repo-gobj-stream-pattern.$(OBJEXT):  \
+	src/handles/patterns/$(am__dirstamp) \
+	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
 src/handles/patterns/fast_repo-pattern-factory.$(OBJEXT):  \
 	src/handles/patterns/$(am__dirstamp) \
 	src/handles/patterns/$(DEPDIR)/$(am__dirstamp)
@@ -925,6 +937,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/$(DEPDIR)/fast_repo-write-handle.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@src/repo/$(DEPDIR)/fast_repo-fast-repo.Po@am__quote@ # am--include-marker
@@ -1164,6 +1178,34 @@ src/handles/patterns/fast_repo-counter-pattern.obj: src/handles/patterns/counter
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/counter-pattern.cpp' object='src/handles/patterns/fast_repo-counter-pattern.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-counter-pattern.obj `if test -f 'src/handles/patterns/counter-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/counter-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/counter-pattern.cpp'; fi`
+
+src/handles/patterns/fast_repo-gobj-pattern.o: src/handles/patterns/gobj-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-gobj-pattern.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Tpo -c -o src/handles/patterns/fast_repo-gobj-pattern.o `test -f 'src/handles/patterns/gobj-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/gobj-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/gobj-pattern.cpp' object='src/handles/patterns/fast_repo-gobj-pattern.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-gobj-pattern.o `test -f 'src/handles/patterns/gobj-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/gobj-pattern.cpp
+
+src/handles/patterns/fast_repo-gobj-pattern.obj: src/handles/patterns/gobj-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-gobj-pattern.obj -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Tpo -c -o src/handles/patterns/fast_repo-gobj-pattern.obj `if test -f 'src/handles/patterns/gobj-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/gobj-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/gobj-pattern.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/gobj-pattern.cpp' object='src/handles/patterns/fast_repo-gobj-pattern.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-gobj-pattern.obj `if test -f 'src/handles/patterns/gobj-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/gobj-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/gobj-pattern.cpp'; fi`
+
+src/handles/patterns/fast_repo-gobj-stream-pattern.o: src/handles/patterns/gobj-stream-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-gobj-stream-pattern.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Tpo -c -o src/handles/patterns/fast_repo-gobj-stream-pattern.o `test -f 'src/handles/patterns/gobj-stream-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/gobj-stream-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/gobj-stream-pattern.cpp' object='src/handles/patterns/fast_repo-gobj-stream-pattern.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-gobj-stream-pattern.o `test -f 'src/handles/patterns/gobj-stream-pattern.cpp' || echo '$(srcdir)/'`src/handles/patterns/gobj-stream-pattern.cpp
+
+src/handles/patterns/fast_repo-gobj-stream-pattern.obj: src/handles/patterns/gobj-stream-pattern.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-gobj-stream-pattern.obj -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Tpo -c -o src/handles/patterns/fast_repo-gobj-stream-pattern.obj `if test -f 'src/handles/patterns/gobj-stream-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/gobj-stream-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/gobj-stream-pattern.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Tpo src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/handles/patterns/gobj-stream-pattern.cpp' object='src/handles/patterns/fast_repo-gobj-stream-pattern.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -c -o src/handles/patterns/fast_repo-gobj-stream-pattern.obj `if test -f 'src/handles/patterns/gobj-stream-pattern.cpp'; then $(CYGPATH_W) 'src/handles/patterns/gobj-stream-pattern.cpp'; else $(CYGPATH_W) '$(srcdir)/src/handles/patterns/gobj-stream-pattern.cpp'; fi`
 
 src/handles/patterns/fast_repo-pattern-factory.o: src/handles/patterns/pattern-factory.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(fast_repo_CXXFLAGS) $(CXXFLAGS) -MT src/handles/patterns/fast_repo-pattern-factory.o -MD -MP -MF src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Tpo -c -o src/handles/patterns/fast_repo-pattern-factory.o `test -f 'src/handles/patterns/pattern-factory.cpp' || echo '$(srcdir)/'`src/handles/patterns/pattern-factory.cpp
@@ -1743,6 +1785,8 @@ distclean: distclean-am
 	-rm -f src/handles/$(DEPDIR)/fast_repo-write-handle.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po
 	-rm -f src/repo/$(DEPDIR)/fast_repo-fast-repo.Po
@@ -1815,6 +1859,8 @@ maintainer-clean: maintainer-clean-am
 	-rm -f src/handles/$(DEPDIR)/fast_repo-write-handle.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-base-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-counter-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-gobj-pattern.Po
+	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-gobj-stream-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-ndnrtc-pattern.Po
 	-rm -f src/handles/patterns/$(DEPDIR)/fast_repo-pattern-factory.Po
 	-rm -f src/repo/$(DEPDIR)/fast_repo-fast-repo.Po

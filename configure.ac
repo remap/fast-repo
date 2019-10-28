@@ -48,22 +48,24 @@ AC_CHECK_LIB([ndn-cpp], [ndn_getErrorString], [],
 SAVED_LIBS=$LIBS
 LIBS="$LIBS -lcnl-cpp"
 
-AC_CHECK_HEADERS([cnl-cpp/namespace.hpp],,[AC_MSG_WARN([can't find namespace.hpp])])
-AC_MSG_CHECKING([for CNL-CPP library...])
+#AC_CHECK_HEADERS([cnl-cpp/namespace.hpp],,[AC_MSG_WARN([can't find namespace.hpp])])
 
+AC_MSG_CHECKING([for CNL-CPP library...])
 AC_LINK_IFELSE(
     [AC_LANG_PROGRAM([
 					#include <cnl-cpp/namespace.hpp>
 				],[
 					cnl_cpp::Namespace n(ndn::Name("/test"))
 		])],[
-			AC_MSG_RESULT([yes])
-			AC_DEFINE([HAVE_CNL_CPP], [], [Have CNL-CPP library])
-			AM_CONDITIONAL([HAVE_CNL_CPP], [test "true" = true])
+            AM_CONDITIONAL([HAVE_LIBCNL_CPP], true)
+            HAVE_LIBCNL_CPP=1
+            AC_MSG_RESULT([yes])
 		],[
+            HAVE_LIBCNL_CPP=0
 			AC_MSG_WARN([can't find CNL-CPP lib])
 			LIBS=$SAVED_LIBS
 		])
+AC_DEFINE_UNQUOTED([HAVE_LIBCNL_CPP], $HAVE_LIBCNL_CPP, [1 if have CNL-CPP.])
 LIBS=$SAVED_LIBS
 
 ###############################
@@ -101,7 +103,19 @@ fi
 
 ###############################
 # Check for NDN-RTC
-AC_CHECK_HEADERS([ndnrtc/interfaces.hpp],,[AC_MSG_FAILURE([can't find NDN-RTC])])
-AC_CHECK_LIB([ndnrtc], [ndnrtc_getVersion])
+AC_MSG_CHECKING([for NDN-RTC])
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+    [[#include <ndnrtc/interfaces.hpp>]]
+    [[ndnrtc::FrameInfo frameInfo;]])
+], [
+    AC_MSG_RESULT([yes])
+    HAVE_LIBNDNRTC=1
+], [
+    AC_MSG_RESULT([no])
+    HAVE_LIBNDNRTC=0
+])
+
+#AC_CHECK_HEADERS([ndnrtc/interfaces.hpp],,[AC_MSG_FAILURE([can't find NDN-RTC])])
+#AC_CHECK_LIB([ndnrtc], [ndnrtc_getVersion])
 
 AC_OUTPUT

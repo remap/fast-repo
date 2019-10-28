@@ -36,6 +36,8 @@ fast_repo_SOURCES = src/main.cpp \
     src/handles/write-handle.cpp \
     src/handles/patterns/base-pattern.cpp \
     src/handles/patterns/counter-pattern.cpp \
+	src/handles/patterns/gobj-pattern.cpp \
+	src/handles/patterns/gobj-stream-pattern.cpp \
     src/handles/patterns/pattern-factory.cpp \
     src/handles/patterns/ndnrtc-pattern.cpp
 
@@ -43,7 +45,7 @@ fast_repo_LDADD = ${LIBS} \
     ${BOOST_SYSTEM_LIB} ${BOOST_ASIO_LIB} ${BOOST_THREAD_LIB} \
     ${BOOST_TIMER_LIB} ${BOOST_LOG_LIB}
 
-if HAVE_CNL_CPP
+if HAVE_LIBCNL_CPP
 
 fast_repo_LDADD += -lcnl-cpp
 
@@ -61,7 +63,7 @@ TEST_FLAGS = -I$(top_srcdir)/src \
 TEST_LIBS = ${LIBS} ${BOOST_SYSTEM_LIB} ${BOOST_FILESYSTEM_LIBS}
 TEST_COMMON_SOURCE = ${GMOCK_ROOT}/src/gmock-all.cc ${GTEST_ROOT}/src/gtest-all.cc
 
-if HAVE_CNL_CPP
+if HAVE_LIBCNL_CPP
 
 TEST_LIBS += -lcnl-cpp
 
