@@ -20,11 +20,11 @@ namespace ndnrtc {
 
 namespace fast_repo {
 
-using boost::shared_ptr;
-using boost::make_shared;
+using std::shared_ptr;
+using std::make_shared;
 
 class NdnrtcPattern : public BasePattern {
-public: 
+public:
     NdnrtcPattern(ndn::Face& face, ndn::KeyChain& keyChain, StoreData storePacketFun):
         BasePattern(face, keyChain, storePacketFun) {}
 
@@ -37,11 +37,11 @@ public:
         return patternId.str();
     }
 
-    static shared_ptr<IFetchPattern> create(ndn::Face& face, 
-                                                 ndn::KeyChain & keyChain, 
+    static shared_ptr<IFetchPattern> create(ndn::Face& face,
+                                                 ndn::KeyChain & keyChain,
                                                  StoreData storePacketFun)
     {
-        return boost::make_shared<NdnrtcPattern>(face, keyChain, storePacketFun);
+        return std::make_shared<NdnrtcPattern>(face, keyChain, storePacketFun);
     }
 
     void fetch(const ndn::Name& prefix) override;
@@ -49,6 +49,7 @@ public:
     std::string getStatusReport() const;
 
 private:
+    // TODO: support multiple recorders
     shared_ptr<ndnrtc::StreamRecorder> streamRecorder_;
 };
 

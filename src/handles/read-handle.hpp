@@ -31,7 +31,7 @@ class InterestFilter;
 namespace repo_ng
 {
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 class ReadHandle : public BaseHandle
 {

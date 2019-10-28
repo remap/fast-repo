@@ -13,10 +13,12 @@
 
 using namespace fast_repo;
 using namespace ndn;
+using namespace std::placeholders;
 
 using std::bind;
-using boost::shared_ptr;
-using boost::make_shared;
+using std::shared_ptr;
+using std::make_shared;
+
 
 void CounterPattern::fetch(const ndn::Name &prefix)
 {

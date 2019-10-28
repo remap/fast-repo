@@ -19,8 +19,8 @@ using namespace fast_repo;
 using namespace ndn;
 
 using std::bind;
-using boost::shared_ptr;
-using boost::make_shared;
+using std::shared_ptr;
+using std::make_shared;
 
 PatternHandle::PatternHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChain &keyChain)
     : BaseHandle(face, storage, keyChain)

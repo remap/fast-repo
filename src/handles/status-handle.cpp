@@ -14,8 +14,8 @@ using namespace ndn;
 using namespace fast_repo;
 using namespace cnl_cpp;
 using json=nlohmann::json;
-using boost::shared_ptr;
-using boost::make_shared;
+using std::shared_ptr;
+using std::make_shared;
 
 StatusHandle::StatusHandle(ndn::Face &face, StorageEngine &storage, ndn::KeyChain &keyChain)
     : BaseHandle(face, storage, keyChain) { }

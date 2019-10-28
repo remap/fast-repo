@@ -20,8 +20,8 @@
 #include "write-handle.hpp"
 
 using std::bind;
-using boost::shared_ptr;
-using boost::make_shared;
+using std::shared_ptr;
+using std::make_shared;
 
 namespace repo_ng {
 

@@ -7,13 +7,14 @@
 
 #include "ndnrtc-pattern.hpp"
 
-#include <ndnrtc/stream-recorder.hpp>
-#include <ndnrtc/simple-log.hpp>
 #include <ndn-cpp/face.hpp>
 #include <ndn-cpp/security/key-chain.hpp>
 #include <nlohmann/json.hpp>
 
 #if HAVE_LIBNDNRTC
+#include <ndnrtc/stream-recorder.hpp>
+#include <ndnrtc/simple-log.hpp>
+
 // using namespace ndnrtc;
 using namespace ndn;
 using namespace std;

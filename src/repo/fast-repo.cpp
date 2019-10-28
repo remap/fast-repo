@@ -10,6 +10,7 @@
 #include <fstream>
 #include <boost/property_tree/info_parser.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/make_shared.hpp>
 #include <boost/log/trivial.hpp>
 #include <ndn-cpp/name.hpp>
 #include <ndn-cpp/face.hpp>
@@ -29,9 +30,9 @@ using namespace fast_repo;
 using namespace ndn;
 using json = nlohmann::json;
 
-using boost::shared_ptr;
-using boost::make_shared;
-using boost::enable_shared_from_this;
+using std::shared_ptr;
+using std::make_shared;
+using std::enable_shared_from_this;
 
 static Config DefaultConfig = Config();
 
@@ -144,7 +145,7 @@ FastRepo::FastRepo(boost::asio::io_service &io,
                    const Config &config,
                    const shared_ptr<ndn::Face> &face,
                    const shared_ptr<ndn::KeyChain> &keyChain)
-    : pimpl_(boost::make_shared<FastRepoImpl>(io, config, face, keyChain))
+    : pimpl_(std::make_shared<FastRepoImpl>(io, config, face, keyChain))
 {
     pimpl_->initializeStorage();
 }
@@ -165,7 +166,7 @@ FastRepoImpl::FastRepoImpl(boost::asio::io_service &io,
                            const shared_ptr<ndn::Face> &face,
                            const shared_ptr<ndn::KeyChain> &keyChain)
     : io_(io), config_(config), face_(face), keyChain_(keyChain)
-    , storageEngine_(boost::make_shared<StorageEngine>(config_.dbPath, config_.readOnly, config_.renamePrefix))
+    , storageEngine_(std::make_shared<StorageEngine>(config_.dbPath, config_.readOnly, config_.renamePrefix))
     , readHandle_(*face_, *storageEngine_, *keyChain_)
     , patternHandle_(*face_, *storageEngine_, *keyChain_)
     , writeHandle_(*face_, *storageEngine_, *keyChain_)

@@ -142,7 +142,7 @@ TEST(TestDb, TestPrefixMatchEdgeCase)
     Interest i(Name("/hello-ndn/rtc-stream/ndnrtc/%FD%03/video/camera/%FC%00%00%01f%C7%02%A2%AE/t/_meta"));
     i.setCanBePrefix(true);
         
-    boost::shared_ptr<Data> d = storage.read(i);
+    std::shared_ptr<Data> d = storage.read(i);
 
     EXPECT_TRUE(d.get());
     EXPECT_EQ("metadata", d->getContent().toRawStr());

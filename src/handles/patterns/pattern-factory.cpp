@@ -8,21 +8,33 @@
 #include "pattern-factory.hpp"
 
 #include "counter-pattern.hpp"
+
+#if HAVE_LIBNDNRTC
 #include "ndnrtc-pattern.hpp"
+#endif
+
+#if HAVE_LIBCNL_CPP
+#include "gobj-pattern.hpp"
+#include "gobj-stream-pattern.hpp"
+#endif
 
 using namespace ndn;
 using namespace fast_repo;
 using namespace std;
 using namespace std::placeholders;
-using boost::shared_ptr;
+using std::shared_ptr;
 
-boost::shared_ptr<PatternFactory> PatternFactory::instance_;
+std::shared_ptr<PatternFactory> PatternFactory::instance_;
 
 PatternFactory::PatternFactory()
 {
     patterns_[CounterPattern::getPatternKeyword()] = &CounterPattern::create;
 #if HAVE_LIBNDNRTC
     patterns_[NdnrtcPattern::getPatternKeyword()] = &NdnrtcPattern::create;
+#endif
+#if HAVE_LIBCNL_CPP
+    patterns_[GeneralizedObjectPattern::getPatternKeyword()] = &GeneralizedObjectPattern::create;
+    patterns_[GeneralizedObjectPattern::getPatternKeyword()] = &GeneralizedObjectPattern::create;
 #endif
 }
 
@@ -34,9 +46,9 @@ PatternFactory& PatternFactory::getInstance()
     return *instance_;
 }
 
-boost::shared_ptr<IFetchPattern> PatternFactory::create(Name name, 
-                                                 Face& face, 
-                                                 KeyChain& keyChain, 
+std::shared_ptr<IFetchPattern> PatternFactory::create(Name name,
+                                                 Face& face,
+                                                 KeyChain& keyChain,
                                                  StoreData storePacketFun)
 {
     auto it = patterns_.find(name.toUri());
@@ -47,7 +59,7 @@ boost::shared_ptr<IFetchPattern> PatternFactory::create(Name name,
     }
 }
 
-vector<Name> PatternFactory::getSupportedPatterns() const 
+vector<Name> PatternFactory::getSupportedPatterns() const
 {
     vector<Name> p;
     for (auto it:patterns_)

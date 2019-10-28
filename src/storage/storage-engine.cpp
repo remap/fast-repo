@@ -41,7 +41,7 @@ using namespace boost;
 namespace fast_repo
 {
 
-class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImpl>
+class StorageEngineImpl : public std::enable_shared_from_this<StorageEngineImpl>
 {
   public:
     typedef struct _Stats
@@ -72,8 +72,8 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
     std::string getRenamePrefix()  { return renamePrefix_; }
 
     Name put(const Data &data);
-    boost::shared_ptr<Data> get(const Name &dataName);
-    boost::shared_ptr<Data> read(const Interest &interest);
+    std::shared_ptr<Data> get(const Name &dataName);
+    std::shared_ptr<Data> read(const Interest &interest);
 
     void getLongestPrefixes(asio::io_service &io,
                             function<void(const std::vector<Name> &)> onCompletion);
@@ -86,17 +86,17 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
         struct TrieNode
         {
             bool isLeaf;
-            std::unordered_map<std::string, boost::shared_ptr<TrieNode>> components;
+            std::unordered_map<std::string, std::shared_ptr<TrieNode>> components;
 
             TrieNode() : isLeaf(false) {}
         };
 
-        NameTrie() : head_(boost::make_shared<TrieNode>()) {}
+        NameTrie() : head_(std::make_shared<TrieNode>()) {}
 
         void insert(const std::string &n)
         {
 
-            boost::shared_ptr<TrieNode> curr = head_;
+            std::shared_ptr<TrieNode> curr = head_;
             std::vector<std::string> components;
             split(components, n, boost::is_any_of("/"));
 
@@ -105,7 +105,7 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
                 if (c.size() == 0)
                     continue;
                 if (curr->components.find(c) == curr->components.end())
-                    curr->components[c] = boost::make_shared<TrieNode>();
+                    curr->components[c] = std::make_shared<TrieNode>();
                 curr = curr->components[c];
             }
         }
@@ -118,7 +118,7 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
             for (auto cIt : head_->components)
             {
                 Name n(cIt.first);
-                boost::shared_ptr<TrieNode> curr = cIt.second;
+                std::shared_ptr<TrieNode> curr = cIt.second;
 
                 while (curr.get() && !curr->isLeaf && curr->components.size() == 1)
                 {
@@ -133,7 +133,7 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
         }
 
       private:
-        boost::shared_ptr<TrieNode> head_;
+        std::shared_ptr<TrieNode> head_;
     };
 
     std::string dbPath_, renamePrefix_;
@@ -151,7 +151,7 @@ class StorageEngineImpl : public boost::enable_shared_from_this<StorageEngineImp
 
 //******************************************************************************
 StorageEngine::StorageEngine(std::string dbPath, bool readOnly, std::string renamePrefix) 
-    : pimpl_(boost::make_shared<StorageEngineImpl>(dbPath))
+    : pimpl_(std::make_shared<StorageEngineImpl>(dbPath))
 {
     try
     {
@@ -171,7 +171,7 @@ StorageEngine::~StorageEngine()
     pimpl_->close();
 }
 
-Name StorageEngine::put(const boost::shared_ptr<const Data> &data)
+Name StorageEngine::put(const std::shared_ptr<const Data> &data)
 {
     Name n = pimpl_->put(*data);
     this->afterDataInsertion(data->getName());
@@ -185,13 +185,13 @@ Name StorageEngine::put(const Data &data)
     return n;
 }
 
-boost::shared_ptr<Data>
+std::shared_ptr<Data>
 StorageEngine::get(const Name &dataName)
 {
     return pimpl_->get(dataName);
 }
 
-boost::shared_ptr<Data>
+std::shared_ptr<Data>
 StorageEngine::read(const Interest &interest)
 {
     return pimpl_->read(interest);
@@ -297,7 +297,7 @@ Name StorageEngineImpl::put(const Data &data)
     return Name();
 }
 
-boost::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
+std::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
 {
 #if HAVE_LIBROCKSDB
     if (!db_)
@@ -309,18 +309,18 @@ boost::shared_ptr<Data> StorageEngineImpl::get(const Name &dataName)
                                       &dataString);
     if (s.ok())
     {
-        boost::shared_ptr<Data> data = boost::make_shared<Data>();
+        std::shared_ptr<Data> data = std::make_shared<Data>();
         data->wireDecode((const uint8_t *)dataString.data(), dataString.size());
 
         return data;
     }
 #endif
-    return boost::shared_ptr<Data>(nullptr);
+    return std::shared_ptr<Data>(nullptr);
 }
 
-boost::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
+std::shared_ptr<Data> StorageEngineImpl::read(const Interest &interest)
 {
-    boost::shared_ptr<Data> data;
+    std::shared_ptr<Data> data;
     // NOTE: Why isn't getCanBePrefix() a const function?
     bool canBePrefix = const_cast<Interest&>(interest).getCanBePrefix();
 
@@ -376,7 +376,7 @@ void StorageEngineImpl::getLongestPrefixes(asio::io_service &io,
     //     onCompletion(keysTrie_.getLongestPrefixes());
     // else
     // {
-    boost::shared_ptr<StorageEngineImpl> me = shared_from_this();
+    std::shared_ptr<StorageEngineImpl> me = shared_from_this();
     io.dispatch([me, this, onCompletion]() {
         buildKeyTrie();
         keysTrieBuilt_ = true;

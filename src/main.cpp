@@ -130,8 +130,8 @@ int main(int argc, char **argv)
     for(auto const& arg : args)
         BOOST_LOG_TRIVIAL(trace) << arg.first << " " <<  arg.second;
 
-    boost::shared_ptr<Face> face = boost::make_shared<ThreadsafeFace>(ioService);
-    boost::shared_ptr<KeyChain> keyChain = boost::make_shared<KeyChain>();
+    std::shared_ptr<Face> face = std::make_shared<ThreadsafeFace>(ioService);
+    std::shared_ptr<KeyChain> keyChain = std::make_shared<KeyChain>();
 
     // TODO: make sure this is setup correctly
     face->setCommandSigningInfo(*keyChain, keyChain->getDefaultCertificateName());

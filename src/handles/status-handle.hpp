@@ -26,7 +26,7 @@ class Namespace;
 namespace fast_repo 
 {
 
-using boost::shared_ptr;
+using std::shared_ptr;
 
 class StatusHandle : public repo_ng::BaseHandle 
 {

@@ -13,8 +13,8 @@
 namespace fast_repo
 {
 
-using boost::shared_ptr;
-using boost::make_shared;
+using std::shared_ptr;
+using std::make_shared;
 
 /**
  * A simple fetch pattern, for test.
@@ -44,7 +44,7 @@ public:
                                                  ndn::KeyChain & keyChain, 
                                                  StoreData storePacketFun)
     {
-        return boost::make_shared<CounterPattern>(face, keyChain, storePacketFun);
+        return std::make_shared<CounterPattern>(face, keyChain, storePacketFun);
     }
 
     void cancel() override
